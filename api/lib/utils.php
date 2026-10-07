@@ -44,7 +44,7 @@ function get_app_settings() {
     $settings = $stmt->fetch();
     if (!$settings) {
         return [
-            'nom' => '[NOM DE MON ENTREPRISE]',
+            'nom' => 'Mon Entreprise',
             'email' => '',
             'telephone' => '',
             'adresse' => '',

@@ -48,20 +48,25 @@ function get_step_status($current_status, $step_status) {
 }
 ?>
 
-<main class="flex-grow flex flex-col py-12 px-4 bg-surface">
+<main class="flex-grow flex flex-col py-12 px-4 bg-surface transition-opacity duration-500">
     <div class="max-w-3xl mx-auto w-full">
         
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-primary mb-3">Suivez votre colis</h1>
+            <p class="text-slate-500">Entrez votre numéro de suivi pour consulter l'état actuel de votre expédition.</p>
+        </div>
+
         <?php if ($error): ?>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center">
                 <div class="w-16 h-16 mx-auto bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
-                <h1 class="text-2xl font-bold text-slate-800 mb-2">Colis introuvable</h1>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Colis introuvable</h2>
                 <p class="text-slate-600 mb-8"><?= escape_html($error) ?></p>
                 
                 <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                    <input type="text" name="id" placeholder="N° de suivi" class="flex-grow px-5 py-3 rounded-lg border border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none code-tracking text-center sm:text-left" required value="<?= escape_html($raw_id) ?>">
-                    <button type="submit" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-slate-800 transition-colors shadow-sm">
+                    <input type="text" name="id" placeholder="N° de suivi" class="flex-grow px-5 py-3 rounded-lg border border-slate-300 focus:border-action focus:ring-1 focus:ring-action outline-none code-tracking text-center sm:text-left transition-colors" required value="<?= escape_html($raw_id) ?>">
+                    <button type="submit" class="bg-action text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
                         Rechercher
                     </button>
                 </form>

@@ -91,7 +91,7 @@ $migrations = [
     )",
     '007_create_app_settings' => "CREATE TABLE IF NOT EXISTS app_settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom VARCHAR(255) DEFAULT '[NOM DE MON ENTREPRISE]',
+        nom VARCHAR(255) DEFAULT 'Mon Entreprise',
         logo VARCHAR(255),
         email VARCHAR(255),
         telephone VARCHAR(255),
@@ -154,7 +154,7 @@ foreach ($migrations as $version => $query) {
 
 $stmt = $pdo->query("SELECT COUNT(*) FROM app_settings");
 if ($stmt->fetchColumn() == 0) {
-    $pdo->exec("INSERT INTO app_settings (nom) VALUES ('[NOM DE MON ENTREPRISE]')");
+    $pdo->exec("INSERT INTO app_settings (nom) VALUES ('Mon Entreprise')");
 }
 
 echo "Toutes les migrations sont à jour.\n";

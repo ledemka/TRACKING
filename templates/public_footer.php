@@ -1,9 +1,22 @@
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="container mx-auto px-4 text-center text-sm text-slate-500">
-            <p>&copy; <?= date('Y') ?> <?= escape_html($settings['nom']) ?>. Tous droits réservés.</p>
-            <div class="mt-4 flex justify-center gap-4">
-                <a href="#" class="hover:text-primary transition-colors">Mentions légales</a>
-                <a href="#" class="hover:text-primary transition-colors">Politique de confidentialité</a>
+    <footer class="bg-primary border-t border-primary py-12 mt-auto">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-8">
+                <div class="text-center md:text-left max-w-sm">
+                    <h2 class="text-xl font-bold text-white mb-3"><?= escape_html($settings['nom']) ?></h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Suivez vos expéditions simplement et consultez l'avancement de vos colis à chaque étape.
+                    </p>
+                </div>
+                <nav class="flex flex-wrap justify-center md:justify-end gap-6 text-sm font-medium text-slate-300">
+                    <a href="/" class="hover:text-action transition-colors">Accueil</a>
+                    <a href="/track" class="hover:text-action transition-colors">Suivre un colis</a>
+                    <a href="/#services" class="hover:text-action transition-colors">Services</a>
+                    <a href="/contact" class="hover:text-action transition-colors">Contact</a>
+                    <a href="/login" class="hover:text-action transition-colors">Connexion</a>
+                </nav>
+            </div>
+            <div class="text-center text-sm text-slate-400 pt-8 border-t border-white/10">
+                &copy; <?= date('Y') ?> <?= escape_html($settings['nom']) ?>. Tous droits réservés.
             </div>
         </div>
     </footer>

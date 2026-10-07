@@ -8,9 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--color-primary, #0B1F3A)",
-        accent: "var(--color-accent, #F59E0B)",
-        tertiary: "#3B82F6",
+        primary: "var(--color-primary, #071A33)",
+        accent: "var(--color-accent, #F79009)",
+        action: "#175CD3",
         surface: {
           DEFAULT: "#F8FAFC",
           dim: "#F1F5F9",
