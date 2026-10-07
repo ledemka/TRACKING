@@ -1,6 +1,6 @@
 .env
 .env.*
-vendor/
+/vendor/
 node_modules/
 uploads/
 /dist-production

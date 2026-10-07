@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialisation
     const map = L.map('track-map-container', {
         scrollWheelZoom: false, // Désactivé pour l'accessibilité mobile/desktop
-        zoomControl: !prefersReducedMotion,
+        zoomControl: true, // Toujours actif
         fadeAnimation: !prefersReducedMotion,
         zoomAnimation: !prefersReducedMotion,
         markerZoomAnimation: !prefersReducedMotion
@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         attribution: attribution
     }).addTo(map);
 
-    // Marqueur personnalisé en pur CSS
+    // Marqueur personnalisé via classe CSS
     const customIcon = L.divIcon({
-        className: 'custom-map-marker',
-        html: '<div class="w-6 h-6 bg-action border-4 border-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.3)]"></div>',
+        className: 'track-map-marker',
+        html: '',
         iconSize: [24, 24],
         iconAnchor: [12, 12]
     });
@@ -51,8 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Tracé de l'historique
     if (trail.length > 1) {
+        const rootStyles = getComputedStyle(document.documentElement);
+        const trailColor = rootStyles.getPropertyValue('--map-trail-color').trim() || '#1d4ed8';
+
         const polyline = L.polyline(trail, {
-            color: '#1d4ed8', // text-blue-700 approx
+            color: trailColor,
             weight: 3,
             dashArray: '5, 10',
             opacity: 0.6,
