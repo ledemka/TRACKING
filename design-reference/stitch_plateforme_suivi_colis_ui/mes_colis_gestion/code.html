@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#f8f9ff;}body{overscroll-behavior:none;font-family:'Inter',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-surface": "#213145", "surface": "#f8f9ff", "inverse-primary": "#b5c7ea", "on-background": "#0b1c30", "error": "#ba1a1a", "outline": "#75777e", "secondary-container": "#fea619", "on-tertiary-fixed": "#001a42", "on-error-container": "#93000a", "on-error": "#ffffff", "tertiary-container": "#001d48", "surface-container-highest": "#d3e4fe", "surface-container": "#e5eeff", "outline-variant": "#c4c6ce", "on-secondary": "#ffffff", "primary-fixed": "#d6e3ff", "surface-container-low": "#eff4ff", "on-tertiary": "#ffffff", "on-primary-container": "#7587a7", "on-surface-variant": "#44474d", "secondary": "#855300", "on-tertiary-fixed-variant": "#004395", "error-container": "#ffdad6", "on-primary": "#ffffff", "secondary-fixed-dim": "#ffb95f", "surface-variant": "#d3e4fe", "inverse-on-surface": "#eaf1ff", "on-primary-fixed": "#071c36", "on-primary-fixed-variant": "#364764", "surface-dim": "#cbdbf5", "primary-container": "#0b1f3a", "surface-container-high": "#dce9ff", "background": "#f8f9ff", "on-secondary-container": "#684000", "on-tertiary-container": "#3c83f7", "tertiary": "#000517", "surface-container-lowest": "#ffffff", "primary": "#000615", "surface-tint": "#4d5f7d", "on-surface": "#0b1c30", "secondary-fixed": "#ffddb8", "tertiary-fixed": "#d8e2ff", "primary-fixed-dim": "#b5c7ea", "on-secondary-fixed-variant": "#653e00", "on-secondary-fixed": "#2a1700", "tertiary-fixed-dim": "#adc6ff", "surface-bright": "#f8f9ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-desktop": "2.5rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "gutter": "1rem", "gutter-desktop": "1.5rem", "space-xl": "2rem", "margin": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "margin-tablet": "1.5rem" }, "fontFamily": { "body-md": ["Inter"], "label-md": ["Inter"], "headline-xl": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "headline-md": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "code-tracking": ["Inter"], "label-lg": ["Inter"], "headline-xl-mobile": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }], "code-tracking": ["15px", { "lineHeight": "20px", "letterSpacing": "0.06em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm overflow-hidden min-w-0"><img alt="Monogramme Logistique" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1Wrzm48t7OJaaBfZal6ln6DdUPNuZ35G6LHk4lMhGPCpWe9YkAA0YJkQ-SwC1xfcahrMcP2tAoPwNhcYJCPY4AW1aDZlRSc77BYogSL6rQtCMAs-FFZueLvOWdRTcBX6oViAa4lzzdWzBKODkcFtv2RlHbhgbVsQj0f7eYtex8_4Wsll18mRGE8BItUbfl2XouDXw_3GWX8xwl0vCDBG9WW6u7c_zh6N0bpxQiOgr9i"/><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md text-secondary uppercase tracking-wider truncate">[NOM DE MON ENTREPRISE]</span><span class="font-title-md text-title-md text-on-surface truncate">Mes Colis</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Menu de navigation" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[24px]">menu</span></button><a class="w-11 h-11 flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-secondary-container" data-path="dashboard-admin" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALhO8Hn023RUMuxkWhNdwkgn_FtPuPoDp28z0w01HB-ULV9Zk_O23EzWkGYs9GuHdpcyZW3wp4aMqOl8x3mqOddQGPYS31pbqjmhTMvZxnfTKdAShghVJ05wR0itgpbEIlSNu_LCP5nxZywtjA6NhiamcwyzcOj-7cp07LWiwuqLhY9seb41leh-9b6aEtTbKUpb8LtT6I90XZ3CkI2-2MxapF4a5GUZ23UFyeDus"/></a></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- En-tête de section & Action d'ajout -->
+<section class="px-margin pt-space-md pb-space-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight truncate">Mes colis</h1>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary-container"></span>
+<p class="font-label-md text-label-md text-on-surface-variant">1 428 colis enregistrés</p>
+</div>
+</div>
+<button aria-label="Ajouter un nouveau colis" class="min-h-[48px] px-space-md py-space-sm rounded-xl bg-secondary-container text-on-secondary-container font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-1.5 flex-shrink-0 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Nouveau</span>
+</button>
+</div>
+<!-- Barre d'outils mobile : Recherche -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input aria-label="Rechercher par numéro de suivi, client ou ville" class="w-full min-h-[48px] pl-10 pr-11 py-space-sm bg-surface-container-lowest text-on-surface font-body-md text-body-md rounded-xl shadow-sm placeholder:text-outline focus:outline-none focus:bg-surface-container-low transition-colors" placeholder="N° de suivi, client, ville..." type="search"/>
+<button aria-label="Scanner code-barres" class="absolute inset-y-0 right-0 w-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[20px]">barcode_scanner</span>
+</button>
+</div>
+<!-- Filtres rapides par Statuts (Onglets scrollables) -->
+<div aria-label="Filtrer par statut de livraison" class="flex items-center gap-space-xs overflow-x-auto pb-1 no-scrollbar -mx-margin px-margin" role="tablist">
+<button aria-selected="true" class="filter-tab min-h-[44px] px-3.5 py-2 rounded-full bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-2 flex-shrink-0 shadow-sm active:scale-95 transition-transform" role="tab">
+<span>Tous</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md text-[11px]">1 428</span>
+</button>
+<button aria-selected="false" class="filter-tab min-h-[44px] px-3.5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-2 flex-shrink-0 shadow-sm hover:text-on-surface active:scale-95 transition-all" role="tab">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span>
+<span>Expédiés</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-[11px]">412</span>
+</button>
+<button aria-selected="false" class="filter-tab min-h-[44px] px-3.5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-2 flex-shrink-0 shadow-sm hover:text-on-surface active:scale-95 transition-all" role="tab">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span>En cours</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-[11px]">345</span>
+</button>
+<button aria-selected="false" class="filter-tab min-h-[44px] px-3.5 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-2 flex-shrink-0 shadow-sm hover:text-on-surface active:scale-95 transition-all" role="tab">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Livrés</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-label-md text-[11px]">628</span>
+</button>
+</div>
+<!-- Filtres secondaires déroulants (Sélecteurs d'évolutivité) -->
+<div class="flex items-center gap-space-sm pt-0.5">
+<div class="relative flex-1 min-w-0">
+<select aria-label="Filtrer par transporteur" class="w-full min-h-[44px] pl-3 pr-8 py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-xl appearance-none shadow-sm focus:outline-none truncate">
+<option value="all">Transporteur : Tous</option>
+<option value="chrono">Chronopost Express</option>
+<option value="dhl">DHL Freight</option>
+<option value="ups">UPS Logistics</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</div>
+</div>
+<div class="relative flex-1 min-w-0">
+<select aria-label="Filtrer par pays" class="w-full min-h-[44px] pl-3 pr-8 py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-xl appearance-none shadow-sm focus:outline-none truncate">
+<option value="all">Pays : Tous</option>
+<option value="fr">France (FR)</option>
+<option value="be">Belgique (BE)</option>
+<option value="nl">Pays-Bas (NL)</option>
+<option value="it">Italie (IT)</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</div>
+</div>
+<button aria-label="Réinitialiser les filtres" class="w-11 h-11 flex items-center justify-center rounded-xl bg-surface-container-low text-on-surface-variant hover:text-on-surface active:scale-95 transition-transform flex-shrink-0" type="button">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</section>
+<!-- Liste des colis -->
+<section aria-label="Liste des expéditions" class="px-margin flex flex-col gap-space-md py-space-sm">
+<!-- CARTE 1 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-on-tertiary-container text-[20px]">package_2</span>
+<span class="font-code-tracking text-code-tracking text-on-surface tracking-wider font-bold truncate">COLIS-2026-00125</span>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-tertiary-fixed-variant font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+            Expédié
+          </span>
+<div class="relative">
+<button aria-label="Options du colis COLIS-2026-00125" class="card-menu-btn w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="card-dropdown hidden absolute right-0 top-10 w-40 bg-surface-container-lowest shadow-xl rounded-xl py-1 z-20">
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span> Voir
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span> Modifier
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-error hover:bg-error-container/30" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span> Supprimer
+              </button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface-variant font-body-md text-body-md">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">person</span> Destinataire
+          </span>
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate ml-2">Thomas Laurent (Paris)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface pt-1">
+<div class="flex flex-col">
+<span class="font-label-md text-[11px] text-on-surface-variant">Départ</span>
+<span class="font-body-md text-body-md font-semibold">Rotterdam</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 text-on-surface-variant">
+<span class="w-6 h-px bg-outline-variant"></span>
+<span class="material-symbols-outlined text-[18px] text-on-tertiary-container">arrow_forward</span>
+<span class="w-6 h-px bg-outline-variant"></span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-md text-[11px] text-on-surface-variant">Arrivée</span>
+<span class="font-body-md text-body-md font-semibold">Paris</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Mis à jour il y a 23 min
+        </span>
+<button class="text-on-tertiary-fixed-variant font-title-md text-title-md flex items-center gap-0.5 hover:underline active:opacity-80" type="button">
+          Suivre <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- CARTE 2 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">local_shipping</span>
+<span class="font-code-tracking text-code-tracking text-on-surface tracking-wider font-bold truncate">COLIS-2026-00128</span>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+            En cours
+          </span>
+<div class="relative">
+<button aria-label="Options du colis COLIS-2026-00128" class="card-menu-btn w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="card-dropdown hidden absolute right-0 top-10 w-40 bg-surface-container-lowest shadow-xl rounded-xl py-1 z-20">
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span> Voir
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span> Modifier
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-error hover:bg-error-container/30" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span> Supprimer
+              </button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface-variant font-body-md text-body-md">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">person</span> Destinataire
+          </span>
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate ml-2">Sophie Martin (Lyon)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface pt-1">
+<div class="flex flex-col">
+<span class="font-label-md text-[11px] text-on-surface-variant">Départ</span>
+<span class="font-body-md text-body-md font-semibold">Bruxelles</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 text-on-surface-variant">
+<span class="w-6 h-px bg-outline-variant"></span>
+<span class="material-symbols-outlined text-[18px] text-secondary-container">navigation</span>
+<span class="w-6 h-px bg-outline-variant"></span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-md text-[11px] text-on-surface-variant">Arrivée</span>
+<span class="font-body-md text-body-md font-semibold">Lyon</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">timer</span> Livraison estimée : Aujourd'hui 16:30
+        </span>
+<button class="text-secondary font-title-md text-title-md flex items-center gap-0.5 hover:underline active:opacity-80" type="button">
+          Suivre <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- CARTE 3 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-secondary text-[20px]">check_circle</span>
+<span class="font-code-tracking text-code-tracking text-on-surface tracking-wider font-bold truncate">COLIS-2026-00119</span>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Livré
+          </span>
+<div class="relative">
+<button aria-label="Options du colis COLIS-2026-00119" class="card-menu-btn w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="card-dropdown hidden absolute right-0 top-10 w-40 bg-surface-container-lowest shadow-xl rounded-xl py-1 z-20">
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span> Voir
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span> Modifier
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-error hover:bg-error-container/30" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span> Supprimer
+              </button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface-variant font-body-md text-body-md">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">person</span> Destinataire
+          </span>
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate ml-2">Marc Dubois (Bordeaux)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface pt-1">
+<div class="flex flex-col">
+<span class="font-label-md text-[11px] text-on-surface-variant">Départ</span>
+<span class="font-body-md text-body-md font-semibold">Lille</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 text-on-surface-variant">
+<span class="w-6 h-px bg-outline-variant"></span>
+<span class="material-symbols-outlined text-[18px] text-secondary">done_all</span>
+<span class="w-6 h-px bg-outline-variant"></span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-md text-[11px] text-on-surface-variant">Arrivée</span>
+<span class="font-body-md text-body-md font-semibold">Bordeaux</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[16px]">task_alt</span> Livré avec signature client
+        </span>
+<button class="text-on-surface font-title-md text-title-md flex items-center gap-0.5 hover:underline active:opacity-80" type="button">
+          Reçu <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- CARTE 4 -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-on-tertiary-container text-[20px]">package_2</span>
+<span class="font-code-tracking text-code-tracking text-on-surface tracking-wider font-bold truncate">COLIS-2026-00132</span>
+</div>
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-tertiary-fixed-variant font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+            Expédié
+          </span>
+<div class="relative">
+<button aria-label="Options du colis COLIS-2026-00132" class="card-menu-btn w-9 h-9 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+<div class="card-dropdown hidden absolute right-0 top-10 w-40 bg-surface-container-lowest shadow-xl rounded-xl py-1 z-20">
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span> Voir
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-on-surface hover:bg-surface-container-low" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span> Modifier
+              </button>
+<button class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2 text-left font-body-md text-body-md text-error hover:bg-error-container/30" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span> Supprimer
+              </button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-3 flex flex-col gap-2">
+<div class="flex items-center justify-between text-on-surface-variant font-body-md text-body-md">
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">person</span> Destinataire
+          </span>
+<span class="font-title-md text-title-md text-on-surface font-semibold truncate ml-2">Elena Rossi (Marseille)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface pt-1">
+<div class="flex flex-col">
+<span class="font-label-md text-[11px] text-on-surface-variant">Départ</span>
+<span class="font-body-md text-body-md font-semibold">Milan</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 text-on-surface-variant">
+<span class="w-6 h-px bg-outline-variant"></span>
+<span class="material-symbols-outlined text-[18px] text-on-tertiary-container">arrow_forward</span>
+<span class="w-6 h-px bg-outline-variant"></span>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-label-md text-[11px] text-on-surface-variant">Arrivée</span>
+<span class="font-body-md text-body-md font-semibold">Marseille</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">flight_takeoff</span> En douane frontière Ventimiglia
+        </span>
+<button class="text-on-tertiary-fixed-variant font-title-md text-title-md flex items-center gap-0.5 hover:underline active:opacity-80" type="button">
+          Suivre <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+</section>
+<!-- Pagination mobile fluide -->
+<footer aria-label="Pagination" class="px-margin py-space-md flex flex-col items-center gap-space-sm">
+<span class="font-label-md text-label-md text-on-surface-variant text-center">
+      Affichage de <strong class="text-on-surface">1 à 10</strong> sur <strong class="text-on-surface">1 428</strong> colis
+    </span>
+<div class="flex items-center justify-center gap-space-xs w-full">
+<button aria-label="Page précédente" class="min-w-[44px] min-h-[44px] px-3 rounded-xl bg-surface-container-low text-outline opacity-50 cursor-not-allowed flex items-center justify-center" disabled="" type="button">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button aria-current="page" class="min-w-[44px] min-h-[44px] px-3.5 rounded-xl bg-primary-container text-on-primary font-label-md text-label-md shadow-sm" type="button">
+          1
+        </button>
+<button class="min-w-[44px] min-h-[44px] px-3.5 rounded-xl bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-low active:scale-95 transition-all shadow-sm" type="button">
+          2
+        </button>
+<button class="min-w-[44px] min-h-[44px] px-3.5 rounded-xl bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-low active:scale-95 transition-all shadow-sm" type="button">
+          3
+        </button>
+<span class="px-1 text-on-surface-variant font-label-md">...</span>
+<button class="min-w-[44px] min-h-[44px] px-3 rounded-xl bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:bg-surface-container-low active:scale-95 transition-all shadow-sm" type="button">
+          143
+        </button>
+</div>
+<button aria-label="Page suivante" class="min-w-[44px] min-h-[44px] px-3 rounded-xl bg-surface-container-lowest text-on-surface hover:bg-surface-container-low active:scale-95 transition-all shadow-sm flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</footer>
+</div>
+<script>
+  // Micro-interaction: Gestion des menus contextuels d'action par carte
+  document.querySelectorAll('.card-menu-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const currentDropdown = btn.nextElementSibling;
+      const isVisible = !currentDropdown.classList.contains('hidden');
+      
+      // Ferme tous les autres menus
+      document.querySelectorAll('.card-dropdown').forEach(d => d.classList.add('hidden'));
+
+      if (!isVisible) {
+        currentDropdown.classList.remove('hidden');
+      }
+    });
+  });
+
+  // Fermeture des menus au clic extérieur
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.card-dropdown').forEach(d => d.classList.add('hidden'));
+  });
+
+  // Micro-interaction: Sélection dynamique des onglets de filtres
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('bg-primary-container', 'text-on-primary');
+        t.classList.add('bg-surface-container-lowest', 'text-on-surface-variant');
+      });
+      tab.setAttribute('aria-selected', 'true');
+      tab.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant');
+      tab.classList.add('bg-primary-container', 'text-on-primary');
+    });
+  });
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-secondary"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="accueil" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-md text-label-md mt-0.5">Accueil</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="suivre-un-colis" href="#"><span class="material-symbols-outlined text-[24px]">local_shipping</span><span class="font-label-md text-label-md mt-0.5">Suivi</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="services" href="#"><span class="material-symbols-outlined text-[24px]">hub</span><span class="font-label-md text-label-md mt-0.5">Services</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 transition-colors text-secondary" data-path="mes-colis" href="#"><span class="material-symbols-outlined text-[24px]">inventory_2</span><span class="font-label-md text-label-md mt-0.5">Mes Colis</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="dashboard-admin" href="#"><span class="material-symbols-outlined text-[24px]">dashboard</span><span class="font-label-md text-label-md mt-0.5">Admin</span></a></div></nav></body></html>

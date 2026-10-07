@@ -1,0 +1,8 @@
+.env
+.env.*
+vendor/
+node_modules/
+uploads/
+/dist-production
+.DS_Store
+*.log

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#f8f9ff;}body{overscroll-behavior:none;font-family:'Inter',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-surface": "#213145", "surface": "#f8f9ff", "inverse-primary": "#b5c7ea", "on-background": "#0b1c30", "error": "#ba1a1a", "outline": "#75777e", "secondary-container": "#fea619", "on-tertiary-fixed": "#001a42", "on-error-container": "#93000a", "on-error": "#ffffff", "tertiary-container": "#001d48", "surface-container-highest": "#d3e4fe", "surface-container": "#e5eeff", "outline-variant": "#c4c6ce", "on-secondary": "#ffffff", "primary-fixed": "#d6e3ff", "surface-container-low": "#eff4ff", "on-tertiary": "#ffffff", "on-primary-container": "#7587a7", "on-surface-variant": "#44474d", "secondary": "#855300", "on-tertiary-fixed-variant": "#004395", "error-container": "#ffdad6", "on-primary": "#ffffff", "secondary-fixed-dim": "#ffb95f", "surface-variant": "#d3e4fe", "inverse-on-surface": "#eaf1ff", "on-primary-fixed": "#071c36", "on-primary-fixed-variant": "#364764", "surface-dim": "#cbdbf5", "primary-container": "#0b1f3a", "surface-container-high": "#dce9ff", "background": "#f8f9ff", "on-secondary-container": "#684000", "on-tertiary-container": "#3c83f7", "tertiary": "#000517", "surface-container-lowest": "#ffffff", "primary": "#000615", "surface-tint": "#4d5f7d", "on-surface": "#0b1c30", "secondary-fixed": "#ffddb8", "tertiary-fixed": "#d8e2ff", "primary-fixed-dim": "#b5c7ea", "on-secondary-fixed-variant": "#653e00", "on-secondary-fixed": "#2a1700", "tertiary-fixed-dim": "#adc6ff", "surface-bright": "#f8f9ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-desktop": "2.5rem", "space-xs": "0.25rem", "space-lg": "1.5rem", "gutter": "1rem", "gutter-desktop": "1.5rem", "space-xl": "2rem", "margin": "1rem", "space-md": "1rem", "space-sm": "0.5rem", "margin-tablet": "1.5rem" }, "fontFamily": { "body-md": ["Inter"], "label-md": ["Inter"], "headline-xl": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "headline-md": ["Inter"], "body-lg": ["Inter"], "title-md": ["Inter"], "code-tracking": ["Inter"], "label-lg": ["Inter"], "headline-xl-mobile": ["Inter"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-lg-mobile": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "600" }], "code-tracking": ["15px", { "lineHeight": "20px", "letterSpacing": "0.06em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm overflow-hidden min-w-0"><img alt="Monogramme Logistique" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1Wrzm48t7OJaaBfZal6ln6DdUPNuZ35G6LHk4lMhGPCpWe9YkAA0YJkQ-SwC1xfcahrMcP2tAoPwNhcYJCPY4AW1aDZlRSc77BYogSL6rQtCMAs-FFZueLvOWdRTcBX6oViAa4lzzdWzBKODkcFtv2RlHbhgbVsQj0f7eYtex8_4Wsll18mRGE8BItUbfl2XouDXw_3GWX8xwl0vCDBG9WW6u7c_zh6N0bpxQiOgr9i"/><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md text-secondary uppercase tracking-wider truncate">[NOM DE MON ENTREPRISE]</span><span class="font-title-md text-title-md text-on-surface truncate">Mes Colis</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Menu de navigation" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface active:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-[24px]">menu</span></button><a class="w-11 h-11 flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-secondary-container" data-path="dashboard-admin" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALhO8Hn023RUMuxkWhNdwkgn_FtPuPoDp28z0w01HB-ULV9Zk_O23EzWkGYs9GuHdpcyZW3wp4aMqOl8x3mqOddQGPYS31pbqjmhTMvZxnfTKdAShghVJ05wR0itgpbEIlSNu_LCP5nxZywtjA6NhiamcwyzcOj-7cp07LWiwuqLhY9seb41leh-9b6aEtTbKUpb8LtT6I90XZ3CkI2-2MxapF4a5GUZ23UFyeDus"/></a></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Sub-header bar for shipment creation workflow -->
+<div class="sticky top-16 z-40 bg-surface/95 backdrop-blur-md px-margin py-space-sm shadow-sm flex items-center justify-between">
+<a class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-on-surface text-label-lg font-label-lg py-2 px-1 min-h-[44px] transition-colors" data-path="mes-colis" href="#">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+<span>Annuler</span>
+</a>
+<div class="flex flex-col items-center">
+<span class="font-title-md text-title-md text-on-surface">Nouveau colis</span>
+<span class="font-label-md text-label-md text-secondary font-medium">Bordereau #2026-N4</span>
+</div>
+<button class="inline-flex items-center justify-center font-label-lg text-label-lg text-on-primary bg-primary-container hover:bg-inverse-surface px-3 py-2 rounded-lg shadow-sm min-h-[44px] min-w-[44px] transition-all active:scale-95" id="quickSaveTopBtn" type="button">
+      Enregistrer
+    </button>
+</div>
+<div class="px-margin pt-space-md pb-space-xl flex flex-col gap-space-lg">
+<!-- Progress indicator card -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_1px_3px_0_rgba(11,31,58,0.04)]">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Création de la fiche d'envoi</span>
+<span class="font-label-md text-label-md text-secondary font-bold">Étape 1 sur 4</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full w-1/4 rounded-full transition-all duration-300"></div>
+</div>
+<div class="grid grid-cols-4 gap-1 mt-2">
+<span class="text-center font-label-md text-[10px] text-secondary font-semibold">Identifiant</span>
+<span class="text-center font-label-md text-[10px] text-on-surface-variant">Destinataire</span>
+<span class="text-center font-label-md text-[10px] text-on-surface-variant">Acheminement</span>
+<span class="text-center font-label-md text-[10px] text-on-surface-variant">Chargement</span>
+</div>
+</div>
+<!-- Live Toast/Alert Banner on Unique ID Check -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm flex items-start gap-space-sm" id="duplicateAlert">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center flex-shrink-0 text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-[13px] font-bold text-on-surface">Contrôle d'unicité en temps réel</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container-lowest text-secondary">Actif</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5 text-[13px]">
+          Chaque numéro est audité sur l'ensemble de la flotte. Les doublons déclenchent un blocage de validation immédiat.
+        </p>
+</div>
+</div>
+<!-- SECTION 1: Identification du colis -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_1px_3px_0_rgba(11,31,58,0.04)] flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-title-md text-title-md text-on-surface">1. Identification du colis</h2>
+<p class="font-body-md text-[13px] text-on-surface-variant">Matricule logistique et état initial de prise en charge</p>
+</div>
+</div>
+<!-- Tracking Number input -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="trackingNumberInput">
+            Numéro de suivi unique <span class="text-error font-bold">*</span>
+</label>
+<span class="font-label-md text-label-md text-on-surface-variant">Format alphanumérique</span>
+</div>
+<div class="relative flex items-center">
+<div class="absolute left-3.5 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[22px]">barcode</span>
+</div>
+<input class="w-full h-12 pl-11 pr-28 rounded-xl bg-surface-container-low text-on-surface font-code-tracking text-code-tracking focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="trackingNumberInput" placeholder="COLIS-XXXX-XXXXX" type="text" value="COLIS-2026-00145"/>
+<button class="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-label-md font-label-md flex items-center gap-1 transition-all active:scale-95 min-h-[36px]" id="randomGenBtn" title="Générer un numéro aléatoire" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>Générer</span>
+</button>
+</div>
+<!-- Inline error/warning placeholder state toggle demo -->
+<div class="flex items-center gap-1.5 px-1 pt-1 text-[12px] text-on-surface-variant" id="validationHint">
+<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
+<span>Identifiant valide et libre d'attribution.</span>
+</div>
+</div>
+<!-- Initial Status Picker (3 strict statuses) -->
+<div class="flex flex-col gap-2 pt-1">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1">
+          Statut initial du colis <span class="text-error font-bold">*</span>
+</label>
+<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+<!-- Status 1: Expédié (Checked by default) -->
+<label class="relative flex items-center p-3 rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container min-h-[50px] shadow-sm has-[:checked]:bg-surface-container-lowest has-[:checked]:shadow-md">
+<input checked="" class="sr-only peer" name="initialStatus" type="radio" value="shipped"/>
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-blue-600 flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-surface">Expédié</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700">
+                Bleu
+              </span>
+</div>
+<div class="absolute inset-0 rounded-xl transition-all pointer-events-none peer-checked:shadow-[inset_0_0_0_2px_#1d4ed8]"></div>
+</label>
+<!-- Status 2: En cours de livraison -->
+<label class="relative flex items-center p-3 rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container min-h-[50px] shadow-sm has-[:checked]:bg-surface-container-lowest has-[:checked]:shadow-md">
+<input class="sr-only peer" name="initialStatus" type="radio" value="in_transit"/>
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-surface">En cours</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700">
+                Ambré
+              </span>
+</div>
+<div class="absolute inset-0 rounded-xl transition-all pointer-events-none peer-checked:shadow-[inset_0_0_0_2px_#fea619]"></div>
+</label>
+<!-- Status 3: Livré -->
+<label class="relative flex items-center p-3 rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container min-h-[50px] shadow-sm has-[:checked]:bg-surface-container-lowest has-[:checked]:shadow-md">
+<input class="sr-only peer" name="initialStatus" type="radio" value="delivered"/>
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-emerald-600 flex-shrink-0"></span>
+<span class="font-label-md text-label-md text-on-surface">Livré</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700">
+                Vert
+              </span>
+</div>
+<div class="absolute inset-0 rounded-xl transition-all pointer-events-none peer-checked:shadow-[inset_0_0_0_2px_#047857]"></div>
+</label>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant px-1">Le badge officiel du colis s'ajustera instantanément à la mise à jour.</p>
+</div>
+</section>
+<!-- SECTION 2: Destinataire -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_1px_3px_0_rgba(11,31,58,0.04)] flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">person_pin_circle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-title-md text-title-md text-on-surface">2. Informations destinataire</h2>
+<p class="font-body-md text-[13px] text-on-surface-variant">Coordonnées directes et adresse finale d'acheminement</p>
+</div>
+</div>
+<!-- Recipient Full Name -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="recipientName">
+          Nom et prénom du destinataire <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">badge</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="recipientName" placeholder="Ex: Martin Dupond" type="text" value="Claire Lefebvre"/>
+</div>
+</div>
+<!-- Phone Number with Country Code -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="recipientPhone">
+          Téléphone portable <span class="text-error font-bold">*</span>
+</label>
+<div class="flex gap-2">
+<div class="flex items-center justify-center px-3 h-12 bg-surface-container-high rounded-xl text-on-surface font-label-md text-label-md flex-shrink-0 gap-1 min-w-[76px]">
+<span>🇫🇷</span>
+<span>+33</span>
+</div>
+<div class="relative flex-1 flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">smartphone</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="recipientPhone" placeholder="06 00 00 00 00" type="tel" value="06 42 78 91 03"/>
+</div>
+</div>
+<span class="font-body-md text-[12px] text-on-surface-variant px-1">Reçoit les SMS de créneau de passage et code OTP de livraison.</span>
+</div>
+<!-- Recipient Email -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="recipientEmail">
+          Adresse email (notifications)
+        </label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">alternate_email</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="recipientEmail" placeholder="nom.prenom@entreprise.com" type="email" value="claire.lefebvre@pro-logistics.fr"/>
+</div>
+</div>
+<!-- Full Delivery Address -->
+<div class="flex flex-col gap-2 pt-1">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1">
+          Adresse de livraison complète <span class="text-error font-bold">*</span>
+</label>
+<div class="flex flex-col gap-2">
+<input class="w-full h-12 px-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Numéro et nom de la voie" type="text" value="142 Avenue de France"/>
+<input class="w-full h-12 px-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Bâtiment, étage, code d'accès, instructions (optionnel)" type="text" value="Bâtiment C - Étage 3, Porte 304"/>
+<div class="grid grid-cols-2 gap-2">
+<input class="w-full h-12 px-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Code postal" type="text" value="75013"/>
+<input class="w-full h-12 px-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Ville" type="text" value="Paris"/>
+</div>
+<div class="relative flex items-center">
+<select class="w-full h-12 px-4 pr-10 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none appearance-none transition-all shadow-inner">
+<option selected="" value="FR">France métropolitaine</option>
+<option value="BE">Belgique</option>
+<option value="LU">Luxembourg</option>
+<option value="CH">Suisse</option>
+<option value="NL">Pays-Bas</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: Expéditeur & Acheminement -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_1px_3px_0_rgba(11,31,58,0.04)] flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">local_shipping</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-title-md text-title-md text-on-surface">3. Expéditeur &amp; Acheminement</h2>
+<p class="font-body-md text-[13px] text-on-surface-variant">Hub d'origine, prestataire logistique et délais prévus</p>
+</div>
+</div>
+<!-- Departure Hub -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="originHub">
+          Adresse d'origine / Hub de départ <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">warehouse</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="originHub" placeholder="Nom ou adresse du centre de tri" type="text" value="Centre logistique Rotterdam Nord"/>
+</div>
+</div>
+<!-- Carrier Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="carrierSelect">
+          Transporteur assigné <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">rv_hookup</span>
+<select class="w-full h-12 pl-11 pr-10 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none appearance-none transition-all shadow-inner" id="carrierSelect">
+<option value="chronopost">Chronopost Express 24h</option>
+<option selected="" value="colissimo">Colissimo Domicile avec signature</option>
+<option value="dhl">DHL Express International</option>
+<option value="dpd">DPD Predict</option>
+<option value="interne">Flotte Interne (Livraison dédiée)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+</div>
+</div>
+<!-- Dates Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm pt-1">
+<!-- Shipping Date -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="shippingDate">
+            Date d'expédition <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">calendar_month</span>
+<input class="w-full h-12 pl-11 pr-3 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="shippingDate" type="date" value="2026-05-16"/>
+</div>
+</div>
+<!-- Estimated Delivery Date -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="estimatedDate">
+            Livraison estimée <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">event_available</span>
+<input class="w-full h-12 pl-11 pr-3 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="estimatedDate" type="date" value="2026-05-18"/>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: Détails du chargement -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md shadow-[0_1px_3px_0_rgba(11,31,58,0.04)] flex flex-col gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h2 class="font-title-md text-title-md text-on-surface">4. Détails du chargement</h2>
+<p class="font-body-md text-[13px] text-on-surface-variant">Poids, gabarit, nature du colis et consignes spéciales</p>
+</div>
+</div>
+<!-- Quantity Stepper & Weight -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<!-- Number of Packages Stepper -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1">
+            Nombre de colis <span class="text-error font-bold">*</span>
+</label>
+<div class="flex items-center justify-between h-12 px-2 bg-surface-container-low rounded-xl">
+<button aria-label="Diminuer le nombre de colis" class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-container-highest flex items-center justify-center text-on-surface transition-transform active:scale-90 min-h-[44px] min-w-[44px]" id="stepMinus" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface font-bold" id="packageCountDisplay">1</span>
+<span class="font-body-md text-on-surface-variant text-[13px]">unité(s)</span>
+</div>
+<button aria-label="Augmenter le nombre de colis" class="w-10 h-10 rounded-lg bg-surface-container-high hover:bg-surface-container-highest flex items-center justify-center text-on-surface transition-transform active:scale-90 min-h-[44px] min-w-[44px]" id="stepPlus" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Weight in kg -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="packageWeight">
+            Poids total (kg) <span class="text-error font-bold">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">scale</span>
+<input class="w-full h-12 pl-11 pr-12 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" id="packageWeight" placeholder="0.00" step="0.05" type="number" value="3.45"/>
+<span class="absolute right-3.5 font-label-md text-label-md text-on-surface-variant pointer-events-none">kg</span>
+</div>
+</div>
+</div>
+<!-- Dimensions (L x W x H) -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface">Dimensions (L x l x H cm - Optionnel)</label>
+<div class="grid grid-cols-3 gap-2">
+<div class="relative flex items-center">
+<input class="w-full h-12 px-3 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md text-center focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Longueur" type="number" value="35"/>
+<span class="absolute right-2 text-[10px] text-on-surface-variant pointer-events-none">L</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-3 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md text-center focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Largeur" type="number" value="25"/>
+<span class="absolute right-2 text-[10px] text-on-surface-variant pointer-events-none">l</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-12 px-3 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md text-center focus:bg-surface-container-lowest focus:outline-none transition-all shadow-inner" placeholder="Hauteur" type="number" value="15"/>
+<span class="absolute right-2 text-[10px] text-on-surface-variant pointer-events-none">H</span>
+</div>
+</div>
+</div>
+<!-- Content Description -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1" for="packageContent">
+          Description du contenu <span class="text-error font-bold">*</span>
+</label>
+<textarea class="w-full p-3.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:outline-none transition-all resize-none shadow-inner" id="packageContent" placeholder="Détaillez le type de marchandise" rows="2">Matériel informatique reconditionné et accessoires</textarea>
+</div>
+<!-- Special Handling Checkboxes -->
+<div class="flex flex-col gap-2 pt-1">
+<!-- Checkbox 1: Signature -->
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors min-h-[48px]">
+<input checked="" class="w-5 h-5 rounded accent-secondary cursor-pointer" type="checkbox"/>
+<div class="flex items-center gap-2 flex-1">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">draw</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Signature requise à la livraison</span>
+</div>
+</label>
+<!-- Checkbox 2: Fragile -->
+<label class="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors min-h-[48px]">
+<input checked="" class="w-5 h-5 rounded accent-secondary cursor-pointer" type="checkbox"/>
+<div class="flex items-center gap-2 flex-1">
+<span class="material-symbols-outlined text-[20px] text-secondary">warning</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">Envoi fragile (étiquette spécifique générée)</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Bottom Action Group -->
+<div class="flex flex-col gap-space-sm pt-2">
+<!-- Primary Action: Create and Print -->
+<button class="w-full min-h-[52px] bg-secondary-container hover:bg-secondary-fixed-dim text-on-secondary-container rounded-xl font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]" id="submitPackageBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">print</span>
+<span>Créer et imprimer le bordereau</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Secondary Action: Save as draft -->
+<button class="w-full min-h-[48px] bg-surface-container hover:bg-surface-container-high text-on-surface rounded-xl font-label-lg text-label-lg font-medium flex items-center justify-center gap-2 transition-colors active:scale-[0.98]" id="saveDraftBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">save_as</span>
+<span>Enregistrer comme brouillon</span>
+</button>
+<!-- Reassuring logistics badge -->
+<div class="flex items-center justify-center gap-2 py-1 text-on-surface-variant text-label-md font-label-md text-center">
+<span class="material-symbols-outlined text-[16px] text-secondary">encrypted</span>
+<span>Bordereau crypté selon les normes EDI &amp; GS1-128</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Micro-interactions and package generation logic
+  (function initNewPackageView() {
+    const trackingInput = document.getElementById('trackingNumberInput');
+    const randomBtn = document.getElementById('randomGenBtn');
+    const validationHint = document.getElementById('validationHint');
+    const minusBtn = document.getElementById('stepMinus');
+    const plusBtn = document.getElementById('stepPlus');
+    const countDisplay = document.getElementById('packageCountDisplay');
+    const submitBtn = document.getElementById('submitPackageBtn');
+
+    let packageCount = 1;
+
+    // Random Tracking Code Generator
+    if (randomBtn && trackingInput) {
+      randomBtn.addEventListener('click', () => {
+        const randomSuffix = Math.floor(10000 + Math.random() * 90000);
+        trackingInput.value = `COLIS-2026-${randomSuffix}`;
+        if (validationHint) {
+          validationHint.innerHTML = `
+            <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+            <span class="text-on-surface font-medium">Nouveau matricule généré et vérifié : disponible.</span>
+          `;
+        }
+      });
+    }
+
+    // Stepper counter for packages
+    if (minusBtn && countDisplay) {
+      minusBtn.addEventListener('click', () => {
+        if (packageCount > 1) {
+          packageCount--;
+          countDisplay.textContent = packageCount;
+        }
+      });
+    }
+
+    if (plusBtn && countDisplay) {
+      plusBtn.addEventListener('click', () => {
+        if (packageCount < 99) {
+          packageCount++;
+          countDisplay.textContent = packageCount;
+        }
+      });
+    }
+
+    // Interactive button feedback
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px] animate-spin">refresh</span>
+          <span>Génération du bordereau PDF...</span>
+        `;
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px]">done</span>
+            <span>Bordereau prêt !</span>
+          `;
+          setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+          }, 2000);
+        }, 1200);
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/80 backdrop-blur-xl shadow-[0_-1px_8px_rgba(0,0,0,0.04)]" data-active-classes="text-secondary"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="accueil" href="#"><span class="material-symbols-outlined text-[24px]">home</span><span class="font-label-md text-label-md mt-0.5">Accueil</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="suivre-un-colis" href="#"><span class="material-symbols-outlined text-[24px]">local_shipping</span><span class="font-label-md text-label-md mt-0.5">Suivi</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="services" href="#"><span class="material-symbols-outlined text-[24px]">hub</span><span class="font-label-md text-label-md mt-0.5">Services</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="mes-colis" href="#"><span class="material-symbols-outlined text-[24px]">inventory_2</span><span class="font-label-md text-label-md mt-0.5">Mes Colis</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] py-1 px-2 text-on-surface-variant transition-colors" data-path="dashboard-admin" href="#"><span class="material-symbols-outlined text-[24px]">dashboard</span><span class="font-label-md text-label-md mt-0.5">Admin</span></a></div></nav></body></html>

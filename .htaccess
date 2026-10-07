@@ -1,0 +1,21 @@
+Options -Indexes
+
+# Protection des dossiers sensibles
+RewriteEngine On
+RewriteRule ^\.env - [F,L,NC]
+RewriteRule ^api/lib/ - [F,L,NC]
+RewriteRule ^api/migrate\.php - [F,L,NC]
+RewriteRule ^scripts/ - [F,L,NC]
+
+# En-têtes de sécurité
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+</IfModule>
+
+# Routage des URL propres (si besoin plus tard pour l'admin)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
