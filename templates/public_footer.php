@@ -1,5 +1,5 @@
     <footer class="bg-primary border-t border-primary py-12 mt-auto">
-        <div class="max-w-6xl mx-auto px-4">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
             <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-8">
                 <div class="text-center md:text-left max-w-sm">
                     <h2 class="text-xl font-bold text-white mb-3"><?= escape_html($settings['nom']) ?></h2>
@@ -14,9 +14,6 @@
                     <a href="/contact" class="hover:text-action transition-colors">Contact</a>
                     <a href="/login" class="hover:text-action transition-colors">Connexion</a>
                 </nav>
-            </div>
-            <div class="text-center text-sm text-slate-400 pt-8 border-t border-white/10">
-                &copy; <?= date('Y') ?> <?= escape_html($settings['nom']) ?>. Tous droits réservés.
             </div>
         </div>
     </footer>

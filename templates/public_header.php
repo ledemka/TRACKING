@@ -1,12 +1,11 @@
 <?php require_once __DIR__ . '/head.php'; ?>
     <header class="bg-primary text-white py-4 shadow-sm relative z-50">
-        <div class="container mx-auto px-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 flex justify-between items-center">
             <a href="/" class="font-bold text-xl tracking-tight"><?= escape_html($settings['nom']) ?></a>
             
             <nav class="hidden md:flex gap-6 items-center">
                 <a href="/" class="hover:text-accent transition-colors">Accueil</a>
                 <a href="/track" class="hover:text-accent transition-colors">Suivre un colis</a>
-                <a href="/#services" class="hover:text-accent transition-colors">Services</a>
                 <a href="/contact" class="hover:text-accent transition-colors">Contact</a>
                 <a href="/login" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Connexion</a>
             </nav>
@@ -21,7 +20,6 @@
             <nav class="flex flex-col py-2">
                 <a href="/" class="px-4 py-3 hover:bg-white/5 transition-colors">Accueil</a>
                 <a href="/track" class="px-4 py-3 hover:bg-white/5 transition-colors">Suivre un colis</a>
-                <a href="/#services" class="px-4 py-3 hover:bg-white/5 transition-colors">Services</a>
                 <a href="/contact" class="px-4 py-3 hover:bg-white/5 transition-colors">Contact</a>
                 <div class="px-4 py-3 border-t border-white/10">
                     <a href="/login" class="block text-center bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Connexion</a>
