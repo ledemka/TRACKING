@@ -1,13 +1,17 @@
-<?php require_once __DIR__ . '/head.php'; ?>
+<?php 
+$page_title = 'Administration';
+require_once __DIR__ . '/head.php'; 
+?>
     <!-- Sidebar Desktop -->
     <aside class="hidden md:flex flex-col w-64 bg-primary text-white flex-shrink-0 min-h-screen">
         <div class="p-6">
             <a href="/dashboard" class="font-bold text-xl tracking-tight"><?= escape_html($settings['nom']) ?></a>
         </div>
         <nav class="flex-1 mt-6 flex flex-col gap-2 px-4">
-            <a href="/dashboard" class="px-4 py-3 bg-white/10 rounded-lg text-white font-semibold">Tableau de bord</a>
-            <a href="/shipments" class="px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition-colors">Expéditions</a>
-            <a href="/settings" class="px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition-colors">Paramètres</a>
+            <a href="/dashboard" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/dashboard' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Tableau de bord</a>
+            <a href="/shipments" class="px-4 py-3 <?= strpos($_SERVER['REQUEST_URI'], '/shipments') === 0 ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Expéditions</a>
+            <a href="/customers" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/customers' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Clients</a>
+            <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Paramètres</a>
         </nav>
         <div class="p-4 mt-auto">
             <form action="/logout" method="POST" class="w-full">
@@ -28,9 +32,10 @@
     <!-- Mobile Menu Overlay -->
     <div id="admin-mobile-menu" class="hidden md:hidden fixed inset-0 bg-primary z-40 flex flex-col pt-20 px-4">
         <nav class="flex flex-col gap-4">
-            <a href="/dashboard" class="px-4 py-3 bg-white/10 rounded-lg text-white font-semibold">Tableau de bord</a>
-            <a href="/shipments" class="px-4 py-3 text-white/70 hover:text-white rounded-lg text-lg">Expéditions</a>
-            <a href="/settings" class="px-4 py-3 text-white/70 hover:text-white rounded-lg text-lg">Paramètres</a>
+            <a href="/dashboard" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/dashboard' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Tableau de bord</a>
+            <a href="/shipments" class="px-4 py-3 <?= strpos($_SERVER['REQUEST_URI'], '/shipments') === 0 ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Expéditions</a>
+            <a href="/customers" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/customers' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Clients</a>
+            <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Paramètres</a>
         </nav>
         <form action="/logout" method="POST" class="mt-auto mb-8 mx-4">
             <input type="hidden" name="csrf_token" value="<?= escape_html(generate_csrf_token()) ?>">

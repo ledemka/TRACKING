@@ -1,10 +1,14 @@
 <?php
-require_once __DIR__ . '/api/db.php';
-require_once __DIR__ . '/api/lib/security.php';
+require_once __DIR__ . '/api/bootstrap.php';
 
 $ip = $_SERVER['REMOTE_ADDR'];
 $success = false;
 $error = '';
+
+if (isset($_SESSION['flash_success'])) {
+    $success = true;
+    unset($_SESSION['flash_success']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf_token($_POST['csrf_token'] ?? '');
@@ -19,7 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email'] ?? '');
         $message = trim($_POST['message'] ?? '');
         
-        if ($name && $email && $message && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (strlen($name) > 100 || strlen($email) > 254 || strlen($message) > 5000) {
+            $error = "La taille d'un champ dépasse la limite autorisée.";
+        } else if ($name && $email && $message && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $settings = get_app_settings();
             $dest = $settings['email'];
             $apiKey = getenv('RESEND_API_KEY');
@@ -28,16 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if (!$apiKey || !$dest || !$fromEmail) {
                 // Pas configuré : on skip et on log
+                $subjectLog = substr("Nouveau message de $name", 0, 200);
                 $stmt = $pdo->prepare("INSERT INTO email_logs (recipient, subject, status, error_message) VALUES (?, ?, 'skipped', 'Configuration Resend manquante')");
-                $stmt->execute([$dest ?: 'inconnu', "Nouveau message de $name"]);
-                $success = true; // Neutre pour l'utilisateur
+                $stmt->execute([$dest ?: 'inconnu', $subjectLog]);
+                $_SESSION['flash_success'] = true;
+                header('Location: /contact');
+                exit;
             } else {
+                $subject = "Nouveau message de contact : " . $name;
+                $subjectLog = substr($subject, 0, 200);
+                
                 // Appel cURL à Resend
                 $ch = curl_init('https://api.resend.com/emails');
                 $payload = json_encode([
                     'from' => "$fromName <$fromEmail>",
                     'to' => [$dest],
-                    'subject' => "Nouveau message de contact : " . $name,
+                    'reply_to' => $email,
+                    'subject' => $subject,
                     'html' => "<p><strong>Nom :</strong> " . escape_html($name) . "</p>" .
                               "<p><strong>Email :</strong> " . escape_html($email) . "</p>" .
                               "<p><strong>Message :</strong><br>" . nl2br(escape_html($message)) . "</p>"
@@ -46,6 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, [
                     'Authorization: Bearer ' . $apiKey,
                     'Content-Type: application/json'
@@ -56,10 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 curl_close($ch);
                 
                 if ($httpCode >= 200 && $httpCode < 300) {
-                    $pdo->prepare("INSERT INTO email_logs (recipient, subject, status) VALUES (?, ?, 'sent')")->execute([$dest, "Message de $name"]);
-                    $success = true;
+                    $pdo->prepare("INSERT INTO email_logs (recipient, subject, status) VALUES (?, ?, 'sent')")->execute([$dest, $subjectLog]);
+                    $_SESSION['flash_success'] = true;
+                    header('Location: /contact');
+                    exit;
                 } else {
-                    $pdo->prepare("INSERT INTO email_logs (recipient, subject, status, error_message) VALUES (?, ?, 'failed', ?)")->execute([$dest, "Message de $name", $response]);
+                    $errorMsg = substr($httpCode . " " . $response, 0, 500);
+                    $pdo->prepare("INSERT INTO email_logs (recipient, subject, status, error_message) VALUES (?, ?, 'failed', ?)")->execute([$dest, $subjectLog, $errorMsg]);
                     $error = "Une erreur est survenue lors de l'envoi. Veuillez réessayer plus tard.";
                 }
             }

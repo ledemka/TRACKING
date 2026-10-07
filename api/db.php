@@ -1,6 +1,6 @@
 <?php
 // api/db.php
-date_default_timezone_set('UTC');
+date_default_timezone_set('Europe/Paris');
 
 $envFile = getenv('APP_ENV_FILE') ?: __DIR__ . '/../.env';
 
@@ -60,4 +60,3 @@ try {
     }
 }
 
-require_once __DIR__ . '/lib/utils.php';

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/api/lib/auth.php';
+require_once __DIR__ . '/api/bootstrap.php';
 
 if (is_logged_in()) {
     header("Location: /dashboard");

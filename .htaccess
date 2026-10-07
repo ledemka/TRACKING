@@ -34,6 +34,7 @@ RewriteRule ^dashboard$ dashboard.php [L]
 RewriteRule ^shipments$ shipments.php [L]
 RewriteRule ^shipments/new$ new_shipment.php [L]
 RewriteRule ^shipments/([0-9]+)$ shipment.php?id=$1 [QSA,L]
+RewriteRule ^customers$ customers.php [L]
 RewriteRule ^settings$ settings.php [L]
 
 ErrorDocument 404 /404.php

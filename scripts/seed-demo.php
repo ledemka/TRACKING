@@ -7,11 +7,11 @@ if (php_sapi_name() !== 'cli') {
 require_once __DIR__ . '/../api/db.php';
 
 // Création du transporteur si inexistant
-$stmt = $pdo->prepare("SELECT id FROM carriers WHERE name = 'Transport Express'");
+$stmt = $pdo->prepare("SELECT id FROM carriers WHERE name = 'Transporteur de démonstration'");
 $stmt->execute();
 $carrier = $stmt->fetch();
 if (!$carrier) {
-    $pdo->exec("INSERT INTO carriers (name) VALUES ('Transport Express')");
+    $pdo->exec("INSERT INTO carriers (name) VALUES ('Transporteur de démonstration')");
     $carrierId = $pdo->lastInsertId();
 } else {
     $carrierId = $carrier['id'];
@@ -55,9 +55,9 @@ try {
     $shipmentId = $pdo->lastInsertId();
     
     $events = [
-        ['Commande enregistrée', 'Rotterdam', 'pending', $date_order],
-        ['Colis récupéré par le transporteur', 'Plateforme Logistique, Rotterdam', 'pending', $date_pickup],
-        ['Expédié (En transit)', 'Centre de Tri International', 'shipped', $date_shipped]
+        ['Commande enregistrée', 'Rotterdam', NULL, $date_order],
+        ['Colis récupéré par le transporteur', 'Plateforme Logistique, Rotterdam', NULL, $date_pickup],
+        ['Expédié', 'Centre de Tri International', 'shipped', $date_shipped]
     ];
     
     $stmtEvent = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at) VALUES (?, ?, ?, ?, ?)");

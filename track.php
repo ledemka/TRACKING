@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/api/db.php';
-require_once __DIR__ . '/api/lib/security.php';
+require_once __DIR__ . '/api/bootstrap.php';
 require_once __DIR__ . '/api/lib/status.php';
 
 $ip = $_SERVER['REMOTE_ADDR'];
@@ -43,6 +42,7 @@ function get_step_status($current_status, $step_status) {
     $order = [STATUS_SHIPPED => 1, STATUS_OUT_FOR_DELIVERY => 2, STATUS_DELIVERED => 3];
     $c = $order[$current_status] ?? 0;
     $s = $order[$step_status] ?? 0;
+    if ($c === 3) return 'completed';
     if ($s < $c) return 'completed';
     if ($s == $c) return 'current';
     return 'pending';
@@ -116,6 +116,10 @@ function get_step_status($current_status, $step_status) {
                         <div>
                             <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Livraison estimée</p>
                             <p class="font-medium text-slate-800"><?= $shipment['estimated_delivery_at'] ? format_date($shipment['estimated_delivery_at'], 'd/m/Y') : 'Non estimée' ?></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Date d'expédition</p>
+                            <p class="font-medium text-slate-800"><?= $shipment['shipped_at'] ? format_date($shipment['shipped_at'], 'd/m/Y') : 'Non expédié' ?></p>
                         </div>
                     </div>
                 </div>

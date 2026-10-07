@@ -15,7 +15,27 @@ function format_date($datetime_str, $format = 'd/m/Y à H:i') {
         $dt->setTimezone(new DateTimeZone('Europe/Paris'));
     }
     
-    return $dt->format($format);
+    // Si on veut des mois en français
+    $format = str_replace('F', 'µµµ', $format);
+    $format = str_replace('M', '§§§', $format);
+    
+    $res = $dt->format($format);
+    
+    $mois_long_fr = [
+        'January' => 'janvier', 'February' => 'février', 'March' => 'mars', 'April' => 'avril',
+        'May' => 'mai', 'June' => 'juin', 'July' => 'juillet', 'August' => 'août',
+        'September' => 'septembre', 'October' => 'octobre', 'November' => 'novembre', 'December' => 'décembre'
+    ];
+    $mois_court_fr = [
+        'Jan' => 'janv.', 'Feb' => 'févr.', 'Mar' => 'mars', 'Apr' => 'avr.',
+        'May' => 'mai', 'Jun' => 'juin', 'Jul' => 'juil.', 'Aug' => 'août',
+        'Sep' => 'sept.', 'Oct' => 'oct.', 'Nov' => 'nov.', 'Dec' => 'déc.'
+    ];
+    
+    $res = str_replace('µµµ', $mois_long_fr[$dt->format('F')], $res);
+    $res = str_replace('§§§', $mois_court_fr[$dt->format('M')], $res);
+    
+    return $res;
 }
 
 function get_app_settings() {
@@ -41,7 +61,9 @@ function mask_name($fullname) {
     if (count($parts) > 1) {
         $last = array_pop($parts);
         $first = implode(' ', $parts);
-        return $first . ' ' . mb_substr($last, 0, 1) . '.';
+        preg_match('/^./us', $last, $matches_last);
+        return $first . ' ' . ($matches_last[0] ?? '') . '.';
     }
-    return mb_substr($fullname, 0, 1) . '.';
+    preg_match('/^./us', $fullname, $matches_full);
+    return ($matches_full[0] ?? '') . '.';
 }

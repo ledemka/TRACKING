@@ -64,7 +64,7 @@ function rate_limit_hit($action, $ip, $max, $windowSeconds) {
     
     // Purge des expirés (toujours en UTC)
     $limitDate = gmdate('Y-m-d H:i:s', time() - $windowSeconds);
-    $pdo->prepare("DELETE FROM rate_limits WHERE window_started_at < ?")->execute([$limitDate]);
+    $pdo->prepare("DELETE FROM rate_limits WHERE action = ? AND window_started_at < ?")->execute([$action, $limitDate]);
     
     $stmt = $pdo->prepare("SELECT id, hits FROM rate_limits WHERE action = ? AND ip_address = ?");
     $stmt->execute([$action, $ip]);
