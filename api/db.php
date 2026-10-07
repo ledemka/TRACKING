@@ -1,5 +1,7 @@
 <?php
 // api/db.php
+date_default_timezone_set('UTC');
+
 $envFile = getenv('APP_ENV_FILE') ?: __DIR__ . '/../.env';
 
 if (file_exists($envFile)) {
@@ -11,7 +13,6 @@ if (file_exists($envFile)) {
             list($name, $value) = explode('=', $line, 2);
             $name = trim($name);
             $value = trim($value);
-            // Remove quotes if present
             if (preg_match('/^"(.*)"$/', $value, $matches) || preg_match("/^'(.*)'$/", $value, $matches)) {
                 $value = $matches[1];
             }
@@ -48,12 +49,15 @@ try {
     $pdo = new PDO($dsn, $useSqlite ? null : $user, $useSqlite ? null : $pass, $options);
     if ($useSqlite) {
         $pdo->exec('PRAGMA foreign_keys = ON;');
+    } else {
+        $pdo->exec("SET time_zone = '+00:00';");
     }
 } catch (\PDOException $e) {
     if (getenv('APP_ENV') === 'local') {
         throw new \PDOException($e->getMessage(), (int)$e->getCode());
     } else {
-        // Pas d'erreur affichée en prod
         die("Erreur de connexion a la base de donnees.");
     }
 }
+
+require_once __DIR__ . '/lib/utils.php';

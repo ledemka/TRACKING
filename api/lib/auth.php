@@ -10,17 +10,11 @@ class DBSessionHandler implements SessionHandlerInterface {
         $this->pdo = $pdo;
     }
     
-    public function open(string $path, string $name): bool {
-        return true;
-    }
-    
-    public function close(): bool {
-        return true;
-    }
+    public function open(string $path, string $name): bool { return true; }
+    public function close(): bool { return true; }
     
     public function read(string $id): string|false {
         $stmt = $this->pdo->prepare("SELECT payload FROM sessions WHERE id = ? AND last_activity > ?");
-        // Expiration : 8 heures max
         $stmt->execute([$id, time() - (8 * 3600)]);
         $row = $stmt->fetch();
         return $row ? $row['payload'] : '';
@@ -51,7 +45,6 @@ class DBSessionHandler implements SessionHandlerInterface {
     }
     
     public function gc(int $max_lifetime): int|false {
-        // Expiration de 30 min d'inactivité ou max 8h
         $stmt = $this->pdo->prepare("DELETE FROM sessions WHERE last_activity < ?");
         $stmt->execute([time() - min($max_lifetime, 30 * 60)]);
         return $stmt->rowCount();
@@ -65,7 +58,6 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.cookie_samesite', 'Strict');
 ini_set('session.use_only_cookies', 1);
 
-// Détection HTTPS y compris via proxy
 $isSecure = false;
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $isSecure = true;
@@ -93,6 +85,7 @@ function login($email, $password) {
         session_regenerate_id(true);
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role'] = $user['role'];
+        $_SESSION['created_at'] = time(); // Origine de la session
         return true;
     }
     
@@ -113,7 +106,14 @@ function logout() {
 }
 
 function is_logged_in() {
-    // Vérifie inactivité via un timestamp en session
+    // Session max 8 heures ou sans origine (considérée expirée)
+    if (!isset($_SESSION['created_at']) || (time() - $_SESSION['created_at'] > 8 * 3600)) {
+        if (isset($_SESSION['user_id'])) {
+            logout();
+        }
+        return false;
+    }
+    // Inactivité 30 min max
     if (isset($_SESSION['last_action']) && (time() - $_SESSION['last_action'] > 1800)) {
         logout();
         return false;
@@ -130,6 +130,7 @@ function require_admin() {
     if (!is_admin()) {
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
             http_response_code(401);
+            header('Content-Type: application/json');
             echo json_encode(["error" => "Non autorisé"]);
         } else {
             header("Location: /login");

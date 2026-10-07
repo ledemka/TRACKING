@@ -6,6 +6,7 @@ RewriteRule ^\.env - [F,L,NC]
 RewriteRule ^api/lib/ - [F,L,NC]
 RewriteRule ^api/migrate\.php - [F,L,NC]
 RewriteRule ^scripts/ - [F,L,NC]
+RewriteRule ^templates/ - [F,L,NC]
 RewriteRule \.sqlite$ - [F,L,NC]
 RewriteRule ^src/ - [F,L,NC]
 RewriteRule ^node_modules/ - [F,L,NC]
@@ -20,11 +21,19 @@ RewriteRule \.md$ - [F,L,NC]
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    # Ajusté pour les fonts locales, pas de domaine externe
     Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:;"
 </IfModule>
 
-# Routage basique (si besoin)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+# Routage explicite
+RewriteRule ^$ index.php [L]
+RewriteRule ^track$ track.php [L]
+RewriteRule ^contact$ contact.php [L]
+RewriteRule ^login$ login.php [L]
+RewriteRule ^logout$ logout.php [L]
+RewriteRule ^dashboard$ dashboard.php [L]
+RewriteRule ^shipments$ shipments.php [L]
+RewriteRule ^shipments/new$ new_shipment.php [L]
+RewriteRule ^shipments/([0-9]+)$ shipment.php?id=$1 [QSA,L]
+RewriteRule ^settings$ settings.php [L]
+
+ErrorDocument 404 /404.php

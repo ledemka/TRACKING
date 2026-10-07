@@ -6,7 +6,6 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . '/db.php';
 
-// Création de la table schema_migrations
 $isSqlite = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite';
 $schemaTableQuery = "CREATE TABLE IF NOT EXISTS schema_migrations (
     version VARCHAR(255) PRIMARY KEY,
@@ -114,7 +113,14 @@ $migrations = [
         attempts INTEGER DEFAULT 1,
         last_attempt DATETIME DEFAULT CURRENT_TIMESTAMP
     )",
-    '010_index_shipments_status' => "CREATE INDEX idx_shipments_status ON shipments(status)"
+    '010_index_shipments_status' => "CREATE INDEX idx_shipments_status ON shipments(status)",
+    '011_create_rate_limits' => "CREATE TABLE IF NOT EXISTS rate_limits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action VARCHAR(50) NOT NULL,
+        ip_address VARCHAR(45) NOT NULL,
+        hits INT DEFAULT 1,
+        window_started_at DATETIME NOT NULL
+    )"
 ];
 
 foreach ($migrations as $version => $query) {
@@ -125,12 +131,20 @@ foreach ($migrations as $version => $query) {
     if (!$isSqlite) {
         $query = str_replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'INT AUTO_INCREMENT PRIMARY KEY', $query);
         $query = str_replace('BOOLEAN', 'TINYINT(1)', $query);
+        if (strpos(strtoupper($query), 'CREATE TABLE') !== false) {
+            $query .= " ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        }
     }
     
     try {
         $pdo->exec($query);
         record_migration($pdo, $version);
         echo "Migration appliquée : $version\n";
+        
+        // Add index on rate limits after table creation
+        if ($version === '011_create_rate_limits') {
+            $pdo->exec("CREATE INDEX idx_rate_limits ON rate_limits(action, ip_address)");
+        }
     } catch (\PDOException $e) {
         echo "Erreur sur la migration $version : \n";
         echo $e->getMessage() . "\n";
@@ -138,7 +152,6 @@ foreach ($migrations as $version => $query) {
     }
 }
 
-// Ensure at least one setting row exists
 $stmt = $pdo->query("SELECT COUNT(*) FROM app_settings");
 if ($stmt->fetchColumn() == 0) {
     $pdo->exec("INSERT INTO app_settings (nom) VALUES ('[NOM DE MON ENTREPRISE]')");
