@@ -6,3 +6,5 @@ uploads/
 /dist-production
 .DS_Store
 *.log
+*.sqlite
+database.sqlite

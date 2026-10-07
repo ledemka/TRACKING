@@ -10,17 +10,20 @@ function generate_csrf_token() {
 }
 
 function verify_csrf_token($token) {
+    $token = (string)$token;
     if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
         http_response_code(403);
-        die("Erreur CSRF.");
+        die(); // 403 sans détail
     }
 }
 
 function rate_limit_check($ip, $maxAttempts = 5, $lockoutTimeMinutes = 15) {
     global $pdo;
     
-    // Purge old attempts
-    $pdo->exec("DELETE FROM login_attempts WHERE last_attempt < datetime('now', '-$lockoutTimeMinutes minute')");
+    // Purge de login_attempts (compatible MySQL et SQLite)
+    $limitDate = date('Y-m-d H:i:s', time() - ($lockoutTimeMinutes * 60));
+    $stmt = $pdo->prepare("DELETE FROM login_attempts WHERE last_attempt < ?");
+    $stmt->execute([$limitDate]);
     
     $stmt = $pdo->prepare("SELECT attempts FROM login_attempts WHERE ip_address = ?");
     $stmt->execute([$ip]);
@@ -49,5 +52,5 @@ function rate_limit_success($ip) {
 }
 
 function escape_html($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string)$string, ENT_QUOTES, 'UTF-8');
 }

@@ -1,21 +1,30 @@
 Options -Indexes
 
-# Protection des dossiers sensibles
+# Protection des dossiers et fichiers sensibles
 RewriteEngine On
 RewriteRule ^\.env - [F,L,NC]
 RewriteRule ^api/lib/ - [F,L,NC]
 RewriteRule ^api/migrate\.php - [F,L,NC]
 RewriteRule ^scripts/ - [F,L,NC]
+RewriteRule \.sqlite$ - [F,L,NC]
+RewriteRule ^src/ - [F,L,NC]
+RewriteRule ^node_modules/ - [F,L,NC]
+RewriteRule ^design-reference/ - [F,L,NC]
+RewriteRule ^package\.json$ - [F,L,NC]
+RewriteRule ^package-lock\.json$ - [F,L,NC]
+RewriteRule ^tailwind\.config\.js$ - [F,L,NC]
+RewriteRule \.md$ - [F,L,NC]
 
 # En-têtes de sécurité
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    # Ajusté pour les fonts locales, pas de domaine externe
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:;"
 </IfModule>
 
-# Routage des URL propres (si besoin plus tard pour l'admin)
+# Routage basique (si besoin)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]

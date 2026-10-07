@@ -1,9 +1,36 @@
 <?php
 // api/migrate.php
+if (php_sapi_name() !== 'cli') {
+    die("Ce script doit être exécuté en ligne de commande.\n");
+}
+
 require_once __DIR__ . '/db.php';
 
-$queries = [
-    "CREATE TABLE IF NOT EXISTS users (
+// Création de la table schema_migrations
+$isSqlite = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite';
+$schemaTableQuery = "CREATE TABLE IF NOT EXISTS schema_migrations (
+    version VARCHAR(255) PRIMARY KEY,
+    applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)";
+try {
+    $pdo->exec($schemaTableQuery);
+} catch (\PDOException $e) {
+    die("Erreur fatale : Impossible de créer schema_migrations. " . $e->getMessage() . "\n");
+}
+
+function has_migrated($pdo, $version) {
+    $stmt = $pdo->prepare("SELECT version FROM schema_migrations WHERE version = ?");
+    $stmt->execute([$version]);
+    return $stmt->fetch() !== false;
+}
+
+function record_migration($pdo, $version) {
+    $stmt = $pdo->prepare("INSERT INTO schema_migrations (version) VALUES (?)");
+    $stmt->execute([$version]);
+}
+
+$migrations = [
+    '001_create_users' => "CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
@@ -11,16 +38,16 @@ $queries = [
         role VARCHAR(50) DEFAULT 'STAFF',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )",
-    "CREATE TABLE IF NOT EXISTS admins (
+    '002_create_admins' => "CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER UNIQUE NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
     )",
-    "CREATE TABLE IF NOT EXISTS carriers (
+    '003_create_carriers' => "CREATE TABLE IF NOT EXISTS carriers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name VARCHAR(255) NOT NULL
     )",
-    "CREATE TABLE IF NOT EXISTS shipments (
+    '004_create_shipments' => "CREATE TABLE IF NOT EXISTS shipments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tracking_number VARCHAR(255) UNIQUE NOT NULL,
         carrier_id INTEGER NULL,
@@ -43,7 +70,7 @@ $queries = [
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(carrier_id) REFERENCES carriers(id) ON DELETE SET NULL
     )",
-    "CREATE TABLE IF NOT EXISTS tracking_events (
+    '005_create_tracking_events' => "CREATE TABLE IF NOT EXISTS tracking_events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         shipment_id INTEGER NOT NULL,
         label VARCHAR(255) NOT NULL,
@@ -54,16 +81,16 @@ $queries = [
         FOREIGN KEY(shipment_id) REFERENCES shipments(id) ON DELETE CASCADE,
         FOREIGN KEY(created_by) REFERENCES users(id) ON DELETE SET NULL
     )",
-    "CREATE TABLE IF NOT EXISTS sessions (
+    '006_create_sessions' => "CREATE TABLE IF NOT EXISTS sessions (
         id VARCHAR(255) PRIMARY KEY,
-        user_id INTEGER NOT NULL,
+        user_id INTEGER NULL,
         ip_address VARCHAR(45),
         user_agent TEXT,
         payload TEXT,
         last_activity INTEGER NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
     )",
-    "CREATE TABLE IF NOT EXISTS app_settings (
+    '007_create_app_settings' => "CREATE TABLE IF NOT EXISTS app_settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nom VARCHAR(255) DEFAULT '[NOM DE MON ENTREPRISE]',
         logo VARCHAR(255),
@@ -73,7 +100,7 @@ $queries = [
         color_primary VARCHAR(50) DEFAULT '#0B1F3A',
         color_accent VARCHAR(50) DEFAULT '#F59E0B'
     )",
-    "CREATE TABLE IF NOT EXISTS email_logs (
+    '008_create_email_logs' => "CREATE TABLE IF NOT EXISTS email_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         recipient VARCHAR(255) NOT NULL,
         subject VARCHAR(255) NOT NULL,
@@ -81,28 +108,33 @@ $queries = [
         error_message TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )",
-    "CREATE TABLE IF NOT EXISTS login_attempts (
+    '009_create_login_attempts' => "CREATE TABLE IF NOT EXISTS login_attempts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ip_address VARCHAR(45) NOT NULL,
         attempts INTEGER DEFAULT 1,
         last_attempt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )"
+    )",
+    '010_index_shipments_status' => "CREATE INDEX idx_shipments_status ON shipments(status)"
 ];
 
-// SQLite vs MySQL syntax adjustments
-$isSqlite = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite';
+foreach ($migrations as $version => $query) {
+    if (has_migrated($pdo, $version)) {
+        continue;
+    }
 
-foreach ($queries as $query) {
     if (!$isSqlite) {
         $query = str_replace('INTEGER PRIMARY KEY AUTOINCREMENT', 'INT AUTO_INCREMENT PRIMARY KEY', $query);
         $query = str_replace('BOOLEAN', 'TINYINT(1)', $query);
-        $query = str_replace('DATETIME DEFAULT CURRENT_TIMESTAMP', 'DATETIME DEFAULT CURRENT_TIMESTAMP', $query); // Ok in both
     }
+    
     try {
         $pdo->exec($query);
+        record_migration($pdo, $version);
+        echo "Migration appliquée : $version\n";
     } catch (\PDOException $e) {
-        echo "Erreur sur la requête : $query\n";
+        echo "Erreur sur la migration $version : \n";
         echo $e->getMessage() . "\n";
+        exit(1);
     }
 }
 
@@ -112,4 +144,4 @@ if ($stmt->fetchColumn() == 0) {
     $pdo->exec("INSERT INTO app_settings (nom) VALUES ('[NOM DE MON ENTREPRISE]')");
 }
 
-echo "Migrations terminées avec succès.\n";
+echo "Toutes les migrations sont à jour.\n";
