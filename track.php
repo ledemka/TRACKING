@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/api/bootstrap.php';
-require_once __DIR__ . '/api/lib/status.php';
 
 $ip = $_SERVER['REMOTE_ADDR'];
 rate_limit_hit('track', $ip, 30, 300); // 30 requêtes par 5 minutes

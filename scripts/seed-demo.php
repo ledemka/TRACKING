@@ -47,7 +47,7 @@ try {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
     ");
     $stmt->execute([
-        $tracking, $carrierId, 'Jean Dupont', '0600000000', 'jean.dupont@example.com',
+        $tracking, $carrierId, 'Client Fictif', '0600000000', 'client.fictif@example.com',
         '10 Rue de Rivoli', 'Paris', 'France', 'Port de Rotterdam', 'Rotterdam',
         $date_shipped, $date_estimate, 'shipped', 'Colis de démonstration standard'
     ]);
