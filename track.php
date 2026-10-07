@@ -36,6 +36,31 @@ if ($raw_id !== null) {
             $stmt = $pdo->prepare("SELECT * FROM tracking_events WHERE shipment_id = ? ORDER BY occurred_at DESC");
             $stmt->execute([$shipment['id']]);
             $events = $stmt->fetchAll();
+            
+            $map_center_lat = null;
+            $map_center_lng = null;
+            $map_last_location_name = '';
+            $map_last_updated = '';
+            $map_trail_points = [];
+            
+            foreach ($events as $e) {
+                if ($e['latitude'] !== null && $e['longitude'] !== null) {
+                    $lat = (float)$e['latitude'];
+                    $lng = (float)$e['longitude'];
+                    if ($lat >= -90 && $lat <= 90 && $lng >= -180 && $lng <= 180) {
+                        array_unshift($map_trail_points, [$lat, $lng]);
+                        if ($map_center_lat === null) {
+                            $map_center_lat = $lat;
+                            $map_center_lng = $lng;
+                            $map_last_location_name = $e['location'] ?: $e['label'];
+                            $map_last_updated = $e['occurred_at'];
+                        }
+                    }
+                }
+            }
+            if (count($map_trail_points) > 50) {
+                $map_trail_points = array_slice($map_trail_points, -50);
+            }
         }
     }
 }
@@ -133,6 +158,10 @@ function get_step_status_label($current_status, $step_status) {
                         <p class="font-medium text-slate-800"><?= $shipment['estimated_delivery_at'] ? format_date($shipment['estimated_delivery_at'], 'd M Y') : 'Non estimée' ?></p>
                     </div>
                 </div>
+
+                <?php if ($map_center_lat !== null && $map_center_lng !== null): ?>
+                    <?php require_once __DIR__ . '/templates/track_map.php'; ?>
+                <?php endif; ?>
 
                 <!-- Stepper de Progression -->
                 <div class="mb-12 animate-slide-up-stepper">

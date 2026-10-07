@@ -120,7 +120,9 @@ $migrations = [
         ip_address VARCHAR(45) NOT NULL,
         hits INT DEFAULT 1,
         window_started_at DATETIME NOT NULL
-    )"
+    )",
+    '012_add_coordinates' => "ALTER TABLE tracking_events ADD COLUMN latitude DECIMAL(9,6) NULL;
+    ALTER TABLE tracking_events ADD COLUMN longitude DECIMAL(9,6) NULL;"
 ];
 
 foreach ($migrations as $version => $query) {

@@ -19,6 +19,19 @@ if (!$carrier) {
 
 $tracking = 'COLIS-2026-00125';
 
+// Vérification du flag reset
+$isReset = in_array('--reset', $argv);
+if ($isReset) {
+    $stmt = $pdo->prepare("SELECT id FROM shipments WHERE tracking_number = ? AND is_demo = 1");
+    $stmt->execute([$tracking]);
+    $demoShipment = $stmt->fetch();
+    if ($demoShipment) {
+        $pdo->exec("DELETE FROM tracking_events WHERE shipment_id = " . (int)$demoShipment['id']);
+        $pdo->exec("DELETE FROM shipments WHERE id = " . (int)$demoShipment['id']);
+        echo "Colis de démonstration $tracking supprimé (--reset).\n";
+    }
+}
+
 // Vérification de l'idempotence
 $stmt = $pdo->prepare("SELECT id FROM shipments WHERE tracking_number = ?");
 $stmt->execute([$tracking]);
@@ -54,15 +67,16 @@ try {
     
     $shipmentId = $pdo->lastInsertId();
     
+    // [label, location, status, date, latitude, longitude]
     $events = [
-        ['Commande enregistrée', 'Rotterdam', NULL, $date_order],
-        ['Colis récupéré par le transporteur', 'Plateforme Logistique, Rotterdam', NULL, $date_pickup],
-        ['Expédié', 'Centre de Tri International', 'shipped', $date_shipped]
+        ['Commande enregistrée', 'Rotterdam', NULL, $date_order, 51.9225, 4.47917],
+        ['Colis récupéré par le transporteur', 'Plateforme Logistique, Rotterdam', NULL, $date_pickup, 51.890, 4.490],
+        ['Expédié', 'Centre de Tri International, Anvers', 'shipped', $date_shipped, 51.2194, 4.4025]
     ];
     
-    $stmtEvent = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at) VALUES (?, ?, ?, ?, ?)");
+    $stmtEvent = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)");
     foreach ($events as $event) {
-        $stmtEvent->execute([$shipmentId, $event[0], $event[1], $event[2], $event[3]]);
+        $stmtEvent->execute([$shipmentId, $event[0], $event[1], $event[2], $event[3], $event[4], $event[5]]);
     }
     
     $pdo->commit();

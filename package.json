@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "scripts": {
     "build:css": "npx tailwindcss -i ./src/input.css -o ./assets/css/style.css --minify",
-    "watch:css": "npx tailwindcss -i ./src/input.css -o ./assets/css/style.css --watch"
+    "watch:css": "npx tailwindcss -i ./src/input.css -o ./assets/css/style.css --watch",
+    "copy-leaflet": "node -e \"const fs=require('fs'); fs.mkdirSync('assets/vendor/leaflet/images', {recursive:true}); fs.copyFileSync('node_modules/leaflet/dist/leaflet.js', 'assets/vendor/leaflet/leaflet.js'); fs.copyFileSync('node_modules/leaflet/dist/leaflet.css', 'assets/vendor/leaflet/leaflet.css'); fs.readdirSync('node_modules/leaflet/dist/images').forEach(f => fs.copyFileSync('node_modules/leaflet/dist/images/'+f, 'assets/vendor/leaflet/images/'+f));\""
   },
   "devDependencies": {
     "@fontsource/inter": "^5.0.0",
+    "leaflet": "^1.9.4",
     "tailwindcss": "^3.4.1"
   }
 }

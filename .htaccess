@@ -21,7 +21,9 @@ RewriteRule \.md$ - [F,L,NC]
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:;"
+    # ATTENTION : Si MAP_TILE_URL change (ex: Mapbox, Stadia), il FAUT ajouter le nouveau domaine à img-src ci-dessous.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org;"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
 # Routage explicite
