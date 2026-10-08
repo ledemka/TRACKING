@@ -126,7 +126,12 @@ $migrations = [
     '013_add_destination_coordinates' => "ALTER TABLE shipments ADD COLUMN destination_lat DECIMAL(9,6) NULL;
     ALTER TABLE shipments ADD COLUMN destination_lng DECIMAL(9,6) NULL;",
     '014_update_colors' => "UPDATE app_settings SET color_primary = '#0B1F3A' WHERE color_primary = '#071A33';
-    UPDATE app_settings SET color_accent = '#F59E0B' WHERE color_accent = '#F79009';"
+    UPDATE app_settings SET color_accent = '#F59E0B' WHERE color_accent = '#F79009';",
+    '015_add_company_fields' => "ALTER TABLE shipments ADD COLUMN is_company BOOLEAN DEFAULT 0;
+    ALTER TABLE shipments ADD COLUMN company_name VARCHAR(255) NULL;
+    ALTER TABLE shipments ADD COLUMN company_siret VARCHAR(150) NULL;
+    ALTER TABLE shipments ADD COLUMN company_department VARCHAR(150) NULL;",
+    '016_add_zip_code' => "ALTER TABLE shipments ADD COLUMN zip_code VARCHAR(20) NULL;"
 ];
 
 foreach ($migrations as $version => $query) {

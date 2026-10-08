@@ -46,28 +46,31 @@ function insert_shipment_and_event($data, $eventData) {
         $stmt = $pdo->prepare("
             INSERT INTO shipments (
                 tracking_number, carrier_id, recipient_name, recipient_phone, recipient_email,
-                address, city, country, origin_address, origin_city, 
+                address, zip_code, city, country, origin_address, origin_city, 
                 shipped_at, estimated_delivery_at, status, description, is_demo,
-                destination_lat, destination_lng
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                destination_lat, destination_lng, is_company, company_name, company_siret, company_department
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $data['tracking_number'], $data['carrier_id'] ?: null, $data['recipient_name'], 
-            $data['recipient_phone'], $data['recipient_email'], $data['address'], 
+            $data['recipient_phone'], $data['recipient_email'], $data['address'], $data['zip_code'], 
             $data['city'], $data['country'], $data['origin_address'], $data['origin_city'], 
             $data['shipped_at'], $data['estimated_delivery_at'] ?: null, $data['status'], 
-            $data['description'], 0, $data['destination_lat'], $data['destination_lng']
+            $data['description'], 0, $data['destination_lat'], $data['destination_lng'],
+            $data['is_company'] ?? 0, $data['company_name'] ?? null, $data['company_siret'] ?? null, $data['company_department'] ?? null
         ]);
         
         $shipmentId = $pdo->lastInsertId();
         
-        $stmtEvent = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at) VALUES (?, ?, ?, ?, ?)");
+        $stmtEvent = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmtEvent->execute([
             $shipmentId,
             $eventData['label'],
             $eventData['location'],
             $data['status'],
-            $data['shipped_at']
+            $data['shipped_at'],
+            $eventData['latitude'] ?? null,
+            $eventData['longitude'] ?? null
         ]);
         
         $pdo->commit();

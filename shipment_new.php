@@ -10,10 +10,12 @@ require_admin();
 $errors = [];
 $form = [
     'tracking_number' => '', 'recipient_name' => '', 'recipient_phone' => '', 'recipient_email' => '',
-    'address' => '', 'city' => '', 'country' => 'France', 'origin_address' => '', 'origin_city' => '',
+    'address' => '', 'city' => '', 'zip_code' => '', 'country' => 'France', 'origin_address' => '', 'origin_city' => '',
     'shipped_at' => convert_utc_to_admin_time(gmdate('Y-m-d H:i:s')), 'estimated_delivery_at' => '',
     'status' => STATUS_SHIPPED, 'carrier_id' => '', 'description' => '', 'weight' => '', 'packages_count' => '1',
-    'destination_lat' => '', 'destination_lng' => ''
+    'destination_lat' => '', 'destination_lng' => '',
+    'origin_lat' => '', 'origin_lng' => '',
+    'is_company' => '0', 'company_name' => '', 'company_siret' => '', 'company_department' => ''
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,8 +32,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['recipient_phone'] = validate_required_string($form['recipient_phone'], 'recipient_phone', 50, $errors);
     $data['recipient_email'] = validate_email($form['recipient_email'], $errors);
     $data['address'] = validate_required_string($form['address'], 'address', 500, $errors);
+    $data['zip_code'] = validate_required_string($form['zip_code'] ?? '', 'zip_code', 20, $errors);
     $data['city'] = validate_required_string($form['city'], 'city', 255, $errors);
     $data['country'] = validate_required_string($form['country'], 'country', 100, $errors);
+    
+    $data['is_company'] = !empty($form['is_company']) ? 1 : 0;
+    if ($data['is_company']) {
+        $data['company_name'] = substr($form['company_name'], 0, 255);
+        $data['company_siret'] = substr($form['company_siret'], 0, 150);
+        $data['company_department'] = substr($form['company_department'], 0, 150);
+    } else {
+        $data['company_name'] = null;
+        $data['company_siret'] = null;
+        $data['company_department'] = null;
+    }
+
     $data['origin_address'] = validate_required_string($form['origin_address'], 'origin_address', 500, $errors);
     $data['origin_city'] = validate_required_string($form['origin_city'], 'origin_city', 255, $errors);
     
@@ -54,13 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['weight'] = validate_weight($form['weight'], $errors);
     $data['packages_count'] = validate_packages_count($form['packages_count'], $errors);
     
-    list($data['destination_lat'], $data['destination_lng']) = validate_coordinates($form['destination_lat'], $form['destination_lng'], $errors);
+    list($data['destination_lat'], $data['destination_lng']) = validate_coordinates($form['destination_lat'], $form['destination_lng'], $errors, 'destination_coords');
+    list($data['origin_lat'], $data['origin_lng']) = validate_coordinates($form['origin_lat'], $form['origin_lng'], $errors, 'origin_coords');
     
     if (empty($errors)) {
         try {
             $id = insert_shipment_and_event($data, [
                 'label' => get_status_labels()[$data['status']],
-                'location' => $data['origin_city']
+                'location' => $data['origin_city'],
+                'latitude' => $data['origin_lat'],
+                'longitude' => $data['origin_lng']
             ]);
             $_SESSION['flash_message'] = "Colis créé avec succès.";
             header("Location: /shipments/$id");
@@ -84,7 +102,7 @@ require __DIR__ . '/templates/admin_header.php';
     <h1 class="text-3xl font-bold mt-2">Nouveau Colis</h1>
 </div>
 
-<form method="POST" action="/shipments/new" class="bg-white p-6 rounded shadow max-w-4xl">
+<form method="POST" action="/shipments/new" class="bg-white p-6 rounded shadow w-full">
     <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
     
     <!-- Tracking Number -->
@@ -102,11 +120,34 @@ require __DIR__ . '/templates/admin_header.php';
         <?php endif; ?>
     </div>
     
-    <!-- Destinataire -->
+    <!-- Destinataire & Adresse -->
     <div class="mb-6 border-b pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <h2 class="text-xl font-bold md:col-span-2 mb-2">Destinataire</h2>
+        <h2 class="text-xl font-bold md:col-span-2 mb-2">Destinataire & Adresse</h2>
+        
+        <div class="md:col-span-2 mb-2">
+            <label class="flex items-center gap-2 cursor-pointer w-max">
+                <input type="checkbox" name="is_company" id="is_company_cb" value="1" <?= $form['is_company'] ? 'checked' : '' ?>>
+                <span class="font-semibold text-sm">Ce destinataire est une entreprise</span>
+            </label>
+        </div>
+        
+        <div id="company_fields_container" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border <?= $form['is_company'] ? '' : 'hidden' ?>">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold mb-1">Nom de la société / Raison sociale (optionnel)</label>
+                <input type="text" name="company_name" id="company_name_input" value="<?= escape_html($form['company_name']) ?>" class="border p-2 rounded w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">Numéro SIRET / Numéro de TVA (optionnel)</label>
+                <input type="text" name="company_siret" id="company_siret_input" value="<?= escape_html($form['company_siret']) ?>" class="border p-2 rounded w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">Complément / Service interne (optionnel)</label>
+                <input type="text" name="company_department" id="company_department_input" value="<?= escape_html($form['company_department']) ?>" class="border p-2 rounded w-full">
+            </div>
+        </div>
+
         <div>
-            <label class="block text-sm font-semibold mb-1">Nom / Entreprise *</label>
+            <label class="block text-sm font-semibold mb-1">Nom / Prénom *</label>
             <input type="text" name="recipient_name" value="<?= escape_html($form['recipient_name']) ?>" class="border p-2 rounded w-full <?= isset($errors['recipient_name']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['recipient_name'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['recipient_name']).'</p>'; ?>
         </div>
@@ -115,15 +156,38 @@ require __DIR__ . '/templates/admin_header.php';
             <input type="email" name="recipient_email" value="<?= escape_html($form['recipient_email']) ?>" class="border p-2 rounded w-full <?= isset($errors['recipient_email']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['recipient_email'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['recipient_email']).'</p>'; ?>
         </div>
-        <div>
+        <div class="md:col-span-2 mb-4">
             <label class="block text-sm font-semibold mb-1">Téléphone *</label>
-            <input type="text" name="recipient_phone" value="<?= escape_html($form['recipient_phone']) ?>" class="border p-2 rounded w-full <?= isset($errors['recipient_phone']) ? 'border-red-500' : '' ?>">
+            <input type="text" name="recipient_phone" value="<?= escape_html($form['recipient_phone']) ?>" class="border p-2 rounded w-full md:w-1/2 <?= isset($errors['recipient_phone']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['recipient_phone'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['recipient_phone']).'</p>'; ?>
         </div>
+
+        <div class="md:col-span-2 admin-map-picker p-4 bg-slate-50 border rounded-lg" data-target-address="[name='address']" data-target-zip="[name='zip_code']" data-target-city="[name='city']" data-target-country="[name='country']">
+            <h3 class="text-lg font-bold mb-4">Carte & Autocomplétion (Destination)</h3>
+            <div class="map-element w-full h-64 bg-slate-200 rounded mb-4 z-0 relative"></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Latitude</label>
+                    <input type="text" name="destination_lat" value="<?= escape_html($form['destination_lat']) ?>" class="input-lat border p-2 rounded w-full bg-white <?= isset($errors['destination_coords']) ? 'border-red-500' : '' ?>">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Longitude</label>
+                    <input type="text" name="destination_lng" value="<?= escape_html($form['destination_lng']) ?>" class="input-lng border p-2 rounded w-full bg-white <?= isset($errors['destination_coords']) ? 'border-red-500' : '' ?>">
+                </div>
+            </div>
+            <?php if (isset($errors['destination_coords'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['destination_coords']).'</p>'; ?>
+            <button type="button" class="btn-clear-map mt-2 text-sm text-action hover:underline">Effacer la position</button>
+        </div>
+
         <div class="md:col-span-2">
             <label class="block text-sm font-semibold mb-1">Adresse complète *</label>
             <textarea name="address" rows="2" class="border p-2 rounded w-full <?= isset($errors['address']) ? 'border-red-500' : '' ?>"><?= escape_html($form['address']) ?></textarea>
             <?php if (isset($errors['address'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['address']).'</p>'; ?>
+        </div>
+        <div>
+            <label class="block text-sm font-semibold mb-1">Code Postal *</label>
+            <input type="text" name="zip_code" value="<?= escape_html($form['zip_code']) ?>" class="border p-2 rounded w-full <?= isset($errors['zip_code']) ? 'border-red-500' : '' ?>">
+            <?php if (isset($errors['zip_code'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['zip_code']).'</p>'; ?>
         </div>
         <div>
             <label class="block text-sm font-semibold mb-1">Ville *</label>
@@ -137,22 +201,40 @@ require __DIR__ . '/templates/admin_header.php';
         </div>
     </div>
     
-    <!-- Origine -->
+    <!-- Origine & Adresse -->
     <div class="mb-6 border-b pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <h2 class="text-xl font-bold md:col-span-2 mb-2">Origine</h2>
+        <h2 class="text-xl font-bold md:col-span-2 mb-2">Origine & Adresse</h2>
+        
+        <div class="md:col-span-2 admin-map-picker p-4 bg-slate-50 border rounded-lg" data-target-address="[name='origin_address']" data-target-city="[name='origin_city']">
+            <h3 class="text-lg font-bold mb-4">Carte & Autocomplétion (Origine)</h3>
+            <div class="map-element w-full h-64 bg-slate-200 rounded mb-4 z-0 relative"></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Latitude</label>
+                    <input type="text" name="origin_lat" value="<?= escape_html($form['origin_lat']) ?>" class="input-lat border p-2 rounded w-full bg-white <?= isset($errors['origin_coords']) ? 'border-red-500' : '' ?>">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Longitude</label>
+                    <input type="text" name="origin_lng" value="<?= escape_html($form['origin_lng']) ?>" class="input-lng border p-2 rounded w-full bg-white <?= isset($errors['origin_coords']) ? 'border-red-500' : '' ?>">
+                </div>
+            </div>
+            <?php if (isset($errors['origin_coords'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['origin_coords']).'</p>'; ?>
+            <button type="button" class="btn-clear-map mt-2 text-sm text-action hover:underline">Effacer la position</button>
+        </div>
+
         <div class="md:col-span-2">
             <label class="block text-sm font-semibold mb-1">Adresse d'origine *</label>
             <input type="text" name="origin_address" value="<?= escape_html($form['origin_address']) ?>" class="border p-2 rounded w-full <?= isset($errors['origin_address']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['origin_address'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['origin_address']).'</p>'; ?>
         </div>
-        <div>
+        <div class="md:col-span-2">
             <label class="block text-sm font-semibold mb-1">Ville d'origine *</label>
-            <input type="text" name="origin_city" value="<?= escape_html($form['origin_city']) ?>" class="border p-2 rounded w-full <?= isset($errors['origin_city']) ? 'border-red-500' : '' ?>">
+            <input type="text" name="origin_city" value="<?= escape_html($form['origin_city']) ?>" class="border p-2 rounded w-full md:w-1/2 <?= isset($errors['origin_city']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['origin_city'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['origin_city']).'</p>'; ?>
         </div>
     </div>
     
-    <!-- Dates & Statut -->
+    <!-- Expédition -->
     <div class="mb-6 border-b pb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <h2 class="text-xl font-bold md:col-span-2 mb-2">Expédition</h2>
         <div>
@@ -182,27 +264,6 @@ require __DIR__ . '/templates/admin_header.php';
             <input type="datetime-local" name="estimated_delivery_at" value="<?= escape_html($form['estimated_delivery_at']) ?>" class="border p-2 rounded w-full <?= isset($errors['estimated_delivery_at']) ? 'border-red-500' : '' ?>">
             <?php if (isset($errors['estimated_delivery_at'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['estimated_delivery_at']).'</p>'; ?>
         </div>
-    </div>
-    
-    <!-- Destination Map -->
-    <div class="mb-6 border-b pb-6 admin-map-picker">
-        <h2 class="text-xl font-bold mb-2">Destination (Carte)</h2>
-        <p class="text-sm text-slate-600 mb-4 bg-yellow-50 p-3 rounded border border-yellow-200">
-            <strong>Avertissement :</strong> Indiquez le centre de la ville de destination (affiché publiquement avec ~1 km de précision). N'indiquez jamais l'adresse exacte du destinataire.
-        </p>
-        <div class="map-element w-full h-64 bg-slate-200 rounded mb-4 z-0 relative"></div>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-semibold mb-1">Latitude</label>
-                <input type="text" name="destination_lat" value="<?= escape_html($form['destination_lat']) ?>" class="input-lat border p-2 rounded w-full <?= isset($errors['coordinates']) ? 'border-red-500' : '' ?>">
-            </div>
-            <div>
-                <label class="block text-sm font-semibold mb-1">Longitude</label>
-                <input type="text" name="destination_lng" value="<?= escape_html($form['destination_lng']) ?>" class="input-lng border p-2 rounded w-full <?= isset($errors['coordinates']) ? 'border-red-500' : '' ?>">
-            </div>
-        </div>
-        <?php if (isset($errors['coordinates'])) echo '<p class="text-red-600 text-sm mt-1">'.escape_html($errors['coordinates']).'</p>'; ?>
-        <button type="button" class="btn-clear-map mt-2 text-sm text-action hover:underline">Effacer la position</button>
     </div>
     
     <!-- Poids & Description -->

@@ -15,6 +15,7 @@ function verify_csrf_token($token) {
         http_response_code(403);
         die(); // 403 sans détail
     }
+    return true;
 }
 
 // L'ancien système de login reste intact mais utilise UTC

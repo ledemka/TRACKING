@@ -52,4 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Company fields toggle
+    const isCompanyCb = document.getElementById('is_company_cb');
+    const companyFieldsContainer = document.getElementById('company_fields_container');
+    if (isCompanyCb && companyFieldsContainer) {
+        isCompanyCb.addEventListener('change', () => {
+            if (isCompanyCb.checked) {
+                companyFieldsContainer.classList.remove('hidden');
+            } else {
+                companyFieldsContainer.classList.add('hidden');
+                // Nettoyage des champs si décoché
+                const companyName = document.getElementById('company_name_input');
+                const companySiret = document.getElementById('company_siret_input');
+                const companyDept = document.getElementById('company_department_input');
+                if(companyName) companyName.value = '';
+                if(companySiret) companySiret.value = '';
+                if(companyDept) companyDept.value = '';
+            }
+        });
+    }
 });

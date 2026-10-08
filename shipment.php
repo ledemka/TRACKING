@@ -26,24 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) die("Erreur CSRF");
     $action = $_POST['action'] ?? '';
     
-    if ($action === 'fast_status') {
-        $newStatus = $_POST['status'] ?? '';
-        if (is_valid_status($newStatus)) {
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("UPDATE shipments SET status = ?, updated_at = UTC_TIMESTAMP() WHERE id = ?");
-            $stmt->execute([$newStatus, $id]);
-            
-            $stmtEv = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at) VALUES (?, ?, ?, ?, UTC_TIMESTAMP())");
-            $label = get_status_labels()[$newStatus];
-            $stmtEv->execute([$id, $label, '', $newStatus]);
-            $pdo->commit();
-            
-            notify_status_change($id, $newStatus, '');
-            $_SESSION['flash_message'] = "Statut mis à jour.";
-        }
-        header("Location: /shipments/$id");
-        exit;
-    }
     
     if ($action === 'add_event' || $action === 'edit_event') {
         $errors = [];
@@ -58,20 +40,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['occurred_at'] = 'La date ne peut pas être plus d\'un jour dans le futur.';
         }
         
+        $newStatus = $_POST['status'] ?? '';
+        if (!is_valid_status($newStatus)) {
+            $newStatus = $shipment['status']; // Default to current if invalid
+        }
+        
         list($lat, $lng) = validate_coordinates($_POST['lat'] ?? '', $_POST['lng'] ?? '', $errors);
         
         if (empty($errors)) {
+            $pdo->beginTransaction();
             if ($action === 'add_event') {
-                $stmt = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, occurred_at, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$id, $label, $location, $occurred_at_utc, $lat, $lng]);
-                $_SESSION['flash_message'] = "Événement ajouté.";
+                $stmt = $pdo->prepare("INSERT INTO tracking_events (shipment_id, label, location, status, occurred_at, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$id, $label, $location, $newStatus, $occurred_at_utc, $lat, $lng]);
+                $_SESSION['flash_message'] = "Événement ajouté et statut mis à jour.";
             } else {
                 $eventId = (int)$_POST['event_id'];
-                $stmt = $pdo->prepare("UPDATE tracking_events SET label=?, location=?, occurred_at=?, latitude=?, longitude=? WHERE id=? AND shipment_id=?");
-                $stmt->execute([$label, $location, $occurred_at_utc, $lat, $lng, $eventId, $id]);
-                $_SESSION['flash_message'] = "Événement modifié.";
+                $stmt = $pdo->prepare("UPDATE tracking_events SET label=?, location=?, status=?, occurred_at=?, latitude=?, longitude=? WHERE id=? AND shipment_id=?");
+                $stmt->execute([$label, $location, $newStatus, $occurred_at_utc, $lat, $lng, $eventId, $id]);
+                $_SESSION['flash_message'] = "Événement et statut modifiés.";
             }
-            $pdo->exec("UPDATE shipments SET updated_at = UTC_TIMESTAMP() WHERE id = $id");
+            $pdo->exec("UPDATE shipments SET status = " . $pdo->quote($newStatus) . ", updated_at = UTC_TIMESTAMP() WHERE id = $id");
+            $pdo->commit();
+            
+            // Only notify if we added a new event and status changed, or always notify?
+            // Actually, keep it simple and just do it if action == add_event
+            if ($action === 'add_event' && $newStatus !== $shipment['status']) {
+                notify_status_change($id, $newStatus, '');
+            }
             header("Location: /shipments/$id");
             exit;
         } else {
@@ -82,6 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if ($action === 'delete_event') {
+        if (empty($_POST['confirm_delete'])) {
+            $_SESSION['flash_error'] = "Veuillez confirmer la suppression.";
+            header("Location: /shipments/$id");
+            exit;
+        }
         $eventId = (int)$_POST['event_id'];
         $stmt = $pdo->prepare("DELETE FROM tracking_events WHERE id = ? AND shipment_id = ?");
         $stmt->execute([$eventId, $id]);
@@ -118,10 +118,6 @@ require __DIR__ . '/templates/admin_header.php';
         <a href="/shipments" class="text-action hover:underline">&larr; Retour à la liste</a>
         <h1 class="text-3xl font-bold mt-2">Colis <?= escape_html($shipment['tracking_number']) ?></h1>
     </div>
-    <form method="POST" action="/shipments/new" class="flex gap-2 bg-white p-2 rounded shadow">
-        <!-- Hack pour réutiliser l'UI du statut rapide. Normalement c'est sur la page courante. -->
-    </form>
-</div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Colonne gauche : infos + changement rapide -->
@@ -130,6 +126,14 @@ require __DIR__ . '/templates/admin_header.php';
             <h2 class="text-xl font-bold mb-4">Informations</h2>
             <div class="space-y-3 text-sm">
                 <div><strong>Destinataire :</strong> <?= escape_html($shipment['recipient_name']) ?></div>
+                <?php if ($shipment['is_company']): ?>
+                <div class="bg-slate-50 p-2 border rounded">
+                    <strong>Entreprise :</strong> <?= escape_html($shipment['company_name']) ?><br>
+                    <?php if ($shipment['company_siret']) echo '<strong>SIRET/TVA :</strong> ' . escape_html($shipment['company_siret']) . '<br>'; ?>
+                    <?php if ($shipment['company_department']) echo '<strong>Service :</strong> ' . escape_html($shipment['company_department']); ?>
+                </div>
+                <?php endif; ?>
+                <div><strong>Adresse :</strong> <?= escape_html($shipment['address']) ?>, <?= escape_html($shipment['zip_code']) ?> <?= escape_html($shipment['city']) ?></div>
                 <div><strong>Trajet :</strong> <?= escape_html($shipment['origin_city']) ?> &rarr; <?= escape_html($shipment['city']) ?></div>
                 <div><strong>Créé le :</strong> <?= format_date($shipment['created_at']) ?></div>
                 <div class="pt-3 border-t">
@@ -139,20 +143,6 @@ require __DIR__ . '/templates/admin_header.php';
                     </span>
                 </div>
             </div>
-            
-            <form method="POST" action="/shipments/<?= $id ?>" class="mt-6 border-t pt-4">
-                <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
-                <input type="hidden" name="action" value="fast_status">
-                <label class="block text-sm font-semibold mb-2">Changement rapide</label>
-                <div class="flex gap-2">
-                    <select name="status" class="border p-2 rounded flex-grow">
-                        <?php foreach(get_status_labels() as $k => $v): ?>
-                            <option value="<?= $k ?>" <?= $shipment['status'] === $k ? 'selected' : '' ?>><?= escape_html($v) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="submit" class="bg-action text-white px-3 py-2 rounded hover:bg-blue-700">Appliquer</button>
-                </div>
-            </form>
         </div>
     </div>
     
@@ -177,7 +167,18 @@ require __DIR__ . '/templates/admin_header.php';
                         <label class="block text-sm font-semibold mb-1">Lieu *</label>
                         <input type="text" name="location" required maxlength="150" value="<?= escape_html($editEvent['location'] ?? '') ?>" class="border p-2 rounded w-full">
                     </div>
-                    <div class="md:col-span-2">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Nouveau Statut *</label>
+                        <select name="status" class="border p-2 rounded w-full bg-white">
+                            <?php 
+                                $currentStatus = $editEvent ? ($editEvent['status'] ?: $shipment['status']) : $shipment['status'];
+                                foreach(get_status_labels() as $k => $v): 
+                            ?>
+                                <option value="<?= $k ?>" <?= $currentStatus === $k ? 'selected' : '' ?>><?= escape_html($v) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1">
                         <label class="block text-sm font-semibold mb-1">Date et heure *</label>
                         <input type="datetime-local" name="occurred_at" required 
                                value="<?= escape_html(convert_utc_to_admin_time($editEvent['occurred_at'] ?? gmdate('Y-m-d H:i:s'))) ?>" 
@@ -230,23 +231,28 @@ require __DIR__ . '/templates/admin_header.php';
                                     <span class="text-xs text-slate-500"><?= format_date($e['occurred_at']) ?></span>
                                 </div>
                                 <div class="text-sm text-slate-600 mb-2"><?= escape_html($e['location']) ?></div>
-                                <div class="flex gap-3 text-xs">
+                                <div class="flex gap-3 text-xs items-center">
                                     <a href="/shipments/<?= $id ?>?edit_event=<?= $e['id'] ?>" class="text-action hover:underline">Modifier</a>
-                                    <button class="text-red-600 hover:underline btn-delete-prompt" data-dialog="del-evt-<?= $e['id'] ?>">Supprimer</button>
+                                    
+                                    <form method="POST" action="/shipments/<?= $id ?>" class="delete-form-js-modal inline-flex items-center gap-2 m-0">
+                                        <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
+                                        <input type="hidden" name="action" value="delete_event">
+                                        <input type="hidden" name="event_id" value="<?= $e['id'] ?>">
+                                        <label class="no-js-confirm flex items-center gap-1 text-red-600">
+                                            <input type="checkbox" name="confirm_delete" value="1" class="confirm-checkbox"> 
+                                            <span>Confirmer</span>
+                                        </label>
+                                        <button type="submit" class="text-red-600 hover:underline btn-delete-submit">Supprimer</button>
+                                    </form>
                                 </div>
                                 
                                 <dialog id="del-evt-<?= $e['id'] ?>" class="p-6 rounded shadow-lg border-0 backdrop:bg-slate-800/50">
                                     <h3 class="text-lg font-bold mb-4">Supprimer l'événement ?</h3>
-                                    <form method="POST" action="/shipments/<?= $id ?>" class="delete-form-js-modal">
-                                        <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
-                                        <input type="hidden" name="action" value="delete_event">
-                                        <input type="hidden" name="event_id" value="<?= $e['id'] ?>">
-                                        <label class="flex items-center gap-2 mb-6"><input type="checkbox" name="confirm_delete" required class="confirm-checkbox"><span>Je confirme</span></label>
-                                        <div class="flex gap-4">
-                                            <button type="button" class="btn-close-dialog bg-slate-200 px-4 py-2 rounded">Annuler</button>
-                                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Supprimer</button>
-                                        </div>
-                                    </form>
+                                    <p class="mb-6">Êtes-vous sûr de vouloir supprimer cet événement ?</p>
+                                    <div class="flex gap-4">
+                                        <button type="button" class="btn-close-dialog bg-slate-200 px-4 py-2 rounded">Annuler</button>
+                                        <button type="button" class="btn-confirm-dialog bg-red-600 text-white px-4 py-2 rounded">Supprimer définitivement</button>
+                                    </div>
                                 </dialog>
                             </div>
                         </div>
@@ -256,5 +262,33 @@ require __DIR__ . '/templates/admin_header.php';
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Hide the No-JS confirm checkbox since we have JS
+    document.querySelectorAll('.no-js-confirm').forEach(el => el.style.display = 'none');
+    
+    document.querySelectorAll('.delete-form-js-modal').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            // Si la case est déjà cochée, on laisse passer (soumission depuis la popup)
+            const cb = form.querySelector('.confirm-checkbox');
+            if (cb && cb.checked) return;
+            
+            e.preventDefault();
+            const eventId = form.querySelector('input[name="event_id"]').value;
+            const dialog = document.getElementById('del-evt-' + eventId);
+            if (dialog) {
+                dialog.showModal();
+                
+                const btnConfirm = dialog.querySelector('.btn-confirm-dialog');
+                btnConfirm.onclick = () => {
+                    if (cb) cb.checked = true;
+                    form.submit();
+                };
+            }
+        });
+    });
+});
+</script>
 
 <?php require __DIR__ . '/templates/admin_footer.php'; ?>

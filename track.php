@@ -83,16 +83,19 @@ if ($raw_id !== null) {
             $map_show_remaining = false;
             $raw_dest_lat = $shipment['destination_lat'] ?? null;
             $raw_dest_lng = $shipment['destination_lng'] ?? null;
-            if ($map_center_lat !== null && is_numeric($raw_dest_lat) && is_numeric($raw_dest_lng)) {
+            if (is_numeric($raw_dest_lat) && is_numeric($raw_dest_lng)) {
                 $d_lat = (float) $raw_dest_lat;
                 $d_lng = (float) $raw_dest_lng;
                 if ($d_lat >= -90 && $d_lat <= 90 && $d_lng >= -180 && $d_lng <= 180) {
                     $map_dest_lat = round($d_lat, 2);
                     $map_dest_lng = round($d_lng, 2);
-                    $dist = haversine_km($map_center_lat, $map_center_lng, $map_dest_lat, $map_dest_lng);
-                    if (!$map_is_delivered && $dist > 1) {
-                        $map_show_remaining = true;
-                        $map_remaining_km = (int) round($dist);
+                    
+                    if ($map_center_lat !== null) {
+                        $dist = haversine_km($map_center_lat, $map_center_lng, $map_dest_lat, $map_dest_lng);
+                        if (!$map_is_delivered && $dist > 1) {
+                            $map_show_remaining = true;
+                            $map_remaining_km = (int) round($dist);
+                        }
                     }
                 }
             }
@@ -205,7 +208,7 @@ function get_step_status_label($current_status, $step_status) {
                     </div>
                 </div>
 
-                <?php if ($map_center_lat !== null && $map_center_lng !== null): ?>
+                <?php if ($map_center_lat !== null || $map_dest_lat !== null): ?>
                     <?php require_once __DIR__ . '/templates/track_map.php'; ?>
                 <?php endif; ?>
 

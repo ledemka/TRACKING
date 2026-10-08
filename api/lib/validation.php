@@ -1,19 +1,19 @@
 <?php
-function validate_coordinates($lat, $lng, &$errors) {
+function validate_coordinates($lat, $lng, &$errors, $errorKey = 'coordinates') {
     $lat = trim($lat);
     $lng = trim($lng);
     
     if (($lat !== '' && $lng === '') || ($lat === '' && $lng !== '')) {
-        $errors['coordinates'] = 'Les deux coordonnées doivent être fournies ou aucune.';
+        $errors[$errorKey] = 'Les deux coordonnées doivent être fournies ou aucune.';
         return [null, null];
     }
     
     if ($lat !== '' && $lng !== '') {
         if (!is_numeric($lat) || $lat < -90 || $lat > 90) {
-            $errors['coordinates'] = 'Latitude invalide (-90 à 90).';
+            $errors[$errorKey] = 'Latitude invalide (-90 à 90).';
         }
         if (!is_numeric($lng) || $lng < -180 || $lng > 180) {
-            $errors['coordinates'] = 'Longitude invalide (-180 à 180).';
+            $errors[$errorKey] = 'Longitude invalide (-180 à 180).';
         }
         return [round((float)$lat, 6), round((float)$lng, 6)];
     }
