@@ -21,7 +21,7 @@ class DBSessionHandler implements SessionHandlerInterface {
     }
     
     public function write(string $id, string $data): bool {
-        $userId = $_SESSION['user_id'] ?? null;
+        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
         $ip = $_SERVER['REMOTE_ADDR'] ?? '';
         $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
         

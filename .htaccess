@@ -15,6 +15,8 @@ RewriteRule ^package\.json$ - [F,L,NC]
 RewriteRule ^package-lock\.json$ - [F,L,NC]
 RewriteRule ^tailwind\.config\.js$ - [F,L,NC]
 RewriteRule \.md$ - [F,L,NC]
+RewriteRule ^docs/ - [F,L,NC]
+RewriteRule \.(zip|sql|bak|log)$ - [F,L,NC]
 
 # En-têtes de sécurité
 <IfModule mod_headers.c>

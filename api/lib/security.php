@@ -12,8 +12,8 @@ function generate_csrf_token() {
 function verify_csrf_token($token) {
     $token = (string)$token;
     if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
-        http_response_code(403);
-        die(); // 403 sans détail
+        error_log("CSRF FAILED! Session token: " . ($_SESSION['csrf_token'] ?? 'EMPTY') . " POST token: " . $token);
+        return false;
     }
     return true;
 }

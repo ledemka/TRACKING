@@ -20,7 +20,7 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
         window.MAP_TILE_URL = <?= json_encode(getenv('MAP_TILE_URL')) ?>;
         window.MAP_MAX_ZOOM = <?= json_encode(getenv('MAP_MAX_ZOOM')) ?>;
         window.MAP_ATTRIBUTION = <?= json_encode(getenv('MAP_ATTRIBUTION')) ?>;
-        window.HERE_API_KEY = <?= json_encode(getenv('HERE_API_KEY')) ?>;
+        window.HERE_BROWSER_API_KEY = <?= json_encode(getenv('HERE_BROWSER_API_KEY')) ?>;
     </script>
     <?php endif; ?>
 </head>

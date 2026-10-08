@@ -18,8 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $id = (int)$_POST['shipment_id'];
     global $pdo;
     $pdo->beginTransaction();
-    $pdo->exec("DELETE FROM tracking_events WHERE shipment_id = $id");
-    $pdo->exec("DELETE FROM shipments WHERE id = $id");
+    $stmt = $pdo->prepare("DELETE FROM tracking_events WHERE shipment_id = ?");
+    $stmt->execute([$id]);
+    $stmt = $pdo->prepare("DELETE FROM shipments WHERE id = ?");
+    $stmt->execute([$id]);
     $pdo->commit();
     $_SESSION['flash_message'] = "Colis supprimé avec succès.";
     header('Location: /shipments');

@@ -8,3 +8,7 @@ uploads/
 *.log
 *.sqlite
 database.sqlite
+*.zip
+*.sql
+!docs/schema.sql
+*.bak

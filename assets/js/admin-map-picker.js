@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let map = L.map(mapEl).setView([48.8566, 2.3522], 5);
         
         // Add geocoder search UI if API key is present
-        if (window.HERE_API_KEY) {
+        if (window.HERE_BROWSER_API_KEY) {
             const searchContainer = document.createElement('div');
             searchContainer.className = 'relative mb-4 z-50';
             searchContainer.innerHTML = `
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 debounceTimer = setTimeout(() => {
-                    fetch(`https://autocomplete.search.hereapi.com/v1/autocomplete?q=${encodeURIComponent(query)}&apiKey=${window.HERE_API_KEY}&limit=5`)
+                    fetch(`https://autocomplete.search.hereapi.com/v1/autocomplete?q=${encodeURIComponent(query)}&apiKey=${window.HERE_BROWSER_API_KEY}&limit=5`)
                         .then(res => res.json())
                         .then(data => {
                             resultsList.innerHTML = '';
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             function lookupAddress(id) {
-                fetch(`https://lookup.search.hereapi.com/v1/lookup?id=${id}&apiKey=${window.HERE_API_KEY}`)
+                fetch(`https://lookup.search.hereapi.com/v1/lookup?id=${id}&apiKey=${window.HERE_BROWSER_API_KEY}`)
                     .then(res => res.json())
                     .then(data => {
                         if (data.position) {
@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lngInput.value = lng;
             updateMarker(lat, lng);
             // Reverse geocoding on map click
-            if (window.HERE_API_KEY) {
-                fetch(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&apiKey=${window.HERE_API_KEY}`)
+            if (window.HERE_BROWSER_API_KEY) {
+                fetch(`https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&apiKey=${window.HERE_BROWSER_API_KEY}`)
                     .then(res => res.json())
                     .then(data => {
                         if (data.items && data.items.length > 0) {

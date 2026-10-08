@@ -8,16 +8,18 @@ if (is_logged_in()) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf_token($_POST['csrf_token'] ?? '');
-    
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    if (login($email, $password)) {
-        header("Location: /dashboard");
-        exit;
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = "Session expirée ou invalide. Veuillez réessayer.";
     } else {
-        $error = "Identifiants invalides."; // Message générique
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        
+        if (login($email, $password)) {
+            header("Location: /dashboard");
+            exit;
+        } else {
+            $error = "Identifiants invalides."; // Message générique
+        }
     }
 }
 
