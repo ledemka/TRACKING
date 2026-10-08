@@ -37,11 +37,54 @@
 }
 
 :root {
-  --map-trail-color: theme('colors.action');
+  --map-traveled: theme('colors.action');
+  --map-remaining: theme('colors.danger');
+  --map-current: theme('colors.accent');
 }
 
+/* Position actuelle : pastille accent + anneau (pseudo-élément).
+   Leaflet positionne déjà l'icône en absolute : l'anneau s'y rattache. */
 .track-map-marker {
-  @apply bg-action border-4 border-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.3)];
+  background-color: var(--map-current);
+  @apply border-4 border-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.3)];
+}
+.track-map-marker::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 2px solid var(--map-current);
+  border-radius: 9999px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Destination : anneau danger */
+.track-map-destination {
+  background-color: theme('colors.white');
+  border: 3px solid var(--map-remaining);
+  border-radius: 9999px;
+}
+
+/* Légende (rendue côté serveur) : trait plein / pointillé + texte */
+.track-map-legend-line {
+  display: inline-block;
+  width: 2rem;
+  flex-shrink: 0;
+}
+.track-map-legend-line--traveled {
+  border-top: 4px solid var(--map-traveled);
+}
+.track-map-legend-line--remaining {
+  border-top: 3px dashed var(--map-remaining);
+}
+.track-map-legend-dot {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: var(--map-current);
+  box-shadow: 0 0 0 2px theme('colors.white'), 0 0 0 4px var(--map-current);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -74,6 +117,18 @@
   .animate-pulse-subtle {
     animation: pulse-subtle 2.5s ease-in-out infinite;
   }
+
+  /* Anneau de la position actuelle : 1 cycle / 2 s, opacité + échelle uniquement */
+  @keyframes track-map-pulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 0; transform: scale(2); }
+  }
+  .track-map-marker::after {
+    animation: track-map-pulse 2s ease-out infinite;
+  }
+  .track-map-marker--static::after {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -83,5 +138,10 @@
   }
   .animate-pulse-subtle {
     animation: none;
+  }
+  .track-map-marker::after {
+    animation: none;
+    opacity: 0.5;
+    transform: none;
   }
 }

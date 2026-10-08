@@ -122,7 +122,9 @@ $migrations = [
         window_started_at DATETIME NOT NULL
     )",
     '012_add_coordinates' => "ALTER TABLE tracking_events ADD COLUMN latitude DECIMAL(9,6) NULL;
-    ALTER TABLE tracking_events ADD COLUMN longitude DECIMAL(9,6) NULL;"
+    ALTER TABLE tracking_events ADD COLUMN longitude DECIMAL(9,6) NULL;",
+    '013_add_destination_coordinates' => "ALTER TABLE shipments ADD COLUMN destination_lat DECIMAL(9,6) NULL;
+    ALTER TABLE shipments ADD COLUMN destination_lng DECIMAL(9,6) NULL;"
 ];
 
 foreach ($migrations as $version => $query) {

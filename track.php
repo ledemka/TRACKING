@@ -61,8 +61,54 @@ if ($raw_id !== null) {
             if (count($map_trail_points) > 50) {
                 $map_trail_points = array_slice($map_trail_points, -50);
             }
+
+            // Trajet parcouru : au moins 2 points localisés, sinon aucun trait ni distance.
+            $map_traveled_km = 0;
+            $map_show_traveled = count($map_trail_points) >= 2;
+            if ($map_show_traveled) {
+                for ($i = 1, $n = count($map_trail_points); $i < $n; $i++) {
+                    $map_traveled_km += haversine_km($map_trail_points[$i - 1][0], $map_trail_points[$i - 1][1], $map_trail_points[$i][0], $map_trail_points[$i][1]);
+                }
+            }
+            $map_traveled_km = (int) round($map_traveled_km);
+            if (!$map_show_traveled) {
+                $map_trail_points = [];
+            }
+
+            // Destination : validée, arrondie à 2 décimales pour la sortie publique.
+            $map_is_delivered = ($shipment['status'] === STATUS_DELIVERED);
+            $map_dest_lat = null;
+            $map_dest_lng = null;
+            $map_remaining_km = 0;
+            $map_show_remaining = false;
+            $raw_dest_lat = $shipment['destination_lat'] ?? null;
+            $raw_dest_lng = $shipment['destination_lng'] ?? null;
+            if ($map_center_lat !== null && is_numeric($raw_dest_lat) && is_numeric($raw_dest_lng)) {
+                $d_lat = (float) $raw_dest_lat;
+                $d_lng = (float) $raw_dest_lng;
+                if ($d_lat >= -90 && $d_lat <= 90 && $d_lng >= -180 && $d_lng <= 180) {
+                    $map_dest_lat = round($d_lat, 2);
+                    $map_dest_lng = round($d_lng, 2);
+                    $dist = haversine_km($map_center_lat, $map_center_lng, $map_dest_lat, $map_dest_lng);
+                    if (!$map_is_delivered && $dist > 1) {
+                        $map_show_remaining = true;
+                        $map_remaining_km = (int) round($dist);
+                    }
+                }
+            }
         }
     }
+}
+
+/**
+ * Distance à vol d'oiseau (km) entre deux points, formule de haversine.
+ */
+function haversine_km(float $lat1, float $lng1, float $lat2, float $lng2): float {
+    $r = 6371.0;
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLng = deg2rad($lng2 - $lng1);
+    $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+    return 2 * $r * asin(min(1.0, sqrt($a)));
 }
 
 require_once __DIR__ . '/templates/public_header.php';
@@ -142,7 +188,7 @@ function get_step_status_label($current_status, $step_status) {
                         <p class="font-medium text-slate-800"><?= escape_html(mask_name($shipment['recipient_name'])) ?></p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Itinéraire</p>
+                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Trajet</p>
                         <p class="font-medium text-slate-800 flex items-center gap-2">
                             <?= escape_html($shipment['origin_city']) ?>
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -240,4 +286,4 @@ function get_step_status_label($current_status, $step_status) {
 
 <script src="/assets/js/track.js" defer></script>
 
-<?php require_once __DIR__ . '/templates/public_footer.php'; ?>. '/templates/public_footer.php'; ?>
+<?php require_once __DIR__ . '/templates/public_footer.php'; ?>

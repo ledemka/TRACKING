@@ -11,6 +11,7 @@ module.exports = {
         primary: "var(--color-primary, #071A33)",
         accent: "var(--color-accent, #F79009)",
         action: "#175CD3",
+        danger: "#ba1a1a", // = token "error" de design-reference/.../DESIGN.md
         surface: {
           DEFAULT: "#F8FAFC",
           dim: "#F1F5F9",
