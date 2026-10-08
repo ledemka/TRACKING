@@ -25,6 +25,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white font-semibold flex items-center justify-center transition-all duration-300 min-h-[48px] px-5 py-3 rounded-md hover:bg-[#D97706] hover:shadow-[0_4px_12px_-2px_rgba(245,158,11,0.3)];
+  }
+  .btn-secondary {
+    @apply bg-primary text-white font-semibold flex items-center justify-center transition-all duration-300 min-h-[48px] px-5 py-3 rounded-md hover:bg-slate-800 hover:shadow-elevation-2;
+  }
+  .btn-ghost {
+    @apply bg-transparent border-[1.5px] border-slate-200 text-primary font-semibold flex items-center justify-center transition-all duration-300 min-h-[48px] px-5 py-3 rounded-md hover:bg-slate-100;
+  }
+}
+
 @layer base {
   body {
     @apply bg-surface text-slate-900 font-sans;

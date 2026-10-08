@@ -5,194 +5,85 @@ require_once __DIR__ . '/templates/public_header.php';
 
 <main class="flex-grow flex flex-col">
     <!-- Hero Section -->
-    <section class="bg-surface py-20 px-4 transition-opacity duration-500">
-        <div class="max-w-2xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-6">Suivez vos colis en toute simplicité.</h1>
-            <p class="text-lg text-slate-500 mb-10">Consultez l'état de votre expédition en entrant votre numéro de suivi ci-dessous.</p>
+    <section class="bg-surface py-24 px-4 relative overflow-hidden">
+        <!-- Abstract Decoration -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-100/50 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-orange-100/30 blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-3xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-6 tracking-tight leading-tight">Suivez vos colis en <span class="text-action">toute simplicité.</span></h1>
+            <p class="text-lg text-slate-500 mb-10 leading-relaxed">Consultez l'état de votre expédition en entrant votre numéro de suivi ci-dessous.</p>
             
-            <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                <input type="text" name="id" placeholder="Numéro de suivi" class="flex-grow px-5 py-4 rounded-xl border border-slate-300 focus:border-action focus:ring-2 focus:ring-action/20 outline-none code-tracking text-lg shadow-sm transition-shadow" required>
-                <button type="submit" class="bg-action text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-colors whitespace-nowrap shadow-sm text-lg">
+            <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto bg-white p-2 rounded-2xl shadow-elevation-2 border border-slate-100">
+                <div class="relative flex-grow flex items-center">
+                    <div class="absolute left-4 text-slate-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" name="id" placeholder="Ex: COLIS-123456" class="w-full pl-12 pr-4 py-4 rounded-xl border-none focus:ring-0 outline-none code-tracking text-lg bg-transparent" required>
+                </div>
+                <button type="submit" class="btn-primary py-4 px-8 rounded-xl shadow-none hover:shadow-none whitespace-nowrap text-lg">
                     Rechercher
                 </button>
             </form>
         </div>
     </section>
 
-    <!-- Services Interactive Component -->
-    <section id="services" class="py-24 px-4 bg-white border-y border-slate-100 overflow-hidden">
+    <!-- Services Section -->
+    <section id="services" class="py-24 px-4 bg-white border-y border-slate-100">
         <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl font-bold text-center text-primary mb-16">Nos services logistiques</h2>
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-primary mb-4">Nos services logistiques</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto">Découvrez l'ensemble de nos outils conçus pour faciliter la gestion de vos flux logistiques.</p>
+            </div>
             
-            <style>
-            @media (prefers-reduced-motion: no-preference) {
-                .service-card.active[data-index="0"] svg { animation: floatBox 2s ease-in-out infinite alternate; }
-                .service-card.active[data-index="1"] svg { animation: pulseTimeline 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-                .service-card.active[data-index="2"] svg { animation: slideRight 2s ease-in-out infinite; }
-                .service-card.active[data-index="3"] svg { animation: gentleShake 4s ease-in-out infinite; }
-            }
-            @keyframes floatBox { 0% { transform: translateY(3px); } 100% { transform: translateY(-3px); } }
-            @keyframes pulseTimeline { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.95); } }
-            @keyframes slideRight { 0% { transform: translateX(-3px); opacity: 0.9; } 50% { transform: translateX(3px); opacity: 1; } 100% { transform: translateX(-3px); opacity: 0.9; } }
-            @keyframes gentleShake { 0%, 100% { transform: rotate(0deg); } 5% { transform: rotate(-3deg); } 10% { transform: rotate(3deg); } 15% { transform: rotate(0deg); } }
-            </style>
+            <?php 
+            $services = [
+                [
+                    'title' => 'Expédition',
+                    'desc' => 'Préparez et expédiez vos colis simplement avec un suivi à chaque étape.',
+                    'url' => '/services/expedition',
+                    'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
+                ],
+                [
+                    'title' => 'Suivi des colis',
+                    'desc' => 'Consultez l\'état de votre expédition à l\'aide de votre numéro de suivi.',
+                    'url' => '/services/suivi',
+                    'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>'
+                ],
+                [
+                    'title' => 'Livraison',
+                    'desc' => 'Suivez l\'avancement de votre colis jusqu\'à sa livraison finale.',
+                    'url' => '/services/livraison',
+                    'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>'
+                ],
+                [
+                    'title' => 'Gestion des expéditions',
+                    'desc' => 'Une interface dédiée pour gérer vos colis et leurs informations.',
+                    'url' => '/services/gestion-expeditions',
+                    'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>'
+                ]
+            ];
+            ?>
 
-            <div class="relative flex flex-col md:flex-row gap-4 md:gap-6 md:min-h-[420px]" id="services-container" role="tablist" aria-orientation="horizontal">
-                <!-- Ligne de connexion desktop -->
-                <div class="hidden md:block absolute top-[4.5rem] left-[10%] right-[10%] h-0.5 bg-slate-100 z-0"></div>
-
-                <?php 
-                $services = [
-                    [
-                        'title' => 'Expédition',
-                        'desc' => 'Préparez et expédiez vos colis simplement avec un suivi à chaque étape.',
-                        'url' => '/services/expedition',
-                        'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>',
-                        'id' => 'expedition',
-                        'num' => '01'
-                    ],
-                    [
-                        'title' => 'Suivi des colis',
-                        'desc' => 'Consultez l\'état de votre expédition à l\'aide de votre numéro de suivi.',
-                        'url' => '/services/suivi',
-                        'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>',
-                        'id' => 'suivi',
-                        'num' => '02'
-                    ],
-                    [
-                        'title' => 'Livraison',
-                        'desc' => 'Suivez l\'avancement de votre colis jusqu\'à sa livraison.',
-                        'url' => '/services/livraison',
-                        'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>',
-                        'id' => 'livraison',
-                        'num' => '03'
-                    ],
-                    [
-                        'title' => 'Gestion des expéditions',
-                        'desc' => 'Une interface dédiée pour gérer vos colis et leurs informations de suivi.',
-                        'url' => '/services/gestion-expeditions',
-                        'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>',
-                        'id' => 'gestion',
-                        'num' => '04'
-                    ]
-                ];
-                ?>
-
-                <?php foreach($services as $index => $srv): ?>
-                <button type="button" 
-                        role="tab"
-                        aria-selected="<?= $index === 0 ? 'true' : 'false' ?>"
-                        class="service-card group relative z-10 flex flex-col bg-surface border border-slate-200 rounded-3xl p-6 md:p-8 text-left transition-all duration-500 ease-in-out cursor-pointer focus:outline-none focus:ring-2 focus:ring-action/50 overflow-hidden <?= $index === 0 ? 'active shadow-md border-action/20' : 'hover:bg-slate-50 opacity-80 hover:opacity-100 shadow-sm' ?>"
-                        style="flex: <?= $index === 0 ? '3 1 0%' : '1 1 0%' ?>;"
-                        data-index="<?= $index ?>">
-                    
-                    <!-- Ligne horizontale interne pour mobile (connexion visuelle) -->
-                    <?php if($index > 0): ?>
-                    <div class="md:hidden absolute -top-4 left-1/2 w-0.5 h-8 bg-slate-100 -translate-x-1/2 z-0"></div>
-                    <?php endif; ?>
-
-                    <div class="flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-4 mb-4 md:mb-8 w-full z-10">
-                        <span class="text-sm font-bold text-slate-400 group-[.active]:text-accent transition-colors order-2 md:order-1"><?= $srv['num'] ?></span>
-                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-[.active]:bg-action group-[.active]:text-white group-[.active]:scale-110 group-[.active]:shadow-lg group-[.active]:shadow-action/25 bg-white text-slate-400 border border-slate-200 group-[.active]:border-transparent group-hover:text-action order-1 md:order-2">
-                            <?= $srv['icon'] ?>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <?php foreach($services as $srv): ?>
+                <a href="<?= $srv['url'] ?>" class="group flex flex-col p-6 rounded-2xl bg-surface border border-slate-200 hover:border-action/30 hover:shadow-elevation-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-action">
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-action group-hover:bg-action/5 transition-colors mb-6">
+                        <?= $srv['icon'] ?>
                     </div>
-
-                    <div class="flex-grow flex flex-col justify-end w-full z-10">
-                        <h3 class="text-xl md:text-lg lg:text-xl font-bold text-primary group-[.active]:text-action group-[.active]:md:text-2xl transition-all duration-500 mb-0 group-[.active]:mb-4 leading-tight whitespace-nowrap md:whitespace-normal"><?= $srv['title'] ?></h3>
-                        
-                        <div class="service-content transition-all duration-500 ease-in-out overflow-hidden <?= $index === 0 ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0' ?>">
-                            <div class="pt-2">
-                                <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6">
-                                    <?= $srv['desc'] ?>
-                                </p>
-                                <a href="<?= $srv['url'] ?>" class="inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-sm w-full sm:w-auto" <?= $index !== 0 ? 'tabindex="-1"' : '' ?>>
-                                    Y aller
-                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                </a>
-                            </div>
-                        </div>
+                    <h3 class="text-xl font-bold text-primary mb-3 group-hover:text-action transition-colors"><?= $srv['title'] ?></h3>
+                    <p class="text-slate-500 mb-6 flex-grow leading-relaxed">
+                        <?= $srv['desc'] ?>
+                    </p>
+                    <div class="text-action font-semibold flex items-center mt-auto">
+                        Y aller
+                        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </div>
-                </button>
+                </a>
                 <?php endforeach; ?>
             </div>
         </div>
     </section>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.service-card');
-        let currentIndex = 0;
-        let autoRotateInterval;
-        
-        const activateCard = (targetCard) => {
-            if(targetCard.classList.contains('active')) return;
-            
-            // Désactiver toutes les cartes
-            cards.forEach(c => {
-                c.classList.remove('active', 'shadow-md', 'border-action/20');
-                c.classList.add('hover:bg-slate-50', 'opacity-80', 'shadow-sm');
-                c.setAttribute('aria-selected', 'false');
-                c.style.flex = '1 1 0%';
-                
-                const content = c.querySelector('.service-content');
-                content.classList.remove('max-h-[500px]', 'opacity-100');
-                content.classList.add('max-h-0', 'opacity-0');
-                
-                const link = c.querySelector('a');
-                if(link) link.setAttribute('tabindex', '-1');
-            });
-            
-            // Activer la carte courante
-            targetCard.classList.add('active', 'shadow-md', 'border-action/20');
-            targetCard.classList.remove('hover:bg-slate-50', 'opacity-80', 'shadow-sm');
-            targetCard.setAttribute('aria-selected', 'true');
-            targetCard.style.flex = '3 1 0%';
-            
-            const content = targetCard.querySelector('.service-content');
-            content.classList.remove('max-h-0', 'opacity-0');
-            content.classList.add('max-h-[500px]', 'opacity-100');
-            
-            const link = targetCard.querySelector('a');
-            if(link) link.removeAttribute('tabindex');
-        };
-
-        const startAutoRotate = () => {
-            stopAutoRotate();
-            autoRotateInterval = setInterval(() => {
-                currentIndex = (currentIndex + 1) % cards.length;
-                activateCard(cards[currentIndex]);
-            }, 5000);
-        };
-
-        const stopAutoRotate = () => {
-            if (autoRotateInterval) clearInterval(autoRotateInterval);
-        };
-
-        cards.forEach((card, index) => {
-            const handleInteraction = () => {
-                currentIndex = index;
-                activateCard(card);
-                stopAutoRotate(); // On arrête la rotation si l'utilisateur interagit
-            };
-            
-            // Reprendre la rotation quand on quitte la section
-            card.addEventListener('mouseleave', startAutoRotate);
-            
-            // Support Hover (Desktop)
-            card.addEventListener('mouseenter', handleInteraction);
-            
-            // Support Tap (Mobile)
-            card.addEventListener('click', handleInteraction);
-            
-            // Support clavier (Focus/Entrée/Espace)
-            card.addEventListener('focus', handleInteraction);
-        });
-
-        // Démarrer la rotation auto
-        startAutoRotate();
-    });
-    </script>
 
     <!-- Comment ça marche ? -->
     <section class="py-20 px-4 bg-surface">

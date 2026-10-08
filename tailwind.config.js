@@ -11,7 +11,7 @@ module.exports = {
         primary: "var(--color-primary, #0B1F3A)",
         accent: "var(--color-accent, #F59E0B)",
         action: "#1D4ED8",
-        danger: "#ba1a1a", // = token "error" de design-reference/.../DESIGN.md
+        danger: "#ba1a1a",
         surface: {
           DEFAULT: "#F8FAFC",
           dim: "#F1F5F9",
@@ -24,6 +24,15 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+      },
+      boxShadow: {
+        'elevation-1': '0 1px 3px 0 rgba(11, 31, 58, 0.04), 0 1px 2px -1px rgba(11, 31, 58, 0.04)',
+        'elevation-2': '0 4px 12px -2px rgba(11, 31, 58, 0.08), 0 2px 6px -2px rgba(11, 31, 58, 0.04)',
+        'elevation-3': '0 12px 24px -4px rgba(11, 31, 58, 0.12), 0 4px 8px -2px rgba(11, 31, 58, 0.04)',
+        'elevation-4': '0 20px 32px -8px rgba(11, 31, 58, 0.16)',
+      },
+      borderRadius: {
+        'xl': '1.5rem',
       }
     },
   },

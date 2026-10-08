@@ -6,15 +6,17 @@ require_once __DIR__ . '/../lib/utils.php';
 function get_dashboard_stats() {
     global $pdo;
     
-    $stmt = $pdo->query("
+    $now = gmdate('Y-m-d H:i:s');
+    $stmt = $pdo->prepare("
         SELECT 
             COUNT(*) as `total`,
             SUM(CASE WHEN status = '" . STATUS_SHIPPED . "' THEN 1 ELSE 0 END) as `shipped`,
             SUM(CASE WHEN status = '" . STATUS_OUT_FOR_DELIVERY . "' THEN 1 ELSE 0 END) as `out_for_delivery`,
             SUM(CASE WHEN status = '" . STATUS_DELIVERED . "' THEN 1 ELSE 0 END) as `delivered`,
-            SUM(CASE WHEN status != '" . STATUS_DELIVERED . "' AND estimated_delivery_at IS NOT NULL AND estimated_delivery_at < UTC_TIMESTAMP() THEN 1 ELSE 0 END) as `delayed`
+            SUM(CASE WHEN status != '" . STATUS_DELIVERED . "' AND estimated_delivery_at IS NOT NULL AND estimated_delivery_at < ? THEN 1 ELSE 0 END) as `delayed`
         FROM shipments
     ");
+    $stmt->execute([$now]);
     return $stmt->fetch();
 }
 

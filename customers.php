@@ -79,7 +79,7 @@ require_once __DIR__ . '/templates/admin_layout.php';
                                 <?= (int)$c['total_shipments'] ?>
                             </td>
                             <td class="p-4 text-sm text-slate-600">
-                                <?= date('d/m/Y', strtotime($c['last_order'])) ?>
+                                <?= format_date($c['last_order'], 'd/m/Y') ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

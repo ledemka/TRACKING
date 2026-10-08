@@ -55,14 +55,14 @@ try {
     $stmt = $pdo->prepare("
         INSERT INTO shipments (
             tracking_number, carrier_id, recipient_name, recipient_phone, recipient_email,
-            address, city, country, origin_address, origin_city, 
+            address, city, zip_code, country, origin_address, origin_city, 
             shipped_at, estimated_delivery_at, status, description, is_demo,
             destination_lat, destination_lng
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
     ");
     $stmt->execute([
         $tracking, $carrierId, 'Client Fictif', '0600000000', 'client.fictif@example.com',
-        '10 Rue de Rivoli', 'Paris', 'France', 'Port de Rotterdam', 'Rotterdam',
+        '10 Rue de Rivoli', 'Paris', '75001', 'France', 'Port de Rotterdam', 'Rotterdam',
         $date_shipped, $date_estimate, 'shipped', 'Colis de démonstration standard',
         48.86, 2.35 // Destination : Paris centre (coordonnées arrondies)
     ]);
