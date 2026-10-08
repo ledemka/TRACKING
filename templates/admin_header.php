@@ -41,7 +41,7 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
             </div>
         </div>
     </header>
-    <main class="flex-grow pt-20 px-4 pb-8 max-w-7xl mx-auto w-full">
+    <main class="flex-grow pt-20 px-4 pb-8 max-w-7xl mx-auto w-full relative z-0">
         <?php if (isset($_SESSION['flash_message'])): ?>
             <div class="bg-status-delivered-bg border border-green-500 text-status-delivered-text p-4 rounded mb-6" role="status">
                 <?= escape_html($_SESSION['flash_message']) ?>

@@ -173,11 +173,12 @@ function get_step_status_label($current_status, $step_status) {
                         <h1 class="text-2xl font-bold text-primary">Colis <span class="code-tracking"><?= escape_html($shipment['tracking_number']) ?></span></h1>
                     </div>
                     <?php
-                        $s_style = 'bg-slate-100 text-slate-600';
+                        $s_style = 'bg-slate-100 text-slate-600 border border-slate-200';
                         $s_label = get_status_labels()[$shipment['status']] ?? 'Inconnu';
                         if ($shipment['status'] === STATUS_SHIPPED) $s_style = 'bg-status-shipped-bg text-status-shipped-text border border-status-shipped-bg';
                         if ($shipment['status'] === STATUS_OUT_FOR_DELIVERY) $s_style = 'bg-status-delivery-bg text-status-delivery-text border border-status-delivery-bg';
                         if ($shipment['status'] === STATUS_DELIVERED) $s_style = 'bg-status-delivered-bg text-status-delivered-text border border-status-delivered-bg';
+                        if ($shipment['status'] === STATUS_DELAYED) $s_style = 'bg-red-50 text-red-600 border border-red-200';
                     ?>
                     <div class="inline-flex items-center justify-center px-4 py-2 rounded-full font-bold text-sm <?= $s_style ?> shadow-sm">
                         <?= escape_html($s_label) ?>

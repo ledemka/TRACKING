@@ -23,7 +23,7 @@
                     <ul class="space-y-3">
                         <li><a href="/services/expedition" class="text-slate-400 hover:text-white transition-colors text-sm">Expédition</a></li>
                         <li><a href="/services/livraison" class="text-slate-400 hover:text-white transition-colors text-sm">Livraison</a></li>
-                        <li><a href="/login" class="text-slate-400 hover:text-white transition-colors text-sm">Espace Pro</a></li>
+
                     </ul>
                 </div>
             </div>

@@ -13,7 +13,7 @@
                 </button>
                 <a href="/track" class="font-semibold text-slate-600 hover:text-primary transition-colors">Suivre un colis</a>
                 <a href="/contact" class="font-semibold text-slate-600 hover:text-primary transition-colors">Contact</a>
-                <a href="/login" class="btn-ghost py-2 min-h-0 h-10 ml-4">Espace Pro</a>
+
             </nav>
 
             <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
@@ -31,7 +31,7 @@
                 <a href="/track" class="font-semibold px-6 py-4 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100">Suivre un colis</a>
                 <a href="/contact" class="font-semibold px-6 py-4 text-slate-700 hover:bg-slate-50 transition-colors">Contact</a>
                 <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
-                    <a href="/login" class="btn-ghost w-full">Espace Pro</a>
+
                 </div>
             </nav>
         </div>

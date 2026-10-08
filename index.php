@@ -16,10 +16,7 @@ require_once __DIR__ . '/templates/public_header.php';
             
             <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto bg-white p-2 rounded-2xl shadow-elevation-2 border border-slate-100">
                 <div class="relative flex-grow flex items-center">
-                    <div class="absolute left-4 text-slate-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <input type="text" name="id" placeholder="Ex: COLIS-123456" class="w-full pl-12 pr-4 py-4 rounded-xl border-none focus:ring-0 outline-none code-tracking text-lg bg-transparent" required>
+                    <input type="text" name="id" placeholder="Ex: COLIS-123456" class="w-full px-4 py-4 rounded-xl border-none focus:ring-0 outline-none code-tracking text-lg bg-transparent" required>
                 </div>
                 <button type="submit" class="btn-primary py-4 px-8 rounded-xl shadow-none hover:shadow-none whitespace-nowrap text-lg">
                     Rechercher

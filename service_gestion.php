@@ -70,8 +70,8 @@ require_once __DIR__ . '/templates/public_header.php';
             </div>
             
             <div class="p-8 md:p-12 text-center border-t border-slate-100 bg-white">
-                <a href="/login" class="btn-primary inline-flex text-lg w-full sm:w-auto">
-                    Accéder à mon espace pro
+                <a href="/track" class="btn-primary inline-flex text-lg w-full sm:w-auto">
+                    Consulter le suivi d'un colis
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>

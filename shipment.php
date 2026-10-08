@@ -222,7 +222,19 @@ require __DIR__ . '/templates/admin_header.php';
                 <div><strong>Créé le :</strong> <?= format_date($shipment['created_at']) ?></div>
                 <div class="pt-3 border-t">
                     <strong>Statut actuel :</strong><br>
-                    <span class="inline-block px-3 py-1 bg-slate-200 rounded font-bold mt-1">
+                    <?php
+                        $badgeStyle = 'background-color: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;'; // par défaut
+                        if ($shipment['status'] === STATUS_SHIPPED) {
+                            $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE;';
+                        } elseif ($shipment['status'] === STATUS_OUT_FOR_DELIVERY) {
+                            $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border: 1px solid #FED7AA;';
+                        } elseif ($shipment['status'] === STATUS_DELIVERED) {
+                            $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0;';
+                        } elseif ($shipment['status'] === STATUS_DELAYED) {
+                            $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;';
+                        }
+                    ?>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold mt-1" style="<?= $badgeStyle ?>">
                         <?= escape_html(get_status_labels()[$shipment['status']] ?? $shipment['status']) ?>
                     </span>
                 </div>
@@ -277,7 +289,7 @@ require __DIR__ . '/templates/admin_header.php';
                     <p class="text-sm text-slate-600 mb-4 bg-yellow-50 p-3 rounded border border-yellow-200">
                         <strong>Avertissement :</strong> Indiquez la position du colis (centre de tri, véhicule...), jamais l'adresse du destinataire.
                     </p>
-                    <div class="map-element w-full h-48 bg-slate-200 rounded mb-4 z-0 relative"></div>
+                    <div class="map-element w-full h-64 bg-slate-200 rounded mb-4 z-0 relative"></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold mb-1">Latitude</label>

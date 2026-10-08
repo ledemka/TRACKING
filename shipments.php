@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Filtres
 $q = $_GET['q'] ?? '';
 $statusFilter = $_GET['status'] ?? '';
-$delayed = $_GET['delayed'] ?? '';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $limit = 20;
@@ -51,11 +50,6 @@ if ($statusFilter !== '') {
     $where[] = "status = ?";
     $params[] = $statusFilter;
 }
-if ($delayed === '1') {
-    $where[] = "status != ? AND estimated_delivery_at IS NOT NULL AND estimated_delivery_at < UTC_TIMESTAMP()";
-    $params[] = STATUS_DELIVERED;
-}
-
 $whereClause = implode(' AND ', $where);
 
 global $pdo;
@@ -76,138 +70,253 @@ $page_title = "Colis";
 require __DIR__ . '/templates/admin_header.php';
 ?>
 
-<div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-    <h1 class="text-3xl font-bold">Gestion des Colis</h1>
-    <a href="/shipments/new" class="bg-action text-white px-4 py-2 rounded hover:bg-blue-700">Nouveau colis</a>
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Gestion des colis</h1>
+        <p class="text-slate-500 mt-1">Gérez, recherchez et suivez l'ensemble de vos expéditions.</p>
+    </div>
+    <a href="/shipments/new" class="bg-action text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-elevation-1 transition-all whitespace-nowrap">Nouveau colis</a>
 </div>
 
-<form method="GET" action="/shipments" class="bg-white p-4 rounded shadow mb-6 flex flex-wrap gap-4 items-end">
-    <div class="flex-grow min-w-[200px]">
-        <label for="q" class="block text-sm font-semibold mb-1">Recherche (N°, Nom, Ville)</label>
-        <input type="text" name="q" id="q" value="<?= escape_html($q) ?>" class="w-full border p-2 rounded">
+<form method="GET" action="/shipments" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-8 flex flex-col lg:flex-row gap-4 lg:items-end">
+    <div class="flex-grow">
+        <label for="q" class="block text-sm font-semibold text-slate-700 mb-1.5">Recherche</label>
+        <div class="relative">
+            <input type="text" name="q" id="q" value="<?= escape_html($q) ?>" placeholder="Numéro de suivis" class="w-full pl-3 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-action focus:border-action outline-none transition-colors">
+        </div>
     </div>
-    <div>
-        <label for="status" class="block text-sm font-semibold mb-1">Statut</label>
-        <select name="status" id="status" class="w-full border p-2 rounded">
+    <div class="w-full lg:w-56">
+        <label for="status" class="block text-sm font-semibold text-slate-700 mb-1.5">Statut</label>
+        <select name="status" id="status" class="w-full border border-slate-200 p-2 rounded-lg text-sm focus:ring-2 focus:ring-action focus:border-action outline-none bg-white">
             <option value="">Tous les statuts</option>
             <?php foreach(get_status_labels() as $k => $v): ?>
                 <option value="<?= $k ?>" <?= $statusFilter === $k ? 'selected' : '' ?>><?= escape_html($v) ?></option>
             <?php endforeach; ?>
         </select>
     </div>
-    <div class="flex items-center h-10 px-2">
-        <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" name="delayed" value="1" <?= $delayed === '1' ? 'checked' : '' ?>>
-            <span class="text-sm font-semibold">Retardés uniquement</span>
-        </label>
-    </div>
-    <div>
-        <button type="submit" class="bg-slate-200 px-4 py-2 rounded hover:bg-slate-300">Filtrer</button>
-        <a href="/shipments" class="ml-2 text-slate-500 hover:underline text-sm">Réinitialiser</a>
+    <div class="flex items-center gap-3 w-full lg:w-auto pt-2 lg:pt-0">
+        <button type="submit" class="flex-1 lg:flex-none bg-action text-white px-6 py-2 rounded-lg text-sm font-semibold hover:opacity-90 shadow-sm transition-all text-center">Filtrer</button>
+        <?php if ($q || $statusFilter): ?>
+            <a href="/shipments" class="text-sm text-slate-500 hover:text-action hover:underline transition-colors px-2 whitespace-nowrap">Réinitialiser</a>
+        <?php endif; ?>
     </div>
 </form>
 
-<div class="bg-white rounded shadow overflow-hidden hidden md:block mb-6">
-    <table class="w-full text-left border-collapse">
-        <thead>
-            <tr class="bg-slate-100 text-sm text-slate-600">
-                <th class="p-3 border-b">N° Suivi</th>
-                <th class="p-3 border-b">Destinataire</th>
-                <th class="p-3 border-b">Trajet</th>
-                <th class="p-3 border-b">Statut</th>
-                <th class="p-3 border-b">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($shipments as $s): ?>
-            <tr class="border-b hover:bg-slate-50">
-                <td class="p-3 font-mono text-sm">
-                    <a href="/shipments/<?= $s['id'] ?>" class="text-action hover:underline font-bold"><?= escape_html($s['tracking_number']) ?></a>
-                </td>
-                <td class="p-3 text-sm"><?= escape_html(format_anonymous_name($s['recipient_name'])) ?></td>
-                <td class="p-3 text-sm"><?= escape_html($s['origin_city']) ?> &rarr; <?= escape_html($s['city']) ?></td>
-                <td class="p-3 text-sm">
-                    <?php
-                    $isDelayed = is_delayed($s['status'], $s['estimated_delivery_at']);
-                    if ($isDelayed) echo '<span class="text-red-600 font-bold">Retardé</span><br>';
-                    echo escape_html(get_status_labels()[$s['status']] ?? $s['status']);
-                    ?>
-                </td>
-                <td class="p-3 text-sm flex gap-2">
-                    <a href="/shipments/<?= $s['id'] ?>" class="text-action hover:underline">Modifier</a>
-                    <button class="text-red-600 hover:underline btn-delete-prompt" data-dialog="delete-dialog-<?= $s['id'] ?>">Supprimer</button>
-                    
-                    <dialog id="delete-dialog-<?= $s['id'] ?>" class="p-6 rounded shadow-lg border-0 backdrop:bg-slate-800/50">
-                        <h3 class="text-lg font-bold mb-4">Supprimer le colis <?= escape_html($s['tracking_number']) ?> ?</h3>
-                        <p class="mb-4">Cette action est irréversible et supprimera tout l'historique.</p>
-                        <form method="POST" action="/shipments" class="delete-form-js-modal">
-                            <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="shipment_id" value="<?= $s['id'] ?>">
-                            <label class="flex items-center gap-2 mb-6">
-                                <input type="checkbox" name="confirm_delete" required class="confirm-checkbox">
-                                <span>Je confirme la suppression</span>
-                            </label>
-                            <div class="flex justify-end gap-4">
-                                <button type="button" class="btn-close-dialog px-4 py-2 bg-slate-200 rounded">Annuler</button>
-                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Supprimer</button>
-                            </div>
-                        </form>
-                    </dialog>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-            <?php if (empty($shipments)): ?>
-            <tr><td colspan="5" class="p-6 text-center text-slate-500">Aucun colis trouvé.</td></tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+<div class="bg-white rounded-xl shadow-elevation-1 border border-slate-200 overflow-hidden mb-8">
+    <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <h2 class="text-lg font-bold text-slate-800">Colis</h2>
+        <span class="text-sm font-medium text-slate-500 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm"><?= $total ?> résultats</span>
+    </div>
+    
+    <div class="overflow-x-auto hidden md:block">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                    <th class="p-4 font-semibold">N° Suivi</th>
+                    <th class="p-4 font-semibold">Destinataire</th>
+                    <th class="p-4 font-semibold">Trajet</th>
+                    <th class="p-4 font-semibold">Statut</th>
+                    <th class="p-4 font-semibold text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                <?php foreach($shipments as $s): ?>
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="p-4 font-mono text-sm">
+                        <a href="/shipments/<?= $s['id'] ?>" class="text-action hover:underline font-bold"><?= escape_html($s['tracking_number']) ?></a>
+                        <?php if ($s['is_demo']): ?>
+                        <span class="ml-2 text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-sans">Démo</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="p-4 text-sm text-slate-700 font-medium"><?= escape_html(format_anonymous_name($s['recipient_name'])) ?></td>
+                    <td class="p-4 text-sm text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <span><?= escape_html($s['origin_city']) ?></span>
+                            <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            <span class="font-medium text-slate-800"><?= escape_html($s['city']) ?></span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-sm">
+                        <?php
+                        $label = get_status_labels()[$s['status']] ?? $s['status'];
+                        
+                        $badgeStyle = 'background-color: #F8FAFC; color: #475569; border-color: #E2E8F0;'; // par défaut
+                        if ($s['status'] === STATUS_SHIPPED) {
+                            $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE;';
+                        } elseif ($s['status'] === STATUS_OUT_FOR_DELIVERY) {
+                            $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border-color: #FED7AA;';
+                        } elseif ($s['status'] === STATUS_DELIVERED) {
+                            $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0;';
+                        } elseif ($s['status'] === STATUS_DELAYED) {
+                            $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: #FECACA;';
+                        }
+                        
+                        echo '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="' . $badgeStyle . '">' . escape_html($label) . '</span>';
+                        ?>
+                    </td>
+                    <td class="p-4 text-sm flex gap-3 justify-end items-center">
+                        <a href="/shipments/<?= $s['id'] ?>" class="text-slate-500 hover:text-action transition-colors flex items-center gap-1 font-medium" aria-label="Modifier le colis <?= escape_html($s['tracking_number']) ?>">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            Modifier
+                        </a>
+                        <button class="text-slate-400 hover:text-red-600 transition-colors flex items-center gap-1 btn-delete-prompt font-medium" data-dialog="delete-dialog-<?= $s['id'] ?>" aria-label="Supprimer le colis <?= escape_html($s['tracking_number']) ?>">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            Supprimer
+                        </button>
+                        
+                        <dialog id="delete-dialog-<?= $s['id'] ?>" class="p-6 rounded-xl shadow-2xl border-0 backdrop:bg-slate-800/60 w-full max-w-md">
+                            <h3 class="text-xl font-bold mb-2 text-slate-800">Supprimer le colis ?</h3>
+                            <p class="mb-6 text-slate-500 text-sm">Le colis <strong class="font-mono text-slate-700"><?= escape_html($s['tracking_number']) ?></strong> et tout son historique seront effacés définitivement.</p>
+                            <form method="POST" action="/shipments" class="delete-form-js-modal">
+                                <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="shipment_id" value="<?= $s['id'] ?>">
+                                <label class="flex items-center gap-3 mb-8 p-3 bg-red-50 rounded-lg border border-red-100 cursor-pointer">
+                                    <input type="checkbox" name="confirm_delete" required class="confirm-checkbox w-4 h-4 text-red-600 bg-white border-red-300 rounded focus:ring-red-500">
+                                    <span class="text-sm font-bold text-red-800">Je confirme la suppression</span>
+                                </label>
+                                <div class="flex justify-end gap-3">
+                                    <button type="button" class="btn-close-dialog px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors">Annuler</button>
+                                    <button type="submit" class="px-5 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 shadow-sm transition-colors">Supprimer</button>
+                                </div>
+                            </form>
+                        </dialog>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if (empty($shipments)): ?>
+                <tr>
+                    <td colspan="5" class="p-12 text-center">
+                        <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
+                        <p class="text-slate-500 font-medium">Aucun colis ne correspond à vos critères.</p>
+                        <?php if ($q || $statusFilter): ?>
+                        <a href="/shipments" class="text-action hover:underline text-sm mt-2 inline-block">Effacer les filtres</a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 
-<div class="md:hidden space-y-4 mb-6">
-    <?php foreach($shipments as $s): ?>
-    <div class="bg-white p-4 rounded shadow">
-        <div class="flex justify-between items-start mb-2">
-            <a href="/shipments/<?= $s['id'] ?>" class="font-mono text-action font-bold hover:underline"><?= escape_html($s['tracking_number']) ?></a>
-            <span class="text-sm font-bold <?= is_delayed($s['status'], $s['estimated_delivery_at']) ? 'text-red-600' : 'text-slate-600' ?>">
-                <?= is_delayed($s['status'], $s['estimated_delivery_at']) ? 'Retardé' : escape_html(get_status_labels()[$s['status']] ?? $s['status']) ?>
-            </span>
+    <!-- Mobile view -->
+    <div class="md:hidden flex flex-col">
+        <?php foreach($shipments as $s): ?>
+        <div class="p-4 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <a href="/shipments/<?= $s['id'] ?>" class="font-mono text-action font-bold hover:underline text-sm"><?= escape_html($s['tracking_number']) ?></a>
+                    <?php if ($s['is_demo']): ?>
+                    <span class="ml-2 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-sans uppercase font-bold tracking-wider">Démo</span>
+                    <?php endif; ?>
+                </div>
+                <?php
+                $label = get_status_labels()[$s['status']] ?? $s['status'];
+                $badgeStyle = 'background-color: #F8FAFC; color: #475569; border-color: #E2E8F0;'; // par défaut
+                if ($s['status'] === STATUS_SHIPPED) {
+                    $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE;';
+                } elseif ($s['status'] === STATUS_OUT_FOR_DELIVERY) {
+                    $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border-color: #FED7AA;';
+                } elseif ($s['status'] === STATUS_DELIVERED) {
+                    $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0;';
+                } elseif ($s['status'] === STATUS_DELAYED) {
+                    $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: #FECACA;';
+                }
+                ?>
+                <div class="flex flex-col items-end gap-1">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border" style="<?= $badgeStyle ?>"><?= escape_html($label) ?></span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 gap-2 mb-4">
+                <div class="flex items-center gap-2 text-sm">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span class="text-slate-700 font-medium truncate"><?= escape_html(format_anonymous_name($s['recipient_name'])) ?></span>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <span class="truncate"><?= escape_html($s['origin_city']) ?> <span class="text-slate-400 mx-1">&rarr;</span> <strong class="text-slate-800"><?= escape_html($s['city']) ?></strong></span>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 pt-3 border-t border-slate-100">
+                <a href="/shipments/<?= $s['id'] ?>" class="flex-1 flex items-center justify-center gap-2 bg-slate-50 text-slate-700 hover:bg-slate-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    Modifier
+                </a>
+                <button class="flex-1 flex items-center justify-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors btn-delete-prompt" data-dialog="delete-dialog-mob-<?= $s['id'] ?>">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    Supprimer
+                </button>
+                
+                <dialog id="delete-dialog-mob-<?= $s['id'] ?>" class="p-5 rounded-xl shadow-2xl border-0 backdrop:bg-slate-800/60 w-[calc(100%-2rem)] max-w-sm m-auto">
+                    <h3 class="text-lg font-bold mb-2 text-slate-800">Supprimer ce colis ?</h3>
+                    <p class="mb-5 text-slate-500 text-sm">Action irréversible.</p>
+                    <form method="POST" action="/shipments" class="delete-form-js-modal">
+                        <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="shipment_id" value="<?= $s['id'] ?>">
+                        <label class="flex items-center gap-3 mb-6 p-3 bg-red-50 rounded-lg border border-red-100">
+                            <input type="checkbox" name="confirm_delete" required class="confirm-checkbox w-4 h-4 text-red-600 border-red-300 rounded">
+                            <span class="text-sm font-bold text-red-800">Je confirme</span>
+                        </label>
+                        <div class="flex flex-col gap-2">
+                            <button type="submit" class="w-full py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700">Supprimer</button>
+                            <button type="button" class="w-full py-2.5 bg-white border border-slate-200 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 btn-close-dialog">Annuler</button>
+                        </div>
+                    </form>
+                </dialog>
+            </div>
         </div>
-        <div class="text-sm mb-1"><strong>Dest. :</strong> <?= escape_html(format_anonymous_name($s['recipient_name'])) ?></div>
-        <div class="text-sm mb-4"><strong>Trajet :</strong> <?= escape_html($s['origin_city']) ?> &rarr; <?= escape_html($s['city']) ?></div>
-        <div class="flex gap-4 text-sm border-t pt-2 mt-2">
-            <a href="/shipments/<?= $s['id'] ?>" class="text-action">Modifier</a>
-            <button class="text-red-600 btn-delete-prompt" data-dialog="delete-dialog-mob-<?= $s['id'] ?>">Supprimer</button>
-            <dialog id="delete-dialog-mob-<?= $s['id'] ?>" class="p-6 rounded shadow-lg border-0 backdrop:bg-slate-800/50">
-                <h3 class="text-lg font-bold mb-4">Supprimer ?</h3>
-                <form method="POST" action="/shipments" class="delete-form-js-modal">
-                    <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="shipment_id" value="<?= $s['id'] ?>">
-                    <label class="flex items-center gap-2 mb-6"><input type="checkbox" name="confirm_delete" required class="confirm-checkbox"><span>Je confirme</span></label>
-                    <div class="flex gap-4">
-                        <button type="button" class="btn-close-dialog bg-slate-200 px-4 py-2 rounded">Annuler</button>
-                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Supprimer</button>
-                    </div>
-                </form>
-            </dialog>
+        <?php endforeach; ?>
+        <?php if (empty($shipments)): ?>
+        <div class="p-8 text-center bg-slate-50 border-t border-slate-100">
+            <p class="text-slate-500 font-medium text-sm">Aucun colis trouvé.</p>
+        </div>
+        <?php endif; ?>
+    </div>
+    
+    <!-- Pagination -->
+    <?php if ($totalPages > 1): ?>
+    <div class="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between bg-slate-50/50 gap-4">
+        <div class="text-sm text-slate-500">
+            Affichage de <span class="font-medium text-slate-900"><?= $total == 0 ? 0 : $offset + 1 ?></span> à <span class="font-medium text-slate-900"><?= min($offset + $limit, $total) ?></span> sur <span class="font-medium text-slate-900"><?= $total ?></span>
+        </div>
+        <div class="flex gap-1 overflow-x-auto pb-1 max-w-full">
+            <?php 
+            $query_params = [];
+            if ($q !== '') $query_params['q'] = $q;
+            if ($statusFilter !== '') $query_params['status'] = $statusFilter;
+            $base_qs = http_build_query($query_params);
+            $base_url = "/shipments" . ($base_qs ? "?$base_qs&" : "?");
+            ?>
+            
+            <?php if ($page > 1): ?>
+                <a href="<?= $base_url ?>page=<?= $page - 1 ?>" class="px-3 py-1.5 border border-slate-200 rounded text-sm text-slate-600 bg-white hover:bg-slate-50 whitespace-nowrap shadow-sm">Précédent</a>
+            <?php else: ?>
+                <span class="px-3 py-1.5 border border-slate-100 rounded text-sm text-slate-400 bg-slate-50 cursor-not-allowed whitespace-nowrap">Précédent</span>
+            <?php endif; ?>
+            
+            <?php
+            $startPage = max(1, $page - 2);
+            $endPage = min($totalPages, $page + 2);
+            for ($i = $startPage; $i <= $endPage; $i++) {
+                if ($i === $page) {
+                    echo '<span class="px-3 py-1.5 border border-action bg-action text-white rounded text-sm font-medium shadow-sm whitespace-nowrap">'.$i.'</span>';
+                } else {
+                    echo '<a href="'.$base_url.'page='.$i.'" class="px-3 py-1.5 border border-slate-200 rounded text-sm text-slate-600 bg-white hover:bg-slate-50 shadow-sm whitespace-nowrap">'.$i.'</a>';
+                }
+            }
+            ?>
+            
+            <?php if ($page < $totalPages): ?>
+                <a href="<?= $base_url ?>page=<?= $page + 1 ?>" class="px-3 py-1.5 border border-slate-200 rounded text-sm text-slate-600 bg-white hover:bg-slate-50 whitespace-nowrap shadow-sm">Suivant</a>
+            <?php else: ?>
+                <span class="px-3 py-1.5 border border-slate-100 rounded text-sm text-slate-400 bg-slate-50 cursor-not-allowed whitespace-nowrap">Suivant</span>
+            <?php endif; ?>
         </div>
     </div>
-    <?php endforeach; ?>
-    <?php if (empty($shipments)): ?>
-    <div class="bg-white p-4 rounded shadow text-center text-slate-500">Aucun colis trouvé.</div>
     <?php endif; ?>
 </div>
-
-<?php if ($totalPages > 1): ?>
-<div class="flex justify-center gap-2 mb-8">
-    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-    <a href="?q=<?= urlencode($q) ?>&status=<?= urlencode($statusFilter) ?>&delayed=<?= urlencode($delayed) ?>&page=<?= $i ?>" 
-       class="px-3 py-1 border rounded <?= $i === $page ? 'bg-primary text-white' : 'bg-white hover:bg-slate-50' ?>">
-        <?= $i ?>
-    </a>
-    <?php endfor; ?>
-</div>
-<?php endif; ?>
 
 <?php require __DIR__ . '/templates/admin_footer.php'; ?>
