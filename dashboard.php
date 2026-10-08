@@ -1,115 +1,88 @@
 <?php
-require_once __DIR__ . '/api/bootstrap.php';
+require_once __DIR__ . '/api/db.php';
+require_once __DIR__ . '/api/lib/auth.php';
+require_once __DIR__ . '/api/lib/shipments.php';
+
 require_admin();
 
-$now = gmdate('Y-m-d H:i:s');
+$stats = get_dashboard_stats();
+$recent = get_recent_shipments(8);
 
-// Fetch counts
-$stmt = $pdo->prepare("SELECT status, COUNT(*) as count FROM shipments GROUP BY status");
-$stmt->execute();
-$counts_by_status = [];
-foreach ($stmt->fetchAll() as $row) {
-    $counts_by_status[$row['status']] = $row['count'];
-}
-
-$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM shipments");
-$stmt->execute();
-$total_shipments = $stmt->fetch()['count'];
-
-$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM shipments WHERE estimated_delivery_at < ? AND status != ?");
-$stmt->execute([$now, STATUS_DELIVERED]);
-$delayed_shipments = $stmt->fetch()['count'];
-
-// Fetch latest
-$stmt = $pdo->prepare("SELECT * FROM shipments ORDER BY created_at DESC LIMIT 5");
-$stmt->execute();
-$latest_shipments = $stmt->fetchAll();
-
-$page_title = 'Tableau de bord';
-require_once __DIR__ . '/templates/admin_layout.php';
+$page_title = "Dashboard";
+require __DIR__ . '/templates/admin_header.php';
 ?>
-
 <div class="mb-8">
-    <h1 class="text-2xl font-bold text-primary">Tableau de bord</h1>
-    <p class="text-slate-500">Aperçu général de l'activité</p>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-        <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Colis</span>
-        <span class="text-3xl font-bold text-slate-800"><?= (int)$total_shipments ?></span>
-    </div>
-    
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col border-b-4 border-status-shipped-bg">
-        <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Expédiés</span>
-        <span class="text-3xl font-bold text-slate-800"><?= (int)($counts_by_status[STATUS_SHIPPED] ?? 0) ?></span>
-    </div>
-    
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col border-b-4 border-status-delivery-bg">
-        <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">En cours</span>
-        <span class="text-3xl font-bold text-slate-800"><?= (int)($counts_by_status[STATUS_OUT_FOR_DELIVERY] ?? 0) ?></span>
-    </div>
-    
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col border-b-4 border-status-delivered-bg">
-        <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Livrés</span>
-        <span class="text-3xl font-bold text-slate-800"><?= (int)($counts_by_status[STATUS_DELIVERED] ?? 0) ?></span>
-    </div>
-    
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col border-b-4 border-red-500">
-        <span class="text-sm font-semibold text-red-500 uppercase tracking-wider mb-2">En retard</span>
-        <span class="text-3xl font-bold text-red-600"><?= (int)$delayed_shipments ?></span>
+    <h1 class="text-3xl font-bold mb-6">Tableau de Bord</h1>
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <a href="/shipments" class="bg-white p-4 rounded shadow block hover:shadow-md transition">
+            <div class="text-slate-500 text-sm font-semibold uppercase">Total</div>
+            <div class="text-2xl font-bold"><?= $stats['total'] ?></div>
+        </a>
+        <a href="/shipments?status=shipped" class="bg-status-shipped-bg border border-blue-200 p-4 rounded shadow block hover:shadow-md transition">
+            <div class="text-blue-800 text-sm font-semibold uppercase">Expédiés</div>
+            <div class="text-2xl font-bold text-blue-900"><?= $stats['shipped'] ?></div>
+        </a>
+        <a href="/shipments?status=out_for_delivery" class="bg-status-delivery-bg border border-yellow-200 p-4 rounded shadow block hover:shadow-md transition">
+            <div class="text-yellow-800 text-sm font-semibold uppercase">En cours</div>
+            <div class="text-2xl font-bold text-yellow-900"><?= $stats['out_for_delivery'] ?></div>
+        </a>
+        <a href="/shipments?status=delivered" class="bg-status-delivered-bg border border-green-200 p-4 rounded shadow block hover:shadow-md transition">
+            <div class="text-green-800 text-sm font-semibold uppercase">Livrés</div>
+            <div class="text-2xl font-bold text-green-900"><?= $stats['delivered'] ?></div>
+        </a>
+        <a href="/shipments?delayed=1" class="bg-red-50 border border-red-200 p-4 rounded shadow block hover:shadow-md transition">
+            <div class="text-red-800 text-sm font-semibold uppercase">Retardés</div>
+            <div class="text-2xl font-bold text-red-900"><?= $stats['delayed'] ?></div>
+        </a>
     </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-        <h2 class="text-lg font-bold text-primary">Derniers colis</h2>
-        <a href="/shipments" class="text-sm font-semibold text-accent hover:text-amber-700">Voir tout</a>
+<div class="bg-white rounded shadow overflow-hidden">
+    <div class="p-4 border-b flex justify-between items-center bg-slate-50">
+        <h2 class="text-xl font-bold">8 derniers colis</h2>
+        <a href="/shipments/new" class="bg-action text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Nouveau colis</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="bg-slate-50 text-slate-500 text-sm border-b border-slate-100">
-                    <th class="p-4 font-semibold">N° Suivi</th>
-                    <th class="p-4 font-semibold">Destinataire</th>
-                    <th class="p-4 font-semibold">Statut</th>
-                    <th class="p-4 font-semibold">Date</th>
+                <tr class="bg-slate-100 text-sm text-slate-600">
+                    <th class="p-3 border-b">N° Suivi</th>
+                    <th class="p-3 border-b">Destinataire</th>
+                    <th class="p-3 border-b">Trajet</th>
+                    <th class="p-3 border-b">Statut</th>
+                    <th class="p-3 border-b">Mise à jour</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($latest_shipments)): ?>
-                    <tr>
-                        <td colspan="4" class="p-8 text-center text-slate-500">Aucune expédition récente.</td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($latest_shipments as $s): 
-                        $statusLabel = get_status_labels()[$s['status']] ?? $s['status'];
-                        $statusClass = 'bg-slate-100 text-slate-700';
-                        if ($s['status'] === STATUS_SHIPPED) $statusClass = 'bg-status-shipped-bg text-status-shipped-text';
-                        if ($s['status'] === STATUS_OUT_FOR_DELIVERY) $statusClass = 'bg-status-delivery-bg text-status-delivery-text';
-                        if ($s['status'] === STATUS_DELIVERED) $statusClass = 'bg-status-delivered-bg text-status-delivered-text';
-                    ?>
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                            <td class="p-4 font-mono font-medium text-primary">
-                                <a href="/shipments/<?= $s['id'] ?>" class="hover:underline"><?= escape_html($s['tracking_number']) ?></a>
-                            </td>
-                            <td class="p-4 text-slate-800">
-                                <?= escape_html($s['recipient_name']) ?>
-                            </td>
-                            <td class="p-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold <?= $statusClass ?>">
-                                    <?= escape_html($statusLabel) ?>
-                                </span>
-                            </td>
-                            <td class="p-4 text-sm text-slate-600">
-                                <?= date('d/m/Y', strtotime($s['created_at'])) ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                <?php foreach ($recent as $s): ?>
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="p-3 font-mono text-sm">
+                        <a href="/shipments/<?= $s['id'] ?>" class="text-action hover:underline font-bold"><?= escape_html($s['tracking_number']) ?></a>
+                        <?php if ($s['is_demo']): ?>
+                        <span class="ml-2 text-xs bg-slate-200 text-slate-600 px-2 py-0.5 rounded">Démo</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="p-3 text-sm"><?= escape_html(format_anonymous_name($s['recipient_name'])) ?></td>
+                    <td class="p-3 text-sm"><?= escape_html($s['origin_city']) ?> &rarr; <?= escape_html($s['city']) ?></td>
+                    <td class="p-3 text-sm">
+                        <?php
+                        $label = get_status_labels()[$s['status']] ?? $s['status'];
+                        $isDelayed = is_delayed($s['status'], $s['estimated_delivery_at']);
+                        if ($isDelayed) echo '<span class="text-red-600 font-bold">Retardé</span><br>';
+                        echo escape_html($label);
+                        ?>
+                    </td>
+                    <td class="p-3 text-sm text-slate-500"><?= format_date($s['updated_at']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if (empty($recent)): ?>
+                <tr>
+                    <td colspan="5" class="p-6 text-center text-slate-500">Aucun colis enregistré.</td>
+                </tr>
                 <?php endif; ?>
             </tbody>
         </table>
     </div>
 </div>
 
-<?php require_once __DIR__ . '/templates/admin_footer.php'; ?>
+<?php require __DIR__ . '/templates/admin_footer.php'; ?>

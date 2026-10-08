@@ -124,7 +124,9 @@ $migrations = [
     '012_add_coordinates' => "ALTER TABLE tracking_events ADD COLUMN latitude DECIMAL(9,6) NULL;
     ALTER TABLE tracking_events ADD COLUMN longitude DECIMAL(9,6) NULL;",
     '013_add_destination_coordinates' => "ALTER TABLE shipments ADD COLUMN destination_lat DECIMAL(9,6) NULL;
-    ALTER TABLE shipments ADD COLUMN destination_lng DECIMAL(9,6) NULL;"
+    ALTER TABLE shipments ADD COLUMN destination_lng DECIMAL(9,6) NULL;",
+    '014_update_colors' => "UPDATE app_settings SET color_primary = '#0B1F3A' WHERE color_primary = '#071A33';
+    UPDATE app_settings SET color_accent = '#F59E0B' WHERE color_accent = '#F79009';"
 ];
 
 foreach ($migrations as $version => $query) {

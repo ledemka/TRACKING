@@ -8,9 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--color-primary, #071A33)",
-        accent: "var(--color-accent, #F79009)",
-        action: "#175CD3",
+        primary: "var(--color-primary, #0B1F3A)",
+        accent: "var(--color-accent, #F59E0B)",
+        action: "#1D4ED8",
         danger: "#ba1a1a", // = token "error" de design-reference/.../DESIGN.md
         surface: {
           DEFAULT: "#F8FAFC",

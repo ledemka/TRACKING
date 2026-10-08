@@ -1,14 +1,7 @@
-        </div> <!-- Fin max-w-7xl mx-auto w-full -->
-    </main> <!-- Fin main content area -->
-    
-    <script>
-        const btn = document.getElementById('admin-mobile-btn');
-        const menu = document.getElementById('admin-mobile-menu');
-        if(btn && menu) {
-            btn.addEventListener('click', () => {
-                menu.classList.toggle('hidden');
-            });
-        }
-    </script>
+    </main>
+    <script src="/assets/js/admin.js"></script>
+    <?php if (isset($use_map) && $use_map): ?>
+    <script src="/assets/js/admin-map-picker.js"></script>
+    <?php endif; ?>
 </body>
 </html>

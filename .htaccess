@@ -22,7 +22,7 @@ RewriteRule \.md$ - [F,L,NC]
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
     # ATTENTION : Si MAP_TILE_URL change (ex: Mapbox, Stadia), il FAUT ajouter le nouveau domaine à img-src ci-dessous.
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org;"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org;"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
@@ -34,9 +34,8 @@ RewriteRule ^login$ login.php [L]
 RewriteRule ^logout$ logout.php [L]
 RewriteRule ^dashboard$ dashboard.php [L]
 RewriteRule ^shipments$ shipments.php [L]
-RewriteRule ^shipments/new$ new_shipment.php [L]
+RewriteRule ^shipments/new$ shipment_new.php [L]
 RewriteRule ^shipments/([0-9]+)$ shipment.php?id=$1 [QSA,L]
-RewriteRule ^customers$ customers.php [L]
 RewriteRule ^settings$ settings.php [L]
 RewriteRule ^services/expedition$ service_expedition.php [L]
 RewriteRule ^services/suivi$ service_suivi.php [L]
