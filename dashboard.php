@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/api/db.php';
-require_once __DIR__ . '/api/lib/auth.php';
+require_once __DIR__ . '/api/bootstrap.php';
 require_once __DIR__ . '/api/lib/shipments.php';
 
 require_admin();
@@ -157,22 +156,7 @@ require __DIR__ . '/templates/admin_header.php';
                     <td class="p-4 text-sm text-slate-700"><?= escape_html(format_anonymous_name($s['recipient_name'])) ?></td>
                     <td class="p-4 text-sm text-slate-600"><?= escape_html($s['origin_city']) ?> &rarr; <span class="font-medium text-slate-800"><?= escape_html($s['city']) ?></span></td>
                     <td class="p-4 text-sm">
-                        <?php
-                        $label = get_status_labels()[$s['status']] ?? $s['status'];
-                        
-                        $badgeStyle = 'background-color: #F8FAFC; color: #475569; border-color: #E2E8F0;'; // par défaut
-                        if ($s['status'] === STATUS_SHIPPED) {
-                            $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE;';
-                        } elseif ($s['status'] === STATUS_OUT_FOR_DELIVERY) {
-                            $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border-color: #FED7AA;';
-                        } elseif ($s['status'] === STATUS_DELIVERED) {
-                            $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0;';
-                        } elseif ($s['status'] === STATUS_DELAYED) {
-                            $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: #FECACA;';
-                        }
-                        
-                        echo '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="' . $badgeStyle . '">' . escape_html($label) . '</span>';
-                        ?>
+                        <?= render_status_badge($s['status']) ?>
                     </td>
                     <td class="p-4 text-sm text-slate-500"><?= format_date($s['updated_at']) ?></td>
                 </tr>

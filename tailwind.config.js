@@ -17,9 +17,10 @@ module.exports = {
           dim: "#F1F5F9",
         },
         status: {
-          shipped: { bg: "#EFF6FF", text: "#1D4ED8", dot: "#3B82F6" },
-          delivery: { bg: "#FEF3C7", text: "#B45309", dot: "#F59E0B" },
-          delivered: { bg: "#ECFDF5", text: "#047857", dot: "#10B981" },
+          shipped: { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
+          delivery: { bg: "#FFF7ED", text: "#D97706", border: "#FED7AA" },
+          delivered: { bg: "#F0FDF4", text: "#16A34A", border: "#BBF7D0" },
+          delayed: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
         }
       },
       fontFamily: {

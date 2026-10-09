@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/api/db.php';
-require_once __DIR__ . '/api/lib/auth.php';
+require_once __DIR__ . '/api/bootstrap.php';
 require_once __DIR__ . '/api/lib/shipments.php';
 
 require_admin();
@@ -137,22 +136,7 @@ require __DIR__ . '/templates/admin_header.php';
                         </div>
                     </td>
                     <td class="p-4 text-sm">
-                        <?php
-                        $label = get_status_labels()[$s['status']] ?? $s['status'];
-                        
-                        $badgeStyle = 'background-color: #F8FAFC; color: #475569; border-color: #E2E8F0;'; // par défaut
-                        if ($s['status'] === STATUS_SHIPPED) {
-                            $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE;';
-                        } elseif ($s['status'] === STATUS_OUT_FOR_DELIVERY) {
-                            $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border-color: #FED7AA;';
-                        } elseif ($s['status'] === STATUS_DELIVERED) {
-                            $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0;';
-                        } elseif ($s['status'] === STATUS_DELAYED) {
-                            $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: #FECACA;';
-                        }
-                        
-                        echo '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border" style="' . $badgeStyle . '">' . escape_html($label) . '</span>';
-                        ?>
+                        <?= render_status_badge($s['status']) ?>
                     </td>
                     <td class="p-4 text-sm flex gap-3 justify-end items-center">
                         <a href="/shipments/<?= $s['id'] ?>" class="text-slate-500 hover:text-action transition-colors flex items-center gap-1 font-medium" aria-label="Modifier le colis <?= escape_html($s['tracking_number']) ?>">
@@ -210,21 +194,8 @@ require __DIR__ . '/templates/admin_header.php';
                     <span class="ml-2 text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md font-sans uppercase font-bold tracking-wider">Démo</span>
                     <?php endif; ?>
                 </div>
-                <?php
-                $label = get_status_labels()[$s['status']] ?? $s['status'];
-                $badgeStyle = 'background-color: #F8FAFC; color: #475569; border-color: #E2E8F0;'; // par défaut
-                if ($s['status'] === STATUS_SHIPPED) {
-                    $badgeStyle = 'background-color: #EFF6FF; color: #2563EB; border-color: #BFDBFE;';
-                } elseif ($s['status'] === STATUS_OUT_FOR_DELIVERY) {
-                    $badgeStyle = 'background-color: #FFF7ED; color: #D97706; border-color: #FED7AA;';
-                } elseif ($s['status'] === STATUS_DELIVERED) {
-                    $badgeStyle = 'background-color: #F0FDF4; color: #16A34A; border-color: #BBF7D0;';
-                } elseif ($s['status'] === STATUS_DELAYED) {
-                    $badgeStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: #FECACA;';
-                }
-                ?>
                 <div class="flex flex-col items-end gap-1">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border" style="<?= $badgeStyle ?>"><?= escape_html($label) ?></span>
+                    <?= render_status_badge($s['status']) ?>
                 </div>
             </div>
             

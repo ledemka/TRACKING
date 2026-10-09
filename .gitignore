@@ -12,3 +12,5 @@ database.sqlite
 *.sql
 !docs/schema.sql
 *.bak
+cookies.txt
+public/

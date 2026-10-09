@@ -55,7 +55,7 @@ require_once __DIR__ . '/templates/public_header.php';
                             <div class="relative">
                                 <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-accent shadow-[0_0_0_4px_rgba(245,158,11,0.15)]"></div>
                                 <h3 class="font-bold text-primary text-sm">Création</h3>
-                                <p class="text-sm text-slate-500 mt-1 leading-relaxed">Vous créez l'expédition dans votre espace sécurisé.</p>
+                                <p class="text-sm text-slate-500 mt-1 leading-relaxed">Rendez-vous dans votre agence pour initier l'expédition.</p>
                             </div>
                             <div class="relative">
                                 <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-slate-300"></div>

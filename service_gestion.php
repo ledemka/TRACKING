@@ -64,6 +64,10 @@ require_once __DIR__ . '/templates/public_header.php';
                                 <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-accent"></div>
                                 <h3 class="font-bold text-primary text-sm">3. Livré</h3>
                             </div>
+                            <div class="relative">
+                                <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-red-500"></div>
+                                <h3 class="font-bold text-primary text-sm">4. Retardé</h3>
+                            </div>
                         </div>
                     </div>
                 </div>

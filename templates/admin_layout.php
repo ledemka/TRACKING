@@ -1,6 +1,11 @@
 <?php 
 $page_title = 'Administration';
 require_once __DIR__ . '/head.php'; 
+
+global $pdo;
+$stmt_admin_email = $pdo->prepare("SELECT email FROM users WHERE id = ?");
+$stmt_admin_email->execute([$_SESSION['user_id']]);
+$current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
 ?>
     <!-- Sidebar Desktop -->
     <aside class="hidden md:flex flex-col w-64 bg-primary text-white flex-shrink-0 min-h-screen">
@@ -14,6 +19,9 @@ require_once __DIR__ . '/head.php';
             <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Paramètres</a>
         </nav>
         <div class="p-4 mt-auto">
+            <div class="mb-4 text-center text-sm text-white/70 overflow-hidden text-ellipsis whitespace-nowrap" title="<?= escape_html($current_admin_email) ?>">
+                <?= escape_html($current_admin_email) ?>
+            </div>
             <form action="/logout" method="POST" class="w-full">
                 <input type="hidden" name="csrf_token" value="<?= escape_html(generate_csrf_token()) ?>">
                 <button type="submit" class="flex w-full items-center justify-center px-4 py-2 border border-white/20 rounded-lg text-sm text-white hover:bg-white/10 transition-colors">
@@ -26,7 +34,10 @@ require_once __DIR__ . '/head.php';
     <!-- Mobile Header & Menu -->
     <header class="md:hidden bg-primary text-white py-4 px-4 w-full flex justify-between items-center absolute top-0 left-0 z-50">
         <a href="/dashboard" class="font-bold text-lg"><?= escape_html($settings['nom']) ?></a>
-        <button id="admin-mobile-btn" class="p-2 bg-white/10 rounded-md">Menu</button>
+        <div class="flex items-center gap-3">
+            <span class="text-xs text-white/70 hidden sm:inline-block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"><?= escape_html($current_admin_email) ?></span>
+            <button id="admin-mobile-btn" class="p-2 bg-white/10 rounded-md">Menu</button>
+        </div>
     </header>
 
     <!-- Mobile Menu Overlay -->

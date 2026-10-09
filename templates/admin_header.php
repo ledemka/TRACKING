@@ -4,6 +4,11 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
 $csrf_token = $_SESSION['csrf_token'] ?? '';
+
+global $pdo;
+$stmt_admin_email = $pdo->prepare("SELECT email FROM users WHERE id = ?");
+$stmt_admin_email->execute([$_SESSION['user_id']]);
+$current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -36,8 +41,13 @@ $csrf_token = $_SESSION['csrf_token'] ?? '';
                 </nav>
             </div>
             <div class="flex items-center gap-4">
-                <span class="text-sm"><?= escape_html($_SESSION['admin_email'] ?? '') ?></span>
-                <a href="/logout" class="text-sm hover:text-accent flex items-center"><span class="material-symbols-outlined">logout</span></a>
+                <span class="text-sm"><?= escape_html($current_admin_email) ?></span>
+                <form action="/logout" method="POST" class="inline m-0 p-0">
+                    <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
+                    <button type="submit" class="text-sm hover:text-accent flex items-center bg-transparent border-none cursor-pointer text-white">
+                        <span class="material-symbols-outlined">logout</span>
+                    </button>
+                </form>
             </div>
         </div>
     </header>

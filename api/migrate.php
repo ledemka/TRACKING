@@ -131,7 +131,9 @@ $migrations = [
     ALTER TABLE shipments ADD COLUMN company_name VARCHAR(255) NULL;
     ALTER TABLE shipments ADD COLUMN company_siret VARCHAR(150) NULL;
     ALTER TABLE shipments ADD COLUMN company_department VARCHAR(150) NULL;",
-    '016_add_zip_code' => "ALTER TABLE shipments ADD COLUMN zip_code VARCHAR(20) NULL;"
+    '016_add_zip_code' => "ALTER TABLE shipments ADD COLUMN zip_code VARCHAR(20) NULL;",
+    '017_add_origin_coords' => "ALTER TABLE shipments ADD COLUMN origin_lat DECIMAL(9,6) NULL;
+    ALTER TABLE shipments ADD COLUMN origin_lng DECIMAL(9,6) NULL;"
 ];
 
 foreach ($migrations as $version => $query) {
@@ -148,13 +150,32 @@ foreach ($migrations as $version => $query) {
     }
     
     try {
-        $pdo->exec($query);
+        // Chaque instruction est exécutée seule ; un objet déjà existant
+        // (1060 colonne, 1061 index, 1050 table) est ignoré : rejeu idempotent.
+        foreach (array_filter(array_map('trim', explode(';', $query)), 'strlen') as $statement) {
+            try {
+                $pdo->exec($statement);
+            } catch (\PDOException $stmtError) {
+                $driverCode = (int)($stmtError->errorInfo[1] ?? 0);
+                if (in_array($driverCode, [1060, 1061, 1050], true)) {
+                    echo "  (déjà présent, ignoré) $version\n";
+                    continue;
+                }
+                throw $stmtError;
+            }
+        }
         record_migration($pdo, $version);
         echo "Migration appliquée : $version\n";
         
         // Add index on rate limits after table creation
         if ($version === '011_create_rate_limits') {
-            $pdo->exec("CREATE INDEX idx_rate_limits ON rate_limits(action, ip_address)");
+            try {
+                $pdo->exec("CREATE INDEX idx_rate_limits ON rate_limits(action, ip_address)");
+            } catch (\PDOException $idxError) {
+                if ((int)($idxError->errorInfo[1] ?? 0) !== 1061) {
+                    throw $idxError;
+                }
+            }
         }
     } catch (\PDOException $e) {
         echo "Erreur sur la migration $version : \n";

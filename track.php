@@ -99,6 +99,18 @@ if ($raw_id !== null) {
                     }
                 }
             }
+            // Calculate progressed status for the stepper
+            $progressed_status = STATUS_SHIPPED;
+            if ($shipment['status'] === STATUS_DELAYED) {
+                foreach ($events as $e) {
+                    if (in_array($e['status'], [STATUS_SHIPPED, STATUS_OUT_FOR_DELIVERY, STATUS_DELIVERED])) {
+                        $progressed_status = $e['status'];
+                        break;
+                    }
+                }
+            } else {
+                $progressed_status = $shipment['status'];
+            }
         }
     }
 }
@@ -116,13 +128,14 @@ function haversine_km(float $lat1, float $lng1, float $lat2, float $lng2): float
 
 require_once __DIR__ . '/templates/public_header.php';
 
-function get_step_status_label($current_status, $step_status) {
+function get_step_status_label($progressed_status, $step_status) {
     $order = [STATUS_SHIPPED => 1, STATUS_OUT_FOR_DELIVERY => 2, STATUS_DELIVERED => 3];
-    $c = $order[$current_status] ?? 0;
+    $p = $order[$progressed_status] ?? 1;
     $s = $order[$step_status] ?? 0;
-    if ($c === 3) return 'Terminé';
-    if ($s < $c) return 'Terminé';
-    if ($s == $c) return 'En cours';
+    $is_delayed = (($GLOBALS['shipment']['status'] ?? '') === STATUS_DELAYED);
+    if ($p === 3 && !$is_delayed) return 'Terminé';
+    if ($s < $p) return 'Terminé';
+    if ($s == $p) return 'En cours';
     return 'À venir';
 }
 ?>
@@ -172,18 +185,17 @@ function get_step_status_label($current_status, $step_status) {
                     <div>
                         <h1 class="text-2xl font-bold text-primary">Colis <span class="code-tracking"><?= escape_html($shipment['tracking_number']) ?></span></h1>
                     </div>
-                    <?php
-                        $s_style = 'bg-slate-100 text-slate-600 border border-slate-200';
-                        $s_label = get_status_labels()[$shipment['status']] ?? 'Inconnu';
-                        if ($shipment['status'] === STATUS_SHIPPED) $s_style = 'bg-status-shipped-bg text-status-shipped-text border border-status-shipped-bg';
-                        if ($shipment['status'] === STATUS_OUT_FOR_DELIVERY) $s_style = 'bg-status-delivery-bg text-status-delivery-text border border-status-delivery-bg';
-                        if ($shipment['status'] === STATUS_DELIVERED) $s_style = 'bg-status-delivered-bg text-status-delivered-text border border-status-delivered-bg';
-                        if ($shipment['status'] === STATUS_DELAYED) $s_style = 'bg-red-50 text-red-600 border border-red-200';
-                    ?>
-                    <div class="inline-flex items-center justify-center px-4 py-2 rounded-full font-bold text-sm <?= $s_style ?> shadow-sm">
-                        <?= escape_html($s_label) ?>
+                    <div class="scale-125 origin-right">
+                        <?= render_status_badge($shipment['status']) ?>
                     </div>
                 </header>
+                
+                <?php if ($shipment['status'] === STATUS_DELAYED): ?>
+                    <div class="mb-8 p-4 bg-status-delayed-bg border border-status-delayed-border text-status-delayed-text rounded-xl font-bold flex items-center gap-3">
+                        <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span>Votre colis est retardé.</span>
+                    </div>
+                <?php endif; ?>
                 
                 <!-- Grille Informations Publiques -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8">
@@ -223,7 +235,7 @@ function get_step_status_label($current_status, $step_status) {
                             STATUS_DELIVERED => 'Livré'
                         ];
                         foreach ($steps as $key => $label): 
-                            $step_state = get_step_status_label($shipment['status'], $key);
+                            $step_state = get_step_status_label($progressed_status, $key);
                             $bgClass = $step_state === 'Terminé' ? 'bg-primary border-primary text-white' : ($step_state === 'En cours' ? 'bg-accent border-accent text-white animate-pulse-subtle' : 'bg-white border-slate-300 text-slate-300');
                         ?>
                         <li class="flex flex-col items-center gap-3 bg-white px-2" <?= $step_state === 'En cours' ? 'aria-current="step"' : '' ?>>
