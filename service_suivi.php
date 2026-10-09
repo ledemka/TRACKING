@@ -17,7 +17,7 @@ require_once __DIR__ . '/templates/public_header.php';
                 </div>
                 <h1 class="text-3xl md:text-4xl font-bold text-primary mb-6 tracking-tight">Suivi des colis</h1>
                 <p class="text-lg text-slate-600 leading-relaxed max-w-2xl">
-                    Consultez l'état de votre expédition à l'aide de votre numéro de suivi. Une transparence totale pour vous et vos clients.
+                    Consultez l'état de votre expédition à l'aide de votre numéro de suivi. Un historique des événements de livraison.
                 </p>
             </div>
             
@@ -65,7 +65,7 @@ require_once __DIR__ . '/templates/public_header.php';
                             </div>
                             <div class="flex items-center gap-4">
                                 <div class="px-3 py-1 bg-status-delivery-bg text-status-delivery-text rounded-full font-bold text-xs border border-status-delivery-bg">En cours</div>
-                                <span class="text-sm text-slate-600">Le colis est en transit vers la destination.</span>
+                                <span class="text-sm text-slate-600">Le colis est en cours de livraison vers sa destination.</span>
                             </div>
                         </div>
                     </div>

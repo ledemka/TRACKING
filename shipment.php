@@ -406,11 +406,11 @@ require __DIR__ . '/templates/admin_header.php';
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold mb-1">Latitude</label>
-                        <input type="text" name="dest_lat" value="<?= escape_html($shipment['destination_lat']) ?>" class="input-lat border p-2 rounded w-full bg-white">
+                        <input type="text" name="destination_lat" value="<?= escape_html($shipment['destination_lat']) ?>" class="input-lat border p-2 rounded w-full bg-white">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-1">Longitude</label>
-                        <input type="text" name="dest_lng" value="<?= escape_html($shipment['destination_lng']) ?>" class="input-lng border p-2 rounded w-full bg-white">
+                        <input type="text" name="destination_lng" value="<?= escape_html($shipment['destination_lng']) ?>" class="input-lng border p-2 rounded w-full bg-white">
                     </div>
                 </div>
                 <button type="button" class="btn-clear-map mt-2 text-sm text-action hover:underline">Effacer la position</button>

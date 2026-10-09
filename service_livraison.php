@@ -44,7 +44,7 @@ require_once __DIR__ . '/templates/public_header.php';
                             </li>
                             <li class="flex items-start gap-3">
                                 <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">Le statut final s'affiche sur votre espace</span>
+                                <span class="text-slate-700 text-sm font-medium">Le statut final est consultable sur la page de suivi public.</span>
                             </li>
                         </ul>
                     </div>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/templates/public_header.php';
                                 <div class="px-3 py-1 bg-status-delivered-bg text-status-delivered-text rounded-full font-bold text-xs border border-status-delivered-bg">Livré</div>
                             </div>
                             <p class="text-sm text-slate-500 leading-relaxed">
-                                Le statut strict « Livré » garantit que le colis a été remis au destinataire à la ville de destination prévue. Aucun événement supplémentaire ne sera ajouté par la suite.
+                                Le statut « Livré » indique que la livraison est terminée.
                             </p>
                         </div>
                     </div>
