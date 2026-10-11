@@ -16,6 +16,8 @@ $cfg_title = $banner_title ?? ($banner_config['title'] ?? '');
 $cfg_desc = $banner_description ?? ($banner_config['description'] ?? '');
 $cfg_crumbs = $banner_breadcrumbs ?? ($banner_config['breadcrumbs'] ?? []);
 $cfg_actions = $banner_actions ?? ($banner_config['actions'] ?? []);
+$cfg_image = $banner_image ?? ($banner_config['image'] ?? null);
+$cfg_image_alt = $banner_image_alt ?? ($banner_config['image_alt'] ?? '');
 ?>
 
 <?php if (!empty($cfg_crumbs)): ?>
@@ -42,6 +44,61 @@ $cfg_actions = $banner_actions ?? ($banner_config['actions'] ?? []);
     </nav>
 <?php endif; ?>
 
+<?php if (!empty($cfg_image)): ?>
+<!-- Bandeau avec image immersive et voile de contraste sombre -->
+<section class="py-12 sm:py-16 lg:py-24 bg-[#171717] text-white relative overflow-hidden border-b border-black/10" aria-labelledby="banner-main-title">
+    <!-- Image de fond -->
+    <div class="absolute inset-0 z-0">
+        <img 
+            src="<?= escape_html($cfg_image) ?>" 
+            alt="<?= escape_html($cfg_image_alt) ?>" 
+            class="w-full h-full object-cover object-center"
+            fetchpriority="high"
+        >
+        <!-- Voile sombre contrasté dégradé assurant une lisibilité maximale -->
+        <div class="absolute inset-0 bg-black/60 bg-gradient-to-r from-black/85 via-black/70 to-black/40"></div>
+    </div>
+
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl">
+            <?php if (!empty($cfg_badge)): ?>
+                <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4 shadow-sm">
+                    <?= escape_html($cfg_badge) ?>
+                </span>
+            <?php endif; ?>
+
+            <h1 id="banner-main-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6 drop-shadow-sm">
+                <?= escape_html($cfg_title) ?>
+            </h1>
+
+            <?php if (!empty($cfg_desc)): ?>
+                <p class="text-base sm:text-lg text-slate-200 leading-relaxed font-normal mb-8 max-w-2xl">
+                    <?= escape_html($cfg_desc) ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if (!empty($cfg_actions)): ?>
+                <div class="flex flex-wrap gap-4">
+                    <?php foreach ($cfg_actions as $action): ?>
+                        <?php if (!empty($action['primary'])): ?>
+                            <a href="<?= escape_html($action['url']) ?>" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
+                                <span><?= escape_html($action['label']) ?></span>
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                </svg>
+                            </a>
+                        <?php else: ?>
+                            <a href="<?= escape_html($action['url']) ?>" class="inline-flex items-center gap-2 bg-white/20 text-white border border-white/20 hover:bg-white/30 font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark">
+                                <span><?= escape_html($action['label']) ?></span>
+                            </a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php else: ?>
 <!-- Grand bandeau olive avec titre sombre #171717 -->
 <section class="py-12 sm:py-16 lg:py-20 bg-[#B5A000] text-[#171717] relative overflow-hidden border-b border-black/10" aria-labelledby="banner-main-title">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -83,3 +140,4 @@ $cfg_actions = $banner_actions ?? ($banner_config['actions'] ?? []);
         </div>
     </div>
 </section>
+<?php endif; ?>

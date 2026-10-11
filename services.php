@@ -25,7 +25,9 @@ $banner_config = [
     'actions' => [
         ['label' => 'Suivre une expédition', 'url' => '/track', 'primary' => true],
         ['label' => 'Contacter notre équipe', 'url' => '/contact', 'primary' => false],
-    ]
+    ],
+    'image' => '/assets/img/site/section-qualite.webp',
+    'image_alt' => 'Contrôle qualité logistique et vue entrepôt moderne'
 ];
 ?>
 

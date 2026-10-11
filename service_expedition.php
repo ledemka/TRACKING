@@ -19,7 +19,9 @@ $banner_config = [
     'actions' => [
         ['label' => 'Accéder au suivi d\'envoi', 'url' => '/track', 'primary' => true],
         ['label' => 'Poser une question', 'url' => '/contact', 'primary' => false],
-    ]
+    ],
+    'image' => '/assets/img/site/service-expedition.webp',
+    'image_alt' => 'Préparation et fermeture de colis d\'expédition'
 ];
 ?>
 

@@ -19,7 +19,9 @@ $banner_config = [
     'actions' => [
         ['label' => 'Vérifier un colis en livraison', 'url' => '/track', 'primary' => true],
         ['label' => 'Une question sur la remise ?', 'url' => '/contact', 'primary' => false],
-    ]
+    ],
+    'image' => '/assets/img/site/service-livraison.webp',
+    'image_alt' => 'Remise d\'un colis cartonné au destinataire'
 ];
 ?>
 

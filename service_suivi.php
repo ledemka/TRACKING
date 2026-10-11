@@ -19,7 +19,9 @@ $banner_config = [
     'actions' => [
         ['label' => 'Accéder au formulaire de suivi', 'url' => '/track', 'primary' => true],
         ['label' => 'Une question ? Contactez-nous', 'url' => '/contact', 'primary' => false],
-    ]
+    ],
+    'image' => '/assets/img/site/service-suivi.webp',
+    'image_alt' => 'Lecture optique et scan de code-barres sur colis'
 ];
 ?>
 

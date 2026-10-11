@@ -19,7 +19,9 @@ $banner_config = [
     'actions' => [
         ['label' => 'Consulter un envoi', 'url' => '/track', 'primary' => true],
         ['label' => 'Nous contacter', 'url' => '/contact', 'primary' => false],
-    ]
+    ],
+    'image' => '/assets/img/site/service-gestion.webp',
+    'image_alt' => 'Vue en hauteur d\'un entrepôt logistique et rayonnages ordonnés'
 ];
 ?>
 
