@@ -78,12 +78,5 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
                 </ul>
             </div>
         </div>
-
-        <!-- Copyright dynamique -->
-        <div class="pt-8 text-center text-xs text-slate-400">
-            <p>
-                &copy; <?= date('Y') ?> <?= escape_html($nomEntreprise) ?>. Tous droits réservés.
-            </p>
-        </div>
     </div>
 </footer>
