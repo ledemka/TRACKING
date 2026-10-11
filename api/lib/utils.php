@@ -46,8 +46,8 @@ function get_app_settings() {
         return [
             'nom' => 'Pava Shipping',
             'email' => 'contact@pava-shipping.fr',
-            'telephone' => '',
-            'adresse' => '',
+            'telephone' => '0032465297645',
+            'adresse' => 'Fluitbergstraat 59, 2900 Schoten',
             'color_primary' => '#0B1F3A',
             'color_accent' => '#F59E0B',
             'logo' => ''

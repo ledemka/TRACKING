@@ -188,7 +188,7 @@ foreach ($migrations as $version => $query) {
 
 $stmt = $pdo->query("SELECT COUNT(*) FROM app_settings");
 if ($stmt->fetchColumn() == 0) {
-    $pdo->exec("INSERT INTO app_settings (nom) VALUES ('Pava Shipping')");
+    $pdo->exec("INSERT INTO app_settings (nom, email, telephone, adresse) VALUES ('Pava Shipping', 'contact@pava-shipping.fr', '0032465297645', 'Fluitbergstraat 59, 2900 Schoten')");
 }
 
 echo "Toutes les migrations sont à jour.\n";

@@ -5,6 +5,15 @@ $ip = $_SERVER['REMOTE_ADDR'];
 $success = false;
 $error = '';
 $settings = get_app_settings();
+if (empty($settings['email'])) {
+    $settings['email'] = 'contact@pava-shipping.fr';
+}
+if (empty($settings['telephone'])) {
+    $settings['telephone'] = '0032465297645';
+}
+if (empty($settings['adresse'])) {
+    $settings['adresse'] = 'Fluitbergstraat 59, 2900 Schoten';
+}
 
 if (isset($_SESSION['flash_success'])) {
     $success = true;

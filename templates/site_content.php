@@ -9,8 +9,8 @@ if (!function_exists('get_site_content')) {
         }
 
         $email = !empty($settings['email']) ? $settings['email'] : 'contact@pava-shipping.fr';
-        $telephone = !empty($settings['telephone']) ? $settings['telephone'] : '[À compléter]';
-        $adresse = !empty($settings['adresse']) ? $settings['adresse'] : '[À compléter]';
+        $telephone = !empty($settings['telephone']) ? $settings['telephone'] : '0032465297645';
+        $adresse = !empty($settings['adresse']) ? $settings['adresse'] : 'Fluitbergstraat 59, 2900 Schoten';
         $nom = !empty($settings['nom']) ? $settings['nom'] : 'Plateforme de Suivi';
 
         return [
