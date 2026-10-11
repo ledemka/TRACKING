@@ -126,6 +126,8 @@ function haversine_km(float $lat1, float $lng1, float $lat2, float $lng2): float
     return 2 * $r * asin(min(1.0, sqrt($a)));
 }
 
+$page_title = 'Suivi d\'expédition en direct';
+$page_description = "Accédez au suivi en direct de votre colis : localisation sur carte, avancement des étapes et historique des événements.";
 require_once __DIR__ . '/templates/public_header.php';
 
 function get_step_status_label($progressed_status, $step_status) {

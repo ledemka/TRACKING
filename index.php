@@ -3,7 +3,8 @@
 require_once __DIR__ . '/api/bootstrap.php';
 require_once __DIR__ . '/templates/site_content.php';
 
-$page_title = 'Accueil';
+$page_title = 'Accueil — Suivi et acheminement de colis en temps réel';
+$page_description = "Plateforme de suivi des expéditions de colis : consultation en direct de l'avancement, de la localisation et des étapes d'acheminement.";
 require_once __DIR__ . '/templates/public_header.php';
 ?>
 

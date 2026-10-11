@@ -29,9 +29,15 @@ $slides = $content['hero_slides'];
                 <!-- Contenu textuel de la slide -->
                 <div class="relative z-10 max-w-[1280px] mx-auto h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
                     <div class="max-w-2xl text-white">
+                        <?php if ($isFirst): ?>
                         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4 drop-shadow-sm">
                             <?= escape_html($slide['title']) ?>
                         </h1>
+                        <?php else: ?>
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4 drop-shadow-sm">
+                            <?= escape_html($slide['title']) ?>
+                        </h2>
+                        <?php endif; ?>
                         <p class="text-base sm:text-lg text-slate-200 mb-8 leading-relaxed max-w-xl">
                             <?= escape_html($slide['subtitle']) ?>
                         </p>

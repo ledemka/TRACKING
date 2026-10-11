@@ -4,74 +4,27 @@
 require_once __DIR__ . '/api/bootstrap.php';
 
 $page_title = 'Service Suivi — Traçabilité continue et historique des colis';
+$page_description = "Le suivi documente le parcours géographique du colis à chaque passage en centre de transit au fil des étapes du circuit.";
 require_once __DIR__ . '/templates/public_header.php';
+
+$banner_config = [
+    'badge' => 'Traçabilité en continu',
+    'title' => 'Suivi des colis et chronologie d\'acheminement',
+    'description' => 'Le suivi documente le parcours géographique du colis à chaque passage en centre de transit. Les événements horodatés informent de l\'état courant au fil des étapes du circuit logistique.',
+    'breadcrumbs' => [
+        ['label' => 'Accueil', 'url' => '/'],
+        ['label' => 'Services', 'url' => '/services'],
+        ['label' => 'Suivi']
+    ],
+    'actions' => [
+        ['label' => 'Accéder au formulaire de suivi', 'url' => '/track', 'primary' => true],
+        ['label' => 'Une question ? Contactez-nous', 'url' => '/contact', 'primary' => false],
+    ]
+];
 ?>
 
 <main class="flex-grow flex flex-col bg-white">
-    <!-- Fil d'Ariane -->
-    <nav class="bg-[#F4F3ED] border-b border-stone-200 py-3 px-4 sm:px-6 lg:px-8" aria-label="Fil d'Ariane">
-        <div class="max-w-[1280px] mx-auto flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]">
-            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light">Accueil</a>
-            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-stone-400">Services</span>
-            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-[#171717]" aria-current="page">Suivi</span>
-        </div>
-    </nav>
-
-    <!-- Hero de présentation -->
-    <section class="py-12 sm:py-16 lg:py-20 bg-[#171717] text-white relative overflow-hidden" aria-labelledby="service-title">
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-                <div class="lg:col-span-7">
-                    <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4">
-                        Traçabilité en continu
-                    </span>
-                    <h1 id="service-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
-                        Suivi des colis et chronologie d'acheminement
-                    </h1>
-                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">
-                        Le suivi documente le parcours géographique du colis à chaque passage en centre de transit. Les événements horodatés informent de l'état courant au fil des étapes du circuit logistique.
-                    </p>
-
-                    <!-- Formulaire de recherche directe intégré -->
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/15 max-w-xl">
-                        <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-3">
-                            <label for="track-input-service" class="sr-only">Numéro de suivi</label>
-                            <input 
-                                type="text" 
-                                id="track-input-service"
-                                name="id" 
-                                placeholder="Ex. COLIS-2026-00125" 
-                                class="flex-grow bg-white text-[#171717] px-4 py-3 rounded-lg text-sm font-semibold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#FFE500]"
-                                required
-                            >
-                            <button type="submit" class="bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3 rounded-lg transition-colors focus-brand-light whitespace-nowrap shadow-sm">
-                                Suivre
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5">
-                    <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black">
-                        <img 
-                            src="/assets/img/site/service-suivi.webp" 
-                            alt="Lecture optique d'un code-barres sur un colis dans une zone logistique" 
-                            class="w-full h-auto object-cover object-center" 
-                            width="896" 
-                            height="1200" 
-                            fetchpriority="high"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <?php require __DIR__ . '/templates/page_banner.php'; ?>
 
     <!-- Section Principes & Protection des données -->
     <section class="py-16 sm:py-20 bg-white" aria-labelledby="principles-heading">

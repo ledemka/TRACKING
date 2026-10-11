@@ -395,8 +395,6 @@ if (!function_exists('get_site_content')) {
                     ['label' => 'Services', 'url' => '/services'],
                     ['label' => 'Suivre un colis', 'url' => '/track'],
                     ['label' => 'Contact', 'url' => '/contact'],
-                    ['label' => 'Mentions légales', 'url' => '/mentions-legales'],
-                    ['label' => 'Confidentialité', 'url' => '/confidentialite'],
                 ],
                 'legal_notice' => '[À compléter]',
                 'privacy_notice' => '[À compléter]',

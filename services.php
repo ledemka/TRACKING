@@ -11,48 +11,26 @@ $editorial = $content['editorial'];
 $details = $content['services_detail'];
 
 $page_title = 'Nos Services — Organisation et acheminement logistique';
+$page_description = "Découvrez les quatre services logistiques essentiels : expédition, suivi, livraison et gestion centralisée des colis.";
 require_once __DIR__ . '/templates/public_header.php';
+
+$banner_config = [
+    'badge' => 'Offre de services',
+    'title' => 'Nos services d\'acheminement et de suivi logistique',
+    'description' => 'Découvrez les quatre maillons essentiels de notre chaîne logistique : de la prise en charge initiale de votre colis jusqu\'à sa remise finale au destinataire.',
+    'breadcrumbs' => [
+        ['label' => 'Accueil', 'url' => '/'],
+        ['label' => 'Services']
+    ],
+    'actions' => [
+        ['label' => 'Suivre une expédition', 'url' => '/track', 'primary' => true],
+        ['label' => 'Contacter notre équipe', 'url' => '/contact', 'primary' => false],
+    ]
+];
 ?>
 
 <main class="flex-grow flex flex-col bg-white">
-    <!-- Fil d'Ariane -->
-    <nav class="bg-[#F4F3ED] border-b border-stone-200 py-3 px-4 sm:px-6 lg:px-8" aria-label="Fil d'Ariane">
-        <div class="max-w-[1280px] mx-auto flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]">
-            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light rounded">Accueil</a>
-            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-[#171717]" aria-current="page">Services</span>
-        </div>
-    </nav>
-
-    <!-- En-tête / Hero général des services -->
-    <section class="py-12 sm:py-16 lg:py-20 bg-[#171717] text-white relative overflow-hidden" aria-labelledby="services-hub-title">
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="max-w-3xl">
-                <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4">
-                    Offre de services
-                </span>
-                <h1 id="services-hub-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
-                    Nos services d'acheminement et de suivi logistique
-                </h1>
-                <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8">
-                    Découvrez les quatre maillons essentiels de notre chaîne logistique : de la prise en charge initiale de votre colis jusqu'à sa remise finale au destinataire.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="/track" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
-                        <span>Suivre une expédition</span>
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </a>
-                    <a href="/contact" class="inline-flex items-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white/10 font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark">
-                        <span>Contacter notre équipe</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <?php require __DIR__ . '/templates/page_banner.php'; ?>
 
     <!-- Grille récapitulative des 4 services avec accès direct -->
     <section class="py-16 sm:py-20 bg-[#F4F3ED] border-b border-stone-200" aria-label="Liste des services">

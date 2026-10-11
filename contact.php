@@ -87,67 +87,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$page_title = 'Contact — Renseignements et assistance logistique';
+$page_description = "Contactez nos équipes logistiques pour toute question relative au suivi de vos colis ou à nos prestations d'acheminement.";
 require_once __DIR__ . '/templates/public_header.php';
+
+$banner_config = [
+    'badge' => 'À votre écoute',
+    'title' => 'Contactez notre équipe logistique',
+    'description' => 'Notre équipe est à votre disposition pour répondre à vos demandes relatives au suivi de vos expéditions et à nos services.',
+    'breadcrumbs' => [
+        ['label' => 'Accueil', 'url' => '/'],
+        ['label' => 'Contact']
+    ],
+    'actions' => [
+        ['label' => 'Suivre un colis', 'url' => '/track', 'primary' => true],
+    ]
+];
 ?>
 
-<main class="flex-grow flex flex-col py-16 px-4 bg-surface transition-opacity duration-500">
-    <div class="max-w-4xl mx-auto w-full flex flex-col md:flex-row gap-12">
-        
-        <?php if (!empty($settings['email']) || !empty($settings['telephone']) || !empty($settings['adresse'])): ?>
-        <div class="w-full md:w-1/3 flex flex-col gap-6">
-            <div>
-                <h1 class="text-3xl font-bold text-primary mb-2 tracking-tight">Contact</h1>
-                <p class="text-slate-500 text-sm leading-relaxed">Notre équipe est là pour vous accompagner à chaque étape de vos expéditions.</p>
-            </div>
-            
-            <div class="bg-white p-6 rounded-2xl shadow-elevation-1 border border-slate-200 flex flex-col gap-6">
-                <?php if (!empty($settings['email'])): ?>
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 bg-surface rounded-lg flex items-center justify-center text-action flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-700">Email</span>
-                        <a href="mailto:<?= escape_html($settings['email']) ?>" class="text-slate-500 text-sm hover:text-action transition-colors"><?= escape_html($settings['email']) ?></a>
+<main class="flex-grow flex flex-col bg-white">
+    <?php require __DIR__ . '/templates/page_banner.php'; ?>
+
+    <section class="py-16 sm:py-20 bg-[#F4F3ED]" aria-labelledby="contact-section-title">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 id="contact-section-title" class="sr-only">Formulaire et coordonnées de contact</h2>
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
+                
+                <?php if (!empty($settings['email']) || !empty($settings['telephone']) || !empty($settings['adresse'])): ?>
+                <div class="w-full md:w-5/12 flex flex-col gap-6">
+                    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm flex flex-col gap-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Coordonnées</span>
+                        
+                        <?php if (!empty($settings['email'])): ?>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-[#171717] rounded-lg flex items-center justify-center text-[#FFE500] shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Email</span>
+                                <a href="mailto:<?= escape_html($settings['email']) ?>" class="text-[#171717] font-semibold text-sm hover:underline"><?= escape_html($settings['email']) ?></a>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($settings['telephone'])): ?>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-[#171717] rounded-lg flex items-center justify-center text-[#FFE500] shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Téléphone</span>
+                                <a href="tel:<?= escape_html($settings['telephone']) ?>" class="text-[#171717] font-semibold text-sm hover:underline"><?= escape_html($settings['telephone']) ?></a>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($settings['adresse'])): ?>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 bg-[#171717] rounded-lg flex items-center justify-center text-[#FFE500] shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Adresse</span>
+                                <span class="text-[#171717] font-semibold text-sm leading-relaxed"><?= nl2br(escape_html($settings['adresse'])) ?></span>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <div class="w-full md:w-7/12">
+                <?php else: ?>
+                <div class="max-w-xl mx-auto w-full">
                 <?php endif; ?>
                 
-                <?php if (!empty($settings['telephone'])): ?>
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 bg-surface rounded-lg flex items-center justify-center text-action flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                    </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-700">Téléphone</span>
-                        <a href="tel:<?= escape_html($settings['telephone']) ?>" class="text-slate-500 text-sm hover:text-action transition-colors"><?= escape_html($settings['telephone']) ?></a>
-                    </div>
-                </div>
-                <?php endif; ?>
-                
-                <?php if (!empty($settings['adresse'])): ?>
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 bg-surface rounded-lg flex items-center justify-center text-action flex-shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-700">Adresse</span>
-                        <span class="text-slate-500 text-sm leading-relaxed"><?= nl2br(escape_html($settings['adresse'])) ?></span>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <div class="w-full md:w-2/3">
-        <?php else: ?>
-        <div class="max-w-xl mx-auto w-full">
-            <div class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-primary mb-2 tracking-tight">Contactez-nous</h1>
-                <p class="text-slate-500">Remplissez le formulaire ci-dessous, notre équipe vous répondra dans les plus brefs délais.</p>
-            </div>
-        <?php endif; ?>
-        
-            <div class="bg-white p-8 rounded-2xl shadow-elevation-1 border border-slate-200">
+                    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
                 <?php if ($success): ?>
                     <div class="bg-status-delivered-bg text-status-delivered-text p-4 rounded-lg border border-status-delivered-bg mb-6 text-sm font-medium">
                         Votre message a bien été envoyé. Nous vous contacterons rapidement.

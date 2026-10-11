@@ -4,67 +4,27 @@
 require_once __DIR__ . '/api/bootstrap.php';
 
 $page_title = 'Service Gestion des expéditions — Supervision et contrôle des flux';
+$page_description = "La gestion des expéditions permet une vue synthétique et centralisée sur l'ensemble des colis enregistrés et des statuts.";
 require_once __DIR__ . '/templates/public_header.php';
+
+$banner_config = [
+    'badge' => 'Supervision globale',
+    'title' => 'Gestion et supervision des expéditions',
+    'description' => 'La gestion des expéditions centralise l\'organisation des flux d\'envois, la coordination avec les transporteurs partenaires et le suivi systématique des statuts réglementaires.',
+    'breadcrumbs' => [
+        ['label' => 'Accueil', 'url' => '/'],
+        ['label' => 'Services', 'url' => '/services'],
+        ['label' => 'Gestion des expéditions']
+    ],
+    'actions' => [
+        ['label' => 'Consulter un envoi', 'url' => '/track', 'primary' => true],
+        ['label' => 'Nous contacter', 'url' => '/contact', 'primary' => false],
+    ]
+];
 ?>
 
 <main class="flex-grow flex flex-col bg-white">
-    <!-- Fil d'Ariane -->
-    <nav class="bg-[#F4F3ED] border-b border-stone-200 py-3 px-4 sm:px-6 lg:px-8" aria-label="Fil d'Ariane">
-        <div class="max-w-[1280px] mx-auto flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]">
-            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light">Accueil</a>
-            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-stone-400">Services</span>
-            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span class="text-[#171717]" aria-current="page">Gestion des expéditions</span>
-        </div>
-    </nav>
-
-    <!-- Hero de présentation -->
-    <section class="py-12 sm:py-16 lg:py-20 bg-[#171717] text-white relative overflow-hidden" aria-labelledby="service-title">
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-                <div class="lg:col-span-7">
-                    <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4">
-                        Supervision globale
-                    </span>
-                    <h1 id="service-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
-                        Gestion et supervision des expéditions
-                    </h1>
-                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">
-                        La gestion des expéditions centralise l'organisation des flux d'envois, la coordination avec les transporteurs partenaires et le suivi systématique des statuts réglementaires.
-                    </p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="/track" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
-                            <span>Consulter un envoi</span>
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                            </svg>
-                        </a>
-                        <a href="/contact" class="inline-flex items-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white/10 font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark">
-                            <span>Nous contacter</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5">
-                    <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black">
-                        <img 
-                            src="/assets/img/site/service-gestion.webp" 
-                            alt="Vue en hauteur d'un entrepôt logistique avec rayonnages ordonnés et allées de stockage" 
-                            class="w-full h-auto object-cover object-center" 
-                            width="900" 
-                            height="672" 
-                            fetchpriority="high"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <?php require __DIR__ . '/templates/page_banner.php'; ?>
 
     <!-- Section Organisation et Contrôle -->
     <section class="py-16 sm:py-20 bg-white" aria-labelledby="management-heading">
