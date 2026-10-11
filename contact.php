@@ -101,7 +101,9 @@ $banner_config = [
     ],
     'actions' => [
         ['label' => 'Suivre un colis', 'url' => '/track', 'primary' => true],
-    ]
+    ],
+    'image' => '/assets/img/site/contact-support.webp',
+    'image_alt' => 'Opératrice du service client logistique et suivi des expéditions'
 ];
 ?>
 
