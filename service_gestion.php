@@ -1,90 +1,187 @@
 <?php
+// service_gestion.php
+// Présentation du service Gestion des expéditions — Supervision coordonnée des volumes et suivi centralisé
 require_once __DIR__ . '/api/bootstrap.php';
+
+$page_title = 'Service Gestion des expéditions — Supervision et contrôle des flux';
 require_once __DIR__ . '/templates/public_header.php';
 ?>
 
-<main class="flex-grow flex flex-col py-16 px-4 bg-surface">
-    <div class="max-w-4xl mx-auto w-full">
-        <a href="/" class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-primary transition-colors mb-8">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Retour à l'accueil
-        </a>
-        
-        <div class="bg-white rounded-2xl shadow-elevation-1 border border-slate-200 overflow-hidden mb-12">
-            <div class="p-8 md:p-12 border-b border-slate-100">
-                <div class="w-16 h-16 rounded-xl bg-action/10 text-action flex items-center justify-center mb-8">
-                    <svg class="w-8 h-8 animate-[gentleShake_4s_ease-in-out_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+<main class="flex-grow flex flex-col bg-white">
+    <!-- Fil d'Ariane -->
+    <nav class="bg-[#F4F3ED] border-b border-stone-200 py-3 px-4 sm:px-6 lg:px-8" aria-label="Fil d'Ariane">
+        <div class="max-w-[1280px] mx-auto flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]">
+            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light">Accueil</a>
+            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-stone-400">Services</span>
+            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-[#171717]" aria-current="page">Gestion des expéditions</span>
+        </div>
+    </nav>
+
+    <!-- Hero de présentation -->
+    <section class="py-12 sm:py-16 lg:py-20 bg-[#171717] text-white relative overflow-hidden" aria-labelledby="service-title">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <div class="lg:col-span-7">
+                    <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4">
+                        Supervision globale
+                    </span>
+                    <h1 id="service-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
+                        Gestion et supervision des expéditions
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">
+                        La gestion des expéditions centralise l'organisation des flux d'envois, la coordination avec les transporteurs partenaires et le suivi systématique des statuts réglementaires.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="/track" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
+                            <span>Consulter un envoi</span>
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                        <a href="/contact" class="inline-flex items-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white/10 font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark">
+                            <span>Nous contacter</span>
+                        </a>
+                    </div>
                 </div>
-                <h1 class="text-3xl md:text-4xl font-bold text-primary mb-6 tracking-tight">Gestion des expéditions</h1>
-                <p class="text-lg text-slate-600 leading-relaxed max-w-2xl">
-                    Une interface dédiée, sécurisée et professionnelle pour gérer vos colis, leurs statuts et leurs informations de suivi.
-                </p>
+
+                <div class="lg:col-span-5">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black">
+                        <img 
+                            src="/assets/img/site/service-gestion.webp" 
+                            alt="Vue en hauteur d'un entrepôt logistique avec rayonnages ordonnés et allées de stockage" 
+                            class="w-full h-auto object-cover object-center" 
+                            width="900" 
+                            height="672" 
+                            fetchpriority="high"
+                        >
+                    </div>
+                </div>
             </div>
-            
-            <div class="p-8 md:p-12 bg-slate-50/50">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div>
-                        <h2 class="text-xl font-bold text-primary mb-4 tracking-tight">La gestion des colis</h2>
-                        <p class="text-slate-600 mb-6 leading-relaxed text-sm">
-                            L'interface de gestion permet de regrouper toutes vos expéditions au sein d'un même espace de contrôle. Grâce à ce tableau de bord, vous obtenez une vue globale des activités logistiques de votre entreprise.
-                        </p>
-                        
-                        <h2 class="text-xl font-bold text-primary mb-4 tracking-tight">Ce que permet l'interface</h2>
-                        <ul class="space-y-3 mb-6">
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">La consultation centralisée de tous les colis actifs</span>
+        </div>
+    </section>
+
+    <!-- Section Organisation et Contrôle -->
+    <section class="py-16 sm:py-20 bg-white" aria-labelledby="management-heading">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+                <div class="lg:col-span-6 space-y-6">
+                    <h2 id="management-heading" class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight">
+                        Une structure ordonnée des flux logistiques
+                    </h2>
+                    <p class="text-base text-[#333333] leading-relaxed">
+                        L'organisation des expéditions repose sur un référentiel unique où chaque colis est répertorié avec ses paramètres d'origine, sa destination finale et ses événements intermédiaires.
+                    </p>
+                    <p class="text-base text-[#333333] leading-relaxed">
+                        Cette centralisation assure la cohérence des données transmises à chaque point de contrôle et permet une restitution cartographique précise des déplacements.
+                    </p>
+
+                    <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-[#171717] mb-3">
+                            Fonctions clés de gestion
+                        </h3>
+                        <ul class="space-y-2.5 text-sm sm:text-base text-[#333333]" aria-label="Fonctions clés">
+                            <li class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-[#B5A000] shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Attribution et archivage des numéros de référence d'envoi</span>
                             </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">La modification et la mise à jour des expéditions</span>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-[#B5A000] shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Coordination des mises à jour de statuts d'acheminement</span>
                             </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">L'ajout d'événements de suivi précis avec géolocalisation indicative</span>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-[#B5A000] shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Consignation horodatée des passages en centre logistique</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-[#B5A000] shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>Signalement méthodique des retards et anomalies de transit</span>
                             </li>
                         </ul>
                     </div>
-                    
-                    <div>
-                        <h2 class="text-xl font-bold text-primary mb-6 tracking-tight">Gestion des statuts</h2>
-                        <p class="text-slate-600 mb-6 leading-relaxed text-sm">
-                            Afin d'assurer un suivi rigoureux, vous pouvez faire évoluer chaque colis à travers le cycle de livraison officiel :
-                        </p>
-                        <div class="relative pl-6 space-y-8 before:absolute before:inset-y-2 before:left-[11px] before:w-[2px] before:bg-slate-200">
-                            <div class="relative">
-                                <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-slate-400"></div>
-                                <h3 class="font-bold text-primary text-sm">1. Expédié</h3>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight">
+                        Supervision par étapes d'avancement
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">1</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Enregistrement et vérification initiale</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Contrôle des données de l'envoi, rattachement au transporteur et création de la fiche d'expédition.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="relative">
-                                <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-action shadow-[0_0_0_4px_rgba(23,92,211,0.1)]"></div>
-                                <h3 class="font-bold text-primary text-sm">2. En cours de livraison</h3>
+                        </div>
+
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">2</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Traçabilité des points d'étape</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Intégration continue des événements de transit transmis par les terminaux optiques de manutention.
+                                    </p>
+                                </div>
                             </div>
-                            <div class="relative">
-                                <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-accent"></div>
-                                <h3 class="font-bold text-primary text-sm">3. Livré</h3>
-                            </div>
-                            <div class="relative">
-                                <div class="absolute left-[-29px] top-1 w-3 h-3 rounded-full bg-red-500"></div>
-                                <h3 class="font-bold text-primary text-sm">4. Retardé</h3>
+                        </div>
+
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">3</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Clôture et historique</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Confirmation finale de remise par le transporteur et archivage des données pour consultation ultérieure.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="p-8 md:p-12 text-center border-t border-slate-100 bg-white">
-                <a href="/track" class="btn-primary inline-flex text-lg w-full sm:w-auto">
-                    Consulter le suivi d'un colis
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </div>
+    </section>
+
+    <!-- Bandeau CTA harmonisé -->
+    <section class="py-12 sm:py-16 bg-[#FFE500] text-[#171717]" aria-label="Action de suivi">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-4">
+                Une question sur la gestion de vos flux ?
+            </h2>
+            <p class="text-base text-[#171717] leading-relaxed mb-8">
+                Pour toute demande d'information sur les procédures d'expédition et les outils de suivi, contactez nos équipes.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/track" class="inline-flex items-center gap-2 bg-[#171717] text-white hover:bg-black font-bold text-sm px-8 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
+                    <span>Suivre un colis</span>
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </a>
+                <a href="/contact" class="inline-flex items-center gap-2 bg-transparent text-[#171717] border-2 border-[#171717] hover:bg-[#171717] hover:text-white font-bold text-sm px-8 py-3.5 rounded-lg transition-colors focus-brand-light">
+                    <span>Nous contacter</span>
                 </a>
             </div>
         </div>
-    </div>
+    </section>
 </main>
-
-<style>
-@keyframes gentleShake { 0%, 100% { transform: rotate(0deg); } 5% { transform: rotate(-3deg); } 10% { transform: rotate(3deg); } 15% { transform: rotate(0deg); } }
-</style>
 
 <?php require_once __DIR__ . '/templates/public_footer.php'; ?>

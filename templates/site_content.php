@@ -213,7 +213,7 @@ if (!function_exists('get_site_content')) {
                     'id' => 'expedition',
                     'title' => 'Expédition',
                     'tag' => 'Étape initiale',
-                    'description' => 'L\'expédition formalise la prise en charge du colis dans le réseau de distribution. Chaque unité se voit attribuer un numéro d\'identification unique garantissant la continuité de sa traçabilité.',
+                    'description' => 'L\'expédition formalise la prise en charge du colis dans le réseau de distribution. Chaque unité se voit attribuer un numéro d\'identification unique assurant la continuité de sa traçabilité.',
                     'items' => [
                         'Contrôle dimensionnel et pesée du colis au dépôt',
                         'Attribution d\'une étiquette normalisée avec référence de suivi',

@@ -1,80 +1,165 @@
 <?php
+// service_livraison.php
+// Présentation du service Livraison — Distribution locale, remise au destinataire et clôture
 require_once __DIR__ . '/api/bootstrap.php';
+
+$page_title = 'Service Livraison — Acheminement final et remise des colis';
 require_once __DIR__ . '/templates/public_header.php';
 ?>
 
-<main class="flex-grow flex flex-col py-16 px-4 bg-surface">
-    <div class="max-w-4xl mx-auto w-full">
-        <a href="/" class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-primary transition-colors mb-8">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            Retour à l'accueil
-        </a>
-        
-        <div class="bg-white rounded-2xl shadow-elevation-1 border border-slate-200 overflow-hidden mb-12">
-            <div class="p-8 md:p-12 border-b border-slate-100">
-                <div class="w-16 h-16 rounded-xl bg-action/10 text-action flex items-center justify-center mb-8">
-                    <svg class="w-8 h-8 animate-[slideRight_2s_ease-in-out_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-bold text-primary mb-6 tracking-tight">Livraison</h1>
-                <p class="text-lg text-slate-600 leading-relaxed max-w-2xl">
-                    Suivez l'avancement de votre colis jusqu'à sa livraison finale. Nous vous accompagnons jusqu'au dernier kilomètre.
-                </p>
-            </div>
-            
-            <div class="p-8 md:p-12 bg-slate-50/50">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div>
-                        <h2 class="text-xl font-bold text-primary mb-4 tracking-tight">Les dernières étapes du parcours</h2>
-                        <p class="text-slate-600 mb-6 leading-relaxed text-sm">
-                            L'étape de livraison est le moment où votre colis approche de sa destination. Dès que votre suivi indique le statut « En cours de livraison », cela signifie que les équipes logistiques locales ont pris le relais.
-                        </p>
-                        
-                        <h2 class="text-xl font-bold text-primary mb-4 tracking-tight">La progression finale</h2>
-                        <p class="text-slate-600 leading-relaxed mb-4 text-sm">
-                            Une fois le colis arrivé :
-                        </p>
-                        <ul class="space-y-3 mb-6">
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">L'événement de livraison est enregistré</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">La chronologie du suivi est clôturée</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <div class="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center flex-shrink-0 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
-                                <span class="text-slate-700 text-sm font-medium">Le statut final est consultable sur la page de suivi public.</span>
-                            </li>
-                        </ul>
+<main class="flex-grow flex flex-col bg-white">
+    <!-- Fil d'Ariane -->
+    <nav class="bg-[#F4F3ED] border-b border-stone-200 py-3 px-4 sm:px-6 lg:px-8" aria-label="Fil d'Ariane">
+        <div class="max-w-[1280px] mx-auto flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]">
+            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light">Accueil</a>
+            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-stone-400">Services</span>
+            <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-[#171717]" aria-current="page">Livraison</span>
+        </div>
+    </nav>
+
+    <!-- Hero de présentation -->
+    <section class="py-12 sm:py-16 lg:py-20 bg-[#171717] text-white relative overflow-hidden" aria-labelledby="service-title">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <div class="lg:col-span-7">
+                    <span class="inline-block bg-[#FFE500] text-[#171717] text-xs font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-md mb-4">
+                        Étape finale de distribution
+                    </span>
+                    <h1 id="service-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
+                        Livraison et remise au destinataire
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mb-8">
+                        La livraison constitue le dernier maillon de l'acheminement logistique. Elle regroupe la prise en charge par les équipes de distribution locale jusqu'à la remise physique et la clôture de l'envoi.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="/track" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
+                            <span>Vérifier un colis en livraison</span>
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                        <a href="/contact" class="inline-flex items-center gap-2 bg-transparent text-white border border-white/20 hover:bg-white/10 font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark">
+                            <span>Une question sur la remise ?</span>
+                        </a>
                     </div>
-                    
-                    <div>
-                        <h2 class="text-xl font-bold text-primary mb-4 tracking-tight">Que signifie « Livré » ?</h2>
-                        <div class="bg-white p-6 rounded-2xl shadow-elevation-1 border border-status-delivered-bg mb-6">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="px-3 py-1 bg-status-delivered-bg text-status-delivered-text rounded-full font-bold text-xs border border-status-delivered-bg">Livré</div>
+                </div>
+
+                <div class="lg:col-span-5">
+                    <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-black">
+                        <img 
+                            src="/assets/img/site/service-livraison.webp" 
+                            alt="Remise d'un colis cartonné à l'entrée d'une résidence par un coursier de dos" 
+                            class="w-full h-auto object-cover object-center" 
+                            width="900" 
+                            height="900" 
+                            fetchpriority="high"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Déroulement de la livraison -->
+    <section class="py-16 sm:py-20 bg-white" aria-labelledby="delivery-process-heading">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+                <div class="lg:col-span-6 space-y-6">
+                    <h2 id="delivery-process-heading" class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight">
+                        Organisation de la remise physique
+                    </h2>
+                    <p class="text-base text-[#333333] leading-relaxed">
+                        Lorsque le colis parvient à l'agence de distribution de proximité, son statut bascule à « En cours de livraison ». Cette phase active la préparation de la tournée locale de remise.
+                    </p>
+                    <p class="text-base text-[#333333] leading-relaxed">
+                        La remise physique s'effectue à l'adresse indiquée lors de l'enregistrement initial. À l'achèvement de cette opération, la confirmation de remise clôture la chronologie de suivi.
+                    </p>
+
+                    <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-[#171717] mb-3">
+                            Signification du statut final « Livré »
+                        </h3>
+                        <p class="text-sm text-[#6B6B6B] leading-relaxed mb-4">
+                            L'enregistrement du statut « Livré » confirme que le colis a été réceptionné par le destinataire ou déposé au point convenu. L'événement est archivé dans l'historique de traçabilité.
+                        </p>
+                        <div class="flex items-center gap-3 bg-white p-3.5 rounded-lg border border-stone-200">
+                            <span class="inline-block bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-green-200">
+                                Statut final
+                            </span>
+                            <span class="text-sm font-semibold text-[#171717]">Cycle d'acheminement mené à son terme</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight">
+                        Les jalons de la tournée finale
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">1</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Arrivée au centre local</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Réception du colis au dépôt de proximité et scan d'entrée pour validation de l'itinéraire régional.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-sm text-slate-500 leading-relaxed">
-                                Le statut « Livré » indique que la livraison est terminée.
-                            </p>
+                        </div>
+
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">2</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Prise en charge par le livreur</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Chargement dans le véhicule de distribution et passage au statut « En cours de livraison ».
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#F4F3ED] rounded-xl p-6 border border-stone-200 service-card-hover">
+                            <div class="flex items-start gap-4">
+                                <span class="w-8 h-8 rounded-lg bg-[#171717] text-[#FFE500] font-bold text-sm flex items-center justify-center shrink-0">3</span>
+                                <div>
+                                    <h3 class="text-base font-bold text-[#171717] mb-1">Remise et clôture du dossier</h3>
+                                    <p class="text-sm text-[#6B6B6B] leading-relaxed">
+                                        Validation de la remise physique, horodatage de l'événement et mise à jour de l'historique public.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="p-8 md:p-12 text-center border-t border-slate-100 bg-white">
-                <a href="/track" class="btn-primary inline-flex text-lg w-full sm:w-auto">
-                    Suivre une livraison
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </a>
-            </div>
         </div>
-    </div>
-</main>
+    </section>
 
-<style>
-@keyframes slideRight { 0% { transform: translateX(-3px); opacity: 0.9; } 50% { transform: translateX(3px); opacity: 1; } 100% { transform: translateX(-3px); opacity: 0.9; } }
-</style>
+    <!-- Bandeau CTA harmonisé -->
+    <section class="py-12 sm:py-16 bg-[#FFE500] text-[#171717]" aria-label="Action de suivi">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-4">
+                Suivre l'acheminement jusqu'au destinataire
+            </h2>
+            <p class="text-base text-[#171717] leading-relaxed mb-8">
+                Consultez à tout moment la progression de vos envois sur notre outil de traçabilité en ligne.
+            </p>
+            <a href="/track" class="inline-flex items-center gap-2 bg-[#171717] text-white hover:bg-black font-bold text-sm px-8 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
+                <span>Accéder au suivi</span>
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+</main>
 
 <?php require_once __DIR__ . '/templates/public_footer.php'; ?>

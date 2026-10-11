@@ -23,10 +23,18 @@ $routes = [
     '/shipments/new' => '/shipment_new.php',
     '/customers' => '/customers.php',
     '/settings' => '/settings.php',
+    '/services' => '/services.php',
+    '/services/' => '/services.php',
     '/services/expedition' => '/service_expedition.php',
+    '/services/expedition/' => '/service_expedition.php',
     '/services/suivi' => '/service_suivi.php',
+    '/services/suivi/' => '/service_suivi.php',
     '/services/livraison' => '/service_livraison.php',
+    '/services/livraison/' => '/service_livraison.php',
+    '/services/gestion' => '/service_gestion.php',
+    '/services/gestion/' => '/service_gestion.php',
     '/services/gestion-expeditions' => '/service_gestion.php',
+    '/services/gestion-expeditions/' => '/service_gestion.php',
 ];
 
 if (array_key_exists($path, $routes)) {

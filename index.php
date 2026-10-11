@@ -14,7 +14,6 @@ require_once __DIR__ . '/templates/public_header.php';
     require __DIR__ . '/templates/home/transition_banner.php';
     require __DIR__ . '/templates/home/shipment_tracker.php';
     require __DIR__ . '/templates/home/company_intro.php';
-    require __DIR__ . '/templates/home/feature_cards.php';
 
     // Étape D2 : milieu de page (Mosaïque, Services, Onglets & Appel à l'action)
     require __DIR__ . '/templates/home/solutions_gallery.php';
