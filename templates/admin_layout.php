@@ -10,7 +10,10 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
     <!-- Sidebar Desktop -->
     <aside class="hidden md:flex flex-col w-64 bg-primary text-white flex-shrink-0 min-h-screen">
         <div class="p-6">
-            <a href="/dashboard" class="font-bold text-xl tracking-tight"><?= escape_html($settings['nom']) ?></a>
+            <a href="/dashboard" class="font-bold text-xl tracking-tight flex items-center gap-2.5">
+                <img src="/assets/img/logo/logo-mark-fond-sombre.svg" alt="Logo" class="h-8 w-8 shrink-0" width="32" height="32">
+                <span><?= escape_html($settings['nom']) ?></span>
+            </a>
         </div>
         <nav class="flex-1 mt-6 flex flex-col gap-2 px-4">
             <a href="/dashboard" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/dashboard' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Tableau de bord</a>
@@ -33,7 +36,10 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
 
     <!-- Mobile Header & Menu -->
     <header class="md:hidden bg-primary text-white py-4 px-4 w-full flex justify-between items-center absolute top-0 left-0 z-50">
-        <a href="/dashboard" class="font-bold text-lg"><?= escape_html($settings['nom']) ?></a>
+        <a href="/dashboard" class="font-bold text-lg flex items-center gap-2">
+            <img src="/assets/img/logo/logo-mark-fond-sombre.svg" alt="Logo" class="h-6 w-6 shrink-0" width="24" height="24">
+            <span><?= escape_html($settings['nom']) ?></span>
+        </a>
         <div class="flex items-center gap-3">
             <span class="text-xs text-white/70 hidden sm:inline-block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"><?= escape_html($current_admin_email) ?></span>
             <button id="admin-mobile-btn" class="p-2 bg-white/10 rounded-md">Menu</button>

@@ -16,6 +16,9 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($page_title) ? escape_html($page_title) . ' - ' : '' ?>Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/img/logo/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/logo/apple-touch-icon.png">
     <link href="/assets/css/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <?php if (isset($use_map) && $use_map): ?>
@@ -33,7 +36,10 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
     <header class="fixed top-0 w-full z-50 bg-primary text-white shadow-md">
         <div class="h-16 px-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <span class="font-title-md font-bold">Administration</span>
+                <a href="/dashboard" class="flex items-center gap-2.5 text-white hover:opacity-90 transition-opacity">
+                    <img src="/assets/img/logo/logo-mark-fond-sombre.svg" alt="Logo" class="h-8 w-8 shrink-0" width="32" height="32">
+                    <span class="font-title-md font-bold tracking-tight">Administration</span>
+                </a>
                 <nav class="hidden md:flex gap-4 ml-8">
                     <a href="/dashboard" class="hover:text-accent">Dashboard</a>
                     <a href="/shipments" class="hover:text-accent">Colis</a>

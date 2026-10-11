@@ -21,6 +21,15 @@ module.exports = {
           delivery: { bg: "#FFF7ED", text: "#D97706", border: "#FED7AA" },
           delivered: { bg: "#F0FDF4", text: "#16A34A", border: "#BBF7D0" },
           delayed: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+        },
+        brand: {
+          noir: "var(--brand-noir, #171717)",
+          jaune: "var(--brand-jaune, #FFE500)",
+          olive: "var(--brand-olive, #B5A000)",
+          sable: "var(--brand-sable, #F4F3ED)",
+          texte: "var(--brand-texte, #333333)",
+          secondaire: "var(--brand-secondaire, #6B6B6B)",
+          blanc: "var(--brand-blanc, #FFFFFF)",
         }
       },
       fontFamily: {

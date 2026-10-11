@@ -11,7 +11,11 @@ $colorAccent = preg_match('/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/', $settings['col
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#171717">
     <title><?= escape_html($settings['nom']) ?> - <?= escape_html($page_title ?? 'Suivi de colis') ?></title>
+    <link rel="icon" type="image/svg+xml" href="/assets/img/logo/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/logo/apple-touch-icon.png">
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         :root {

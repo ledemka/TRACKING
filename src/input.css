@@ -52,6 +52,46 @@
   --map-traveled: theme('colors.action');
   --map-remaining: theme('colors.danger');
   --map-current: theme('colors.accent');
+
+  --brand-noir: #171717;
+  --brand-jaune: #FFE500;
+  --brand-olive: #B5A000;
+  --brand-sable: #F4F3ED;
+  --brand-texte: #333333;
+  --brand-secondaire: #6B6B6B;
+  --brand-blanc: #FFFFFF;
+}
+
+/* Accessibilité et Focus imposés */
+.focus-brand-light:focus-visible {
+  outline: 3px solid #171717;
+  outline-offset: 2px;
+}
+.focus-brand-dark:focus-visible {
+  outline: 3px solid #FFE500;
+  outline-offset: 2px;
+}
+
+/* Hero Carousel States */
+.hero-slide {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease-in-out, visibility 300ms ease-in-out;
+}
+.hero-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+}
+.hero-slide:not(.is-active) {
+  position: absolute;
+  inset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    transition: none !important;
+  }
 }
 
 /* Position actuelle : pastille accent + anneau (pseudo-élément).

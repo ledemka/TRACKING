@@ -28,6 +28,9 @@ require_once __DIR__ . '/templates/public_header.php';
 
 <main class="flex-grow flex items-center justify-center py-20 px-4 bg-surface">
     <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 max-w-md w-full">
+        <div class="flex justify-center mb-5">
+            <img src="/assets/img/logo/logo.svg" alt="Logo" class="w-16 h-16 rounded-2xl shadow-sm" width="64" height="64">
+        </div>
         <h1 class="text-2xl font-bold text-primary mb-6 text-center">Connexion Espace Admin</h1>
         
         <?php if ($error): ?>
