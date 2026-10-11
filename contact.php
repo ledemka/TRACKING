@@ -206,8 +206,11 @@ $banner_config = [
                             <textarea name="message" rows="5" class="w-full px-4 py-3 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none resize-none transition-colors" required><?= escape_html($_POST['message'] ?? '') ?></textarea>
                         </div>
                         
-                        <button type="submit" class="btn-primary w-full">
-                            Envoyer le message
+                        <button type="submit" class="w-full h-12 bg-[#171717] text-white hover:bg-black font-bold text-base rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 focus-brand-dark">
+                            <span>Envoyer le message</span>
+                            <svg class="w-4 h-4 text-[#FFE500]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
                         </button>
                     </form>
                 <?php endif; ?>
