@@ -31,8 +31,8 @@ if (!$password) {
     }
 }
 
-if (strlen($password) < 12) {
-    die("Erreur : Le mot de passe doit contenir au moins 12 caractères.\n");
+if (getenv('APP_ENV') !== 'local' && strlen($password) < 12) {
+    die("Erreur : Le mot de passe doit contenir au moins 12 caractères en production.\n");
 }
 
 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
