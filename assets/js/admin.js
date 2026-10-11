@@ -72,4 +72,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Menu Burger Mobile pour l'administration
+    const burgerBtn = document.getElementById('admin-burger-btn');
+    const burgerIcon = document.getElementById('admin-burger-icon');
+    const mobileMenu = document.getElementById('admin-mobile-menu');
+
+    if (burgerBtn && mobileMenu) {
+        burgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isExpanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+            const willOpen = !isExpanded;
+
+            burgerBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            burgerBtn.setAttribute('aria-label', willOpen ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation');
+
+            if (willOpen) {
+                mobileMenu.classList.remove('hidden');
+                if (burgerIcon) burgerIcon.textContent = 'close';
+            } else {
+                mobileMenu.classList.add('hidden');
+                if (burgerIcon) burgerIcon.textContent = 'menu';
+            }
+        });
+
+        // Fermer le menu si on clique en dehors
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && !burgerBtn.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                burgerBtn.setAttribute('aria-expanded', 'false');
+                burgerBtn.setAttribute('aria-label', 'Ouvrir le menu de navigation');
+                if (burgerIcon) burgerIcon.textContent = 'menu';
+            }
+        });
+
+        // Fermer avec la touche Échap
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                burgerBtn.setAttribute('aria-expanded', 'false');
+                burgerBtn.setAttribute('aria-label', 'Ouvrir le menu de navigation');
+                if (burgerIcon) burgerIcon.textContent = 'menu';
+                burgerBtn.focus();
+            }
+        });
+    }
 });

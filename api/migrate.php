@@ -131,9 +131,11 @@ $migrations = [
     ALTER TABLE shipments ADD COLUMN company_name VARCHAR(255) NULL;
     ALTER TABLE shipments ADD COLUMN company_siret VARCHAR(150) NULL;
     ALTER TABLE shipments ADD COLUMN company_department VARCHAR(150) NULL;",
-    '016_add_zip_code' => "ALTER TABLE shipments ADD COLUMN zip_code VARCHAR(20) NULL;",
     '017_add_origin_coords' => "ALTER TABLE shipments ADD COLUMN origin_lat DECIMAL(9,6) NULL;
-    ALTER TABLE shipments ADD COLUMN origin_lng DECIMAL(9,6) NULL;"
+    ALTER TABLE shipments ADD COLUMN origin_lng DECIMAL(9,6) NULL;",
+    '018_enhance_email_logs' => "ALTER TABLE email_logs ADD COLUMN shipment_id INT NULL;
+    ALTER TABLE email_logs ADD COLUMN email_type VARCHAR(50) DEFAULT 'general';
+    ALTER TABLE email_logs ADD COLUMN provider_message_id VARCHAR(255) NULL;"
 ];
 
 foreach ($migrations as $version => $query) {

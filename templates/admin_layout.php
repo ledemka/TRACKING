@@ -6,6 +6,15 @@ global $pdo;
 $stmt_admin_email = $pdo->prepare("SELECT email FROM users WHERE id = ?");
 $stmt_admin_email->execute([$_SESSION['user_id']]);
 $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
+// Calcul des initiales
+$admin_initials = '';
+if (!empty($current_admin_email)) {
+    $emailPrefix = explode('@', $current_admin_email)[0];
+    $admin_initials = strtoupper(mb_substr($emailPrefix, 0, 2));
+}
+if ($admin_initials === '') {
+    $admin_initials = 'AD';
+}
 ?>
     <!-- Sidebar Desktop -->
     <aside class="hidden md:flex flex-col w-64 bg-primary text-white flex-shrink-0 min-h-screen">
@@ -22,8 +31,10 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
             <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Paramètres</a>
         </nav>
         <div class="p-4 mt-auto">
-            <div class="mb-4 text-center text-sm text-white/70 overflow-hidden text-ellipsis whitespace-nowrap" title="<?= escape_html($current_admin_email) ?>">
-                <?= escape_html($current_admin_email) ?>
+            <div class="mb-4 flex items-center justify-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-[#FFE500] text-[#171717] font-extrabold text-xs flex items-center justify-center tracking-tight shadow-sm select-none" title="Administrateur">
+                    <?= escape_html($admin_initials) ?>
+                </div>
             </div>
             <form action="/logout" method="POST" class="w-full">
                 <input type="hidden" name="csrf_token" value="<?= escape_html(generate_csrf_token()) ?>">
@@ -41,7 +52,9 @@ $current_admin_email = $stmt_admin_email->fetchColumn() ?: '';
             <span><?= escape_html($settings['nom']) ?></span>
         </a>
         <div class="flex items-center gap-3">
-            <span class="text-xs text-white/70 hidden sm:inline-block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"><?= escape_html($current_admin_email) ?></span>
+            <div class="w-8 h-8 rounded-full bg-[#FFE500] text-[#171717] font-extrabold text-xs flex items-center justify-center tracking-tight shadow-sm select-none" title="Administrateur">
+                <?= escape_html($admin_initials) ?>
+            </div>
             <button id="admin-mobile-btn" class="p-2 bg-white/10 rounded-md">Menu</button>
         </div>
     </header>

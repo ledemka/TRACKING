@@ -5,6 +5,8 @@ require_once __DIR__ . '/api/lib/admin_utils.php';
 require_once __DIR__ . '/api/lib/notifications.php';
 require_once __DIR__ . '/api/lib/shipments.php';
 require_once __DIR__ . '/api/lib/utils.php';
+require_once __DIR__ . '/api/lib/mailer.php';
+require_once __DIR__ . '/templates/emails/tracking_email.php';
 
 require_admin();
 
@@ -169,6 +171,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     }
+
+    if ($action === 'send_tracking_email') {
+        $recipientEmail = trim($shipment['recipient_email'] ?? '');
+        if (!$recipientEmail || !filter_var($recipientEmail, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['flash_error'] = "Adresse e-mail du destinataire absente ou invalide. Veuillez d'abord modifier le colis.";
+            header("Location: /shipments/$id");
+            exit;
+        }
+
+        // Vérification de la configuration APP_URL
+        $appUrl = getenv('APP_URL');
+        $isProd = (getenv('APP_ENV') === 'production');
+        if ($isProd && (!$appUrl || strpos($appUrl, 'localhost') !== false || !filter_var($appUrl, FILTER_VALIDATE_URL))) {
+            $_SESSION['flash_error'] = "Erreur de configuration : APP_URL de production manquante ou invalide.";
+            header("Location: /shipments/$id");
+            exit;
+        }
+        if (!$appUrl) {
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+            $appUrl = "$scheme://$host";
+        }
+
+        // Protection serveur contre les soumissions répétées et concurrentes (verrou temporel 10 secondes)
+        $stmtLock = $pdo->prepare("SELECT created_at FROM email_logs WHERE shipment_id = ? AND email_type = 'tracking_link' ORDER BY id DESC LIMIT 1");
+        $stmtLock->execute([$id]);
+        $lastLog = $stmtLock->fetch();
+        if ($lastLog && (time() - strtotime($lastLog['created_at'])) < 10) {
+            $_SESSION['flash_error'] = "Un envoi est déjà en cours de traitement pour ce colis. Veuillez patienter.";
+            header("Location: /shipments/$id");
+            exit;
+        }
+
+        // Rendu du modèle d'email
+        $settings = get_app_settings();
+        $emailData = render_tracking_email($shipment, $settings, $appUrl);
+
+        // Envoi via le composant centralisé mailer
+        $options = [
+            'shipment_id' => $id,
+            'email_type' => 'tracking_link'
+        ];
+        $result = send_email($recipientEmail, $emailData['subject'], $emailData['html'], $emailData['text'], $options);
+
+        if ($result['status'] === 'accepted') {
+            $_SESSION['flash_message'] = "E-mail de suivi accepté par le fournisseur (" . escape_html($recipientEmail) . ").";
+        } elseif ($result['status'] === 'timeout') {
+            $_SESSION['flash_error'] = "Délai d'attente dépassé (résultat incertain). Le message a pu être pris en compte par le fournisseur. Veuillez vérifier avant de relancer.";
+        } else {
+            $_SESSION['flash_error'] = "Échec de l'envoi de l'e-mail : " . ($result['error_message'] ?? 'Erreur inconnue');
+        }
+
+        header("Location: /shipments/$id");
+        exit;
+    }
 }
 
 // GET events
@@ -190,6 +247,38 @@ if (isset($_GET['edit_event'])) {
 
 $carriers = $pdo->query("SELECT id, name FROM carriers ORDER BY name")->fetchAll();
 
+// Chargement du statut de l'e-mail de suivi
+$stmtMailLog = $pdo->prepare("SELECT * FROM email_logs WHERE shipment_id = ? AND email_type = 'tracking_link' ORDER BY id DESC LIMIT 1");
+$stmtMailLog->execute([$id]);
+$lastEmailLog = $stmtMailLog->fetch();
+
+// Détermination de l'URL publique pour le lien de suivi et la prévisualisation
+$appUrlConfigured = getenv('APP_URL');
+if (!$appUrlConfigured) {
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+    $effectiveAppUrl = "$scheme://$host";
+} else {
+    $effectiveAppUrl = rtrim($appUrlConfigured, '/');
+}
+
+$settings = get_app_settings();
+$previewEmail = render_tracking_email($shipment, $settings, $effectiveAppUrl);
+
+// Pour la prévisualisation locale dans l'iframe admin, on remplace l'URL distante du logo par l'image locale en data-URI
+// pour garantir l'affichage sans violation CSP et même si le site de production n'est pas encore déployé
+$localLogoPath = __DIR__ . '/assets/img/logo-mark-fond-clair.png';
+if (file_exists($localLogoPath)) {
+    $logoDataUri = 'data:image/png;base64,' . base64_encode(file_get_contents($localLogoPath));
+    $previewEmail['html'] = str_replace(
+        $effectiveAppUrl . '/assets/img/logo-mark-fond-clair.png',
+        $logoDataUri,
+        $previewEmail['html']
+    );
+}
+
+$hasRecipientEmail = !empty($shipment['recipient_email']) && filter_var($shipment['recipient_email'], FILTER_VALIDATE_EMAIL);
+
 $page_title = "Colis " . $shipment['tracking_number'];
 $use_map = true;
 require __DIR__ . '/templates/admin_header.php';
@@ -203,7 +292,7 @@ require __DIR__ . '/templates/admin_header.php';
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Colonne gauche : infos + changement rapide -->
+    <!-- Colonne gauche : infos + e-mail de suivi -->
     <div class="lg:col-span-1 space-y-6">
         <div class="bg-white p-6 rounded shadow">
             <h2 class="text-xl font-bold mb-4">Informations</h2>
@@ -216,6 +305,7 @@ require __DIR__ . '/templates/admin_header.php';
                     <?php if ($shipment['company_department']) echo '<strong>Service :</strong> ' . escape_html($shipment['company_department']); ?>
                 </div>
                 <?php endif; ?>
+                <div><strong>E-mail :</strong> <?= escape_html($shipment['recipient_email']) ?></div>
                 <div><strong>Adresse :</strong> <?= escape_html($shipment['address']) ?>, <?= escape_html($shipment['zip_code']) ?> <?= escape_html($shipment['city']) ?></div>
                 <div><strong>Trajet :</strong> <?= escape_html($shipment['origin_city']) ?> &rarr; <?= escape_html($shipment['city']) ?></div>
                 <div><strong>Créé le :</strong> <?= format_date($shipment['created_at']) ?></div>
@@ -227,7 +317,148 @@ require __DIR__ . '/templates/admin_header.php';
                 </div>
             </div>
         </div>
+
+        <!-- Bloc E-mail de suivi de marque (Phase 4B) -->
+        <div class="bg-white p-6 rounded shadow border-t-4 border-[#171717]" id="bloc-tracking-email">
+            <div class="flex items-center justify-between gap-2 mb-4">
+                <h2 class="text-xl font-bold text-[#171717]">E-mail de suivi</h2>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-800">
+                    Manuel
+                </span>
+            </div>
+
+            <div class="space-y-3 text-sm">
+                <div>
+                    <span class="text-slate-500 font-semibold block text-xs">Destinataire :</span>
+                    <?php if ($hasRecipientEmail): ?>
+                        <span class="font-medium text-[#171717]"><?= escape_html($shipment['recipient_email']) ?></span>
+                    <?php else: ?>
+                        <span class="text-red-600 font-semibold text-xs">Adresse manquante ou invalide</span>
+                    <?php endif; ?>
+                </div>
+
+                <div>
+                    <span class="text-slate-500 font-semibold block text-xs">Lien public de suivi :</span>
+                    <a href="<?= escape_html($previewEmail['tracking_url']) ?>" target="_blank" rel="noopener noreferrer" class="text-action hover:underline break-all text-xs font-mono">
+                        <?= escape_html($previewEmail['tracking_url']) ?>
+                    </a>
+                </div>
+
+                <div class="pt-2 border-t">
+                    <span class="text-slate-500 font-semibold block text-xs mb-1">État de l'envoi :</span>
+                    <?php if (!$lastEmailLog): ?>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                            Non envoyé
+                        </span>
+                    <?php elseif ($lastEmailLog['status'] === 'accepted' || $lastEmailLog['status'] === 'sent'): ?>
+                        <div class="space-y-1">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                                <span class="w-2 h-2 rounded-full bg-green-600"></span>
+                                Accepté par le fournisseur
+                            </span>
+                            <div class="text-[11px] text-slate-500">
+                                Le <?= format_date($lastEmailLog['created_at']) ?>
+                                <?php if (!empty($lastEmailLog['provider_message_id'])): ?>
+                                    <br><span class="font-mono text-[10px] text-slate-400">ID : <?= escape_html($lastEmailLog['provider_message_id']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php elseif ($lastEmailLog['status'] === 'timeout'): ?>
+                        <div class="space-y-1">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                Résultat incertain (délai dépassé)
+                            </span>
+                            <div class="text-[11px] text-slate-500">
+                                Tentative le <?= format_date($lastEmailLog['created_at']) ?>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="space-y-1">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+                                <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                                Échec
+                            </span>
+                            <div class="text-[11px] text-slate-500">
+                                Le <?= format_date($lastEmailLog['created_at']) ?>
+                            </div>
+                            <?php if (!empty($lastEmailLog['error_message'])): ?>
+                                <div class="text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100 font-mono text-[11px] break-words">
+                                    <?= escape_html($lastEmailLog['error_message']) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Actions Prévisualiser & Envoyer -->
+                <div class="pt-4 border-t space-y-2">
+                    <button type="button" id="btn-open-preview" class="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded flex items-center justify-center gap-2 transition-colors">
+                        <span class="material-symbols-outlined text-base">visibility</span>
+                        <span>Prévisualiser le message</span>
+                    </button>
+
+                    <form method="POST" action="/shipments/<?= $id ?>" id="form-send-tracking-email" class="m-0">
+                        <input type="hidden" name="csrf_token" value="<?= escape_html($csrf_token) ?>">
+                        <input type="hidden" name="action" value="send_tracking_email">
+                        
+                        <?php 
+                        $isAlreadyAccepted = ($lastEmailLog && in_array($lastEmailLog['status'], ['accepted', 'sent'], true));
+                        ?>
+                        <button type="submit" 
+                                id="btn-submit-send-email" 
+                                class="w-full px-4 py-2.5 bg-[#FFE500] hover:bg-[#E6CE00] text-[#171717] text-xs font-extrabold rounded flex items-center justify-center gap-2 shadow-sm transition-all <?= !$hasRecipientEmail ? 'opacity-50 cursor-not-allowed' : '' ?>"
+                                <?= !$hasRecipientEmail ? 'disabled title="Adresse e-mail requise"' : '' ?>
+                                data-confirm="<?= $isAlreadyAccepted ? '1' : '0' ?>">
+                            <span class="material-symbols-outlined text-base">send</span>
+                            <span id="btn-send-email-text"><?= $isAlreadyAccepted ? 'Renvoyer le mail' : 'Envoyer le mail' ?></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Modale native de Prévisualisation (<dialog>) -->
+    <dialog id="dialog-preview-email" class="p-0 rounded-2xl shadow-2xl border-0 backdrop:bg-slate-900/60 max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div class="bg-[#171717] text-white p-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#FFE500]">mail</span>
+                <span class="font-bold text-sm">Prévisualisation de l'e-mail de suivi</span>
+            </div>
+            <button type="button" id="btn-close-preview" class="text-slate-400 hover:text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-b text-xs space-y-1">
+            <div><strong>À :</strong> <?= escape_html($shipment['recipient_email'] ?: 'Non renseigné') ?></div>
+            <div><strong>Sujet :</strong> <?= escape_html($previewEmail['subject']) ?></div>
+            <div><strong>Lien de suivi généré :</strong> <span class="font-mono"><?= escape_html($previewEmail['tracking_url']) ?></span></div>
+        </div>
+
+        <!-- Onglets HTML / Texte brut -->
+        <div class="border-b bg-white px-4 flex gap-4 text-xs font-bold">
+            <button type="button" id="tab-btn-html" class="py-2.5 border-b-2 border-[#FFE500] text-[#171717]">Rendu HTML</button>
+            <button type="button" id="tab-btn-text" class="py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800">Texte brut</button>
+        </div>
+
+        <div class="p-4 overflow-y-auto max-h-[60vh] bg-slate-100">
+            <div id="preview-panel-html" class="bg-white rounded-lg shadow-sm overflow-hidden border">
+                <iframe srcdoc="<?= htmlspecialchars($previewEmail['html'], ENT_QUOTES, 'UTF-8') ?>" class="w-full h-[380px] border-0" title="Rendu du message"></iframe>
+            </div>
+            <div id="preview-panel-text" class="hidden">
+                <pre class="bg-white p-4 rounded border text-xs font-mono text-slate-800 whitespace-pre-wrap leading-relaxed"><?= escape_html($previewEmail['text']) ?></pre>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white border-t flex justify-end">
+            <button type="button" id="btn-close-preview-footer" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded">
+                Fermer la prévisualisation
+            </button>
+        </div>
+    </dialog>
     
     <!-- Colonne droite : événements -->
     <div class="lg:col-span-2 space-y-6">
@@ -533,6 +764,65 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Gestion de la modale de prévisualisation d'e-mail
+    const previewDialog = document.getElementById('dialog-preview-email');
+    const btnOpenPreview = document.getElementById('btn-open-preview');
+    const btnClosePreview = document.getElementById('btn-close-preview');
+    const btnClosePreviewFooter = document.getElementById('btn-close-preview-footer');
+    const tabBtnHtml = document.getElementById('tab-btn-html');
+    const tabBtnText = document.getElementById('tab-btn-text');
+    const panelHtml = document.getElementById('preview-panel-html');
+    const panelText = document.getElementById('preview-panel-text');
+
+    if (previewDialog && btnOpenPreview) {
+        btnOpenPreview.addEventListener('click', () => {
+            previewDialog.showModal();
+        });
+        const closePreview = () => previewDialog.close();
+        if (btnClosePreview) btnClosePreview.addEventListener('click', closePreview);
+        if (btnClosePreviewFooter) btnClosePreviewFooter.addEventListener('click', closePreview);
+
+        if (tabBtnHtml && tabBtnText && panelHtml && panelText) {
+            tabBtnHtml.addEventListener('click', () => {
+                tabBtnHtml.className = "py-2.5 border-b-2 border-[#FFE500] text-[#171717]";
+                tabBtnText.className = "py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800";
+                panelHtml.classList.remove('hidden');
+                panelText.classList.add('hidden');
+            });
+            tabBtnText.addEventListener('click', () => {
+                tabBtnText.className = "py-2.5 border-b-2 border-[#FFE500] text-[#171717]";
+                tabBtnHtml.className = "py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800";
+                panelText.classList.remove('hidden');
+                panelHtml.classList.add('hidden');
+            });
+        }
+    }
+
+    // Protection anti-double-clic et confirmation de renvoi
+    const formSendMail = document.getElementById('form-send-tracking-email');
+    const btnSendMail = document.getElementById('btn-submit-send-email');
+    const txtSendMail = document.getElementById('btn-send-email-text');
+
+    if (formSendMail && btnSendMail) {
+        formSendMail.addEventListener('submit', (e) => {
+            const isAlreadyAccepted = (btnSendMail.getAttribute('data-confirm') === '1');
+            if (isAlreadyAccepted) {
+                const confirmed = confirm("Un e-mail de suivi a déjà été accepté par le fournisseur pour ce colis. Souhaitez-vous vraiment renvoyer cet e-mail ?");
+                if (!confirmed) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            // Désactivation immédiate pour éviter le double clic
+            btnSendMail.disabled = true;
+            btnSendMail.classList.add('opacity-50', 'cursor-not-allowed');
+            if (txtSendMail) {
+                txtSendMail.textContent = "Envoi en cours...";
+            }
+        });
+    }
 });
 </script>
 
