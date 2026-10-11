@@ -4,16 +4,15 @@
 $content = get_site_content();
 $nomEntreprise = $content['brand']['nom'];
 
-// Gestion du logo : téléversé dans /settings si présent, sinon fallback logo-mark-fond-sombre
+// Gestion du logo : logo personnalisé si présent, sinon fallback logo-mark-fond-sombre
 $logoUploaded = !empty($settings['logo_url']) ? $settings['logo_url'] : null;
 $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.svg';
 ?>
 <header class="bg-[#171717] text-white border-b border-white/10 sticky top-0 z-50 transition-colors">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-        <!-- Logo + Nom -->
-        <a href="/" class="flex items-center gap-3 text-white focus-brand-dark rounded-md py-1 px-1 transition-opacity hover:opacity-90">
-            <img src="<?= escape_html($logoPath) ?>" alt="<?= escape_html($nomEntreprise) ?>" class="h-9 w-auto object-contain shrink-0" width="36" height="36">
-            <span class="font-bold text-xl sm:text-2xl tracking-tight text-white"><?= escape_html($nomEntreprise) ?></span>
+        <!-- Logo PS seul -->
+        <a href="/" class="flex items-center text-white focus-brand-dark rounded-md py-1 px-1 transition-opacity hover:opacity-90" aria-label="<?= escape_html($nomEntreprise) ?>">
+            <img src="<?= escape_html($logoPath) ?>" alt="<?= escape_html($nomEntreprise) ?>" class="h-10 w-auto object-contain shrink-0" width="40" height="40">
         </a>
 
         <!-- Navigation Desktop -->

@@ -188,7 +188,7 @@ foreach ($migrations as $version => $query) {
 
 $stmt = $pdo->query("SELECT COUNT(*) FROM app_settings");
 if ($stmt->fetchColumn() == 0) {
-    $pdo->exec("INSERT INTO app_settings (nom) VALUES ('Mon Entreprise')");
+    $pdo->exec("INSERT INTO app_settings (nom) VALUES ('Pava Shipping')");
 }
 
 echo "Toutes les migrations sont à jour.\n";

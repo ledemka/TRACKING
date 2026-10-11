@@ -1,15 +1,37 @@
 // admin.js
 document.addEventListener('DOMContentLoaded', () => {
-    // Generate tracking number
+    // Generate tracking number au format PS-AAMM-XXXXXXX
     const btnGenerate = document.getElementById('btn-generate-tracking');
     if (btnGenerate) {
         btnGenerate.addEventListener('click', (e) => {
             e.preventDefault();
             const input = document.getElementById('tracking_number');
             if (input) {
-                const randomLetters = Array.from({length: 4}, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
-                const randomNumbers = Array.from({length: 5}, () => Math.floor(Math.random() * 10)).join('');
-                input.value = `COLIS-${randomLetters}-${randomNumbers}`;
+                // AAMM injecté par le serveur pour garantir le fuseau Europe/Paris
+                const yymm = btnGenerate.dataset.yymm || (() => {
+                    const d = new Date();
+                    const yy = String(d.getFullYear()).slice(-2);
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    return yy + mm;
+                })();
+
+                // Alphabet de 31 caractères (sans I, L, O, 0, 1)
+                const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+                const alphaLen = alphabet.length; // 31
+                // Seuil maximal pour éliminer le biais de modulo sur 8 bits : 256 - (256 % 31) = 248
+                const limit = 256 - (256 % alphaLen);
+
+                let suffix = '';
+                const randomBytes = new Uint8Array(1);
+                while (suffix.length < 7) {
+                    window.crypto.getRandomValues(randomBytes);
+                    const val = randomBytes[0];
+                    if (val < limit) {
+                        suffix += alphabet[val % alphaLen];
+                    }
+                }
+
+                input.value = `PS-${yymm}-${suffix}`;
             }
         });
     }

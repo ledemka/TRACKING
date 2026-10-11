@@ -28,7 +28,6 @@ if ($admin_initials === '') {
             <a href="/dashboard" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/dashboard' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Tableau de bord</a>
             <a href="/shipments" class="px-4 py-3 <?= strpos($_SERVER['REQUEST_URI'], '/shipments') === 0 ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Expéditions</a>
             <a href="/customers" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/customers' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Clients</a>
-            <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' ?> rounded-lg font-semibold transition-colors">Paramètres</a>
         </nav>
         <div class="p-4 mt-auto">
             <div class="mb-4 flex items-center justify-center gap-2">
@@ -65,7 +64,6 @@ if ($admin_initials === '') {
             <a href="/dashboard" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/dashboard' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Tableau de bord</a>
             <a href="/shipments" class="px-4 py-3 <?= strpos($_SERVER['REQUEST_URI'], '/shipments') === 0 ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Expéditions</a>
             <a href="/customers" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/customers' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Clients</a>
-            <a href="/settings" class="px-4 py-3 <?= $_SERVER['REQUEST_URI'] == '/settings' ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white' ?> rounded-lg text-lg font-semibold">Paramètres</a>
         </nav>
         <form action="/logout" method="POST" class="mt-auto mb-8 mx-4">
             <input type="hidden" name="csrf_token" value="<?= escape_html(generate_csrf_token()) ?>">

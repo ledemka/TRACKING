@@ -44,7 +44,7 @@ function get_app_settings() {
     $settings = $stmt->fetch();
     if (!$settings) {
         return [
-            'nom' => 'Mon Entreprise',
+            'nom' => 'Pava Shipping',
             'email' => '',
             'telephone' => '',
             'adresse' => '',

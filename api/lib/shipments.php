@@ -78,9 +78,42 @@ function insert_shipment_and_event($data, $eventData) {
         return $shipmentId;
     } catch (PDOException $e) {
         $pdo->rollBack();
-        if ($e->errorInfo[1] == 1062 || strpos($e->getMessage(), 'UNIQUE') !== false) {
+        if ($e->getCode() === '23000' || ($e->errorInfo[1] ?? 0) == 1062 || strpos($e->getMessage(), 'UNIQUE') !== false) {
             throw new Exception("Ce numéro de suivi existe déjà");
         }
         throw $e;
     }
+}
+
+/**
+ * Génère un numéro de suivi unique au format PS-AAMM-XXXXXXX
+ * - AAMM : Année (2 chiffres) et Mois (2 chiffres) au fuseau Europe/Paris
+ * - XXXXXXX : 7 caractères aléatoires cryptographiquement sûrs (random_int)
+ * - Alphabet : ABCDEFGHJKMNPQRSTUVWXYZ23456789 (31 caractères, sans I, L, O, 0, 1)
+ * - Jusqu'à 5 tentatives en cas de collision, puis exception propre
+ */
+function generate_unique_tracking_number(PDO $pdo): string {
+    $tz = new DateTimeZone('Europe/Paris');
+    $now = new DateTime('now', $tz);
+    $yymm = $now->format('ym');
+    
+    $alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    $alphaLen = strlen($alphabet); // 31
+    
+    $stmtCheck = $pdo->prepare("SELECT 1 FROM shipments WHERE tracking_number = ? LIMIT 1");
+    
+    for ($attempt = 0; $attempt < 5; $attempt++) {
+        $suffix = '';
+        for ($i = 0; $i < 7; $i++) {
+            $suffix .= $alphabet[random_int(0, $alphaLen - 1)];
+        }
+        $candidate = "PS-{$yymm}-{$suffix}";
+        
+        $stmtCheck->execute([$candidate]);
+        if (!$stmtCheck->fetch()) {
+            return $candidate;
+        }
+    }
+    
+    throw new Exception("Impossible de générer un numéro de suivi unique après 5 tentatives.");
 }

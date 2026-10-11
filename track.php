@@ -187,7 +187,7 @@ function get_step_status_label($progressed_status, $step_status) {
                                 <input type="text" 
                                        name="id" 
                                        id="tracking_id"
-                                       placeholder="Ex. COLIS-2026-00125" 
+                                       placeholder="Ex. PS-2610-A3K9F2M" 
                                        class="w-full pl-12 pr-4 py-4 rounded-xl border <?= $empty_id_error ? 'border-red-500 focus:border-red-500 ring-2 ring-red-100' : 'border-slate-200 focus:border-[#171717] focus:ring-2 focus:ring-[#FFE500]' ?> outline-none code-tracking text-base sm:text-lg font-medium text-[#171717] bg-[#F4F3ED]/40 transition-all placeholder:text-slate-400"
                                        value="<?= escape_html($raw_id ?? '') ?>"
                                        aria-describedby="format-help <?= $empty_id_error ? 'empty-error' : '' ?>"

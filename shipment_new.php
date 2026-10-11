@@ -7,6 +7,8 @@ require_once __DIR__ . '/api/lib/shipments.php';
 
 require_admin();
 
+global $pdo;
+
 $errors = [];
 $form = [
     'tracking_number' => '', 'recipient_name' => '', 'recipient_phone' => '', 'recipient_email' => '',
@@ -18,6 +20,15 @@ $form = [
     'is_company' => '0', 'company_name' => '', 'company_siret' => '', 'company_department' => ''
 ];
 
+// Pré-remplissage du numéro au format PS-AAMM-XXXXXXX à l'ouverture initiale (GET)
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    try {
+        $form['tracking_number'] = generate_unique_tracking_number($pdo);
+    } catch (Exception $e) {
+        $form['tracking_number'] = '';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) die("Erreur CSRF");
     
@@ -26,8 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST[$k])) $form[$k] = trim($_POST[$k]);
     }
     
+    // Normalisation obligatoire du numéro de suivi : trim + strtoupper
+    $form['tracking_number'] = strtoupper(trim($form['tracking_number']));
+    
     $data = [];
-    $data['tracking_number'] = validate_required_string($form['tracking_number'], 'tracking_number', 50, $errors);
+    // Validation du numéro de suivi : même regex que /track (autorise PS-..., COLIS-... et formats historiques)
+    if ($form['tracking_number'] === '') {
+        $errors['tracking_number'] = 'Le numéro de suivi est obligatoire.';
+    } elseif (!preg_match('/^[A-Z0-9-]{3,40}$/', $form['tracking_number'])) {
+        $errors['tracking_number'] = 'Format de numéro de suivi invalide (3 à 40 caractères alphanumériques et tirets).';
+    } else {
+        $data['tracking_number'] = $form['tracking_number'];
+    }
     $data['recipient_name'] = validate_required_string($form['recipient_name'], 'recipient_name', 255, $errors);
     $data['recipient_phone'] = validate_required_string($form['recipient_phone'], 'recipient_phone', 50, $errors);
     $data['recipient_email'] = validate_email($form['recipient_email'], $errors);
@@ -113,7 +134,11 @@ require __DIR__ . '/templates/admin_header.php';
             <input type="text" id="tracking_number" name="tracking_number" value="<?= escape_html($form['tracking_number']) ?>" 
                    class="border p-2 rounded flex-grow <?= isset($errors['tracking_number']) ? 'border-red-500' : '' ?>"
                    aria-describedby="err-tracking">
-            <button id="btn-generate-tracking" class="bg-slate-200 px-4 py-2 rounded font-semibold hover:bg-slate-300">Générer</button>
+            <?php 
+                $tzParis = new DateTimeZone('Europe/Paris');
+                $serverYymm = (new DateTime('now', $tzParis))->format('ym');
+            ?>
+            <button id="btn-generate-tracking" type="button" data-yymm="<?= escape_html($serverYymm) ?>" class="bg-slate-200 px-4 py-2 rounded font-semibold hover:bg-slate-300">Générer</button>
         </div>
         <?php if (isset($errors['tracking_number'])): ?>
             <p id="err-tracking" class="text-red-600 text-sm mt-1"><?= escape_html($errors['tracking_number']) ?></p>

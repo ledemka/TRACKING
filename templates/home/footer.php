@@ -4,7 +4,7 @@
 $content = get_site_content();
 $nomEntreprise = $content['brand']['nom'];
 
-// Gestion du logo : téléversé dans /settings si présent, sinon fallback logo-mark-fond-sombre
+// Gestion du logo : logo personnalisé si présent, sinon fallback logo-mark-fond-sombre
 $logoUploaded = !empty($settings['logo_url']) ? $settings['logo_url'] : null;
 $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.svg';
 ?>

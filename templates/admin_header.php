@@ -86,7 +86,6 @@ $currentRoute = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
                     $navLinks = [
                         ['url' => '/dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard'],
                         ['url' => '/shipments', 'label' => 'Colis', 'icon' => 'package_2'],
-                        ['url' => '/settings', 'label' => 'Paramètres', 'icon' => 'settings'],
                     ];
                     foreach ($navLinks as $nl):
                         $isActive = ($currentRoute === $nl['url'] || ($nl['url'] === '/shipments' && str_starts_with($currentRoute, '/shipments')));

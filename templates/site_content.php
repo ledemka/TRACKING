@@ -69,7 +69,7 @@ if (!function_exists('get_site_content')) {
             'tracker_block' => [
                 'title' => 'Rechercher un envoi',
                 'description' => 'Saisissez votre numéro de référence pour accéder au statut actuel et à l\'historique des points de passage.',
-                'placeholder' => 'Ex : COLIS-2026-00125',
+                'placeholder' => 'Ex : PS-2610-A3K9F2M',
                 'btn_text' => 'Consulter le suivi',
                 'image' => '/assets/img/site/intro-scan.webp',
                 'image_alt' => 'Mains gantées scannant l\'étiquette d\'un colis avec un terminal optique portable',

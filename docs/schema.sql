@@ -1,4 +1,4 @@
-﻿
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `app_settings`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `app_settings` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'Mon Entreprise',
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'Pava Shipping',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telephone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

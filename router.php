@@ -22,7 +22,6 @@ $routes = [
     '/shipments' => '/shipments.php',
     '/shipments/new' => '/shipment_new.php',
     '/customers' => '/customers.php',
-    '/settings' => '/settings.php',
     '/services' => '/services.php',
     '/services/' => '/services.php',
     '/services/expedition' => '/service_expedition.php',
