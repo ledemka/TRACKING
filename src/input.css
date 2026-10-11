@@ -94,6 +94,44 @@
   }
 }
 
+/* Mosaic Tile Hover Effect */
+.mosaic-tile {
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+.mosaic-tile:hover .mosaic-img {
+  transform: scale(1.04);
+}
+.mosaic-img {
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mosaic-tile:hover .mosaic-img,
+  .mosaic-img {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Quality Tabs States */
+.tab-btn[aria-selected="true"] {
+  background-color: var(--brand-jaune, #FFE500);
+  color: var(--brand-noir, #171717);
+  font-weight: 700;
+}
+.tab-btn[aria-selected="false"] {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.7);
+}
+.tab-btn[aria-selected="false"]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.tab-panel[hidden] {
+  display: none !important;
+}
+
 /* Position actuelle : pastille accent + anneau (pseudo-élément).
    Leaflet positionne déjà l'icône en absolute : l'anneau s'y rattache. */
 .track-map-marker {

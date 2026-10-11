@@ -7,5 +7,6 @@ require __DIR__ . '/home/footer.php';
     <!-- Scripts publics externes (zéro script inline) -->
     <script src="/assets/js/nav.js"></script>
     <script src="/assets/js/hero.js"></script>
+    <script src="/assets/js/tabs.js"></script>
 </body>
 </html>
