@@ -8,7 +8,7 @@ if (!function_exists('get_site_content')) {
             $settings = get_app_settings();
         }
 
-        $email = !empty($settings['email']) ? $settings['email'] : '[À compléter]';
+        $email = !empty($settings['email']) ? $settings['email'] : 'contact@pava-shipping.fr';
         $telephone = !empty($settings['telephone']) ? $settings['telephone'] : '[À compléter]';
         $adresse = !empty($settings['adresse']) ? $settings['adresse'] : '[À compléter]';
         $nom = !empty($settings['nom']) ? $settings['nom'] : 'Plateforme de Suivi';

@@ -45,7 +45,7 @@ function get_app_settings() {
     if (!$settings) {
         return [
             'nom' => 'Pava Shipping',
-            'email' => '',
+            'email' => 'contact@pava-shipping.fr',
             'telephone' => '',
             'adresse' => '',
             'color_primary' => '#0B1F3A',
