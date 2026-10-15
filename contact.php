@@ -21,20 +21,22 @@ if (isset($_SESSION['flash_success'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verify_csrf_token($_POST['csrf_token'] ?? '');
-    rate_limit_hit('contact', $ip, 5, 3600); // 5 requêtes par heure
-    
-    // Honeypot
-    if (!empty($_POST['website'])) {
-        // Robot détecté, on fait semblant que c'est bon
-        $success = true;
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = __('contact.error_csrf');
     } else {
+        rate_limit_hit('contact', $ip, 5, 3600); // 5 requêtes par heure
+        
+        // Honeypot
+        if (!empty($_POST['website'])) {
+            // Robot détecté, on fait semblant que c'est bon
+            $success = true;
+        } else {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $message = trim($_POST['message'] ?? '');
         
         if (strlen($name) > 100 || strlen($email) > 254 || strlen($message) > 5000) {
-            $error = "La taille d'un champ dépasse la limite autorisée.";
+            $error = __('contact.error_len');
         } else if ($name && $email && $message && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $dest = $settings['email'];
             $apiKey = getenv('RESEND_API_KEY');
@@ -87,32 +89,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $errorMsg = substr($httpCode . " " . $response, 0, 500);
                     $pdo->prepare("INSERT INTO email_logs (recipient, subject, status, error_message) VALUES (?, ?, 'failed', ?)")->execute([$dest, $subjectLog, $errorMsg]);
-                    $error = "Une erreur est survenue lors de l'envoi. Veuillez réessayer plus tard.";
+                    $error = __('contact.error_send');
                 }
             }
         } else {
-            $error = "Veuillez remplir tous les champs correctement.";
+            $error = __('contact.error_all_fields');
         }
     }
 }
+}
 
-$page_title = 'Contact — Renseignements et assistance logistique';
-$page_description = "Contactez nos équipes logistiques pour toute question relative au suivi de vos colis ou à nos prestations d'acheminement.";
+$page_title = __('contact.page_title');
+$page_description = __('contact.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'À votre écoute',
-    'title' => 'Contactez notre équipe logistique',
-    'description' => 'Notre équipe est à votre disposition pour répondre à vos demandes relatives au suivi de vos expéditions et à nos services.',
+    'badge' => __('contact.badge'),
+    'title' => __('contact.title'),
+    'description' => __('contact.desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Contact']
+        ['label' => __('contact.breadcrumb_home'), 'url' => '/'],
+        ['label' => __('contact.breadcrumb_contact')]
     ],
     'actions' => [
-        ['label' => 'Suivre un colis', 'url' => '/track', 'primary' => true],
+        ['label' => __('nav.track'), 'url' => '/track', 'primary' => true],
     ],
     'image' => '/assets/img/site/contact-support.webp',
-    'image_alt' => 'Opératrice du service client logistique et suivi des expéditions'
+    'image_alt' => __('contact.title')
 ];
 ?>
 
@@ -121,13 +124,13 @@ $banner_config = [
 
     <section class="py-16 sm:py-20 bg-[#F4F3ED]" aria-labelledby="contact-section-title">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 id="contact-section-title" class="sr-only">Formulaire et coordonnées de contact</h2>
+            <h2 id="contact-section-title" class="sr-only"><?= escape_html(__('contact.form_title')) ?></h2>
             <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
                 
                 <?php if (!empty($settings['email']) || !empty($settings['telephone']) || !empty($settings['adresse'])): ?>
                 <div class="w-full md:w-5/12 flex flex-col gap-6">
                     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm flex flex-col gap-6">
-                        <span class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Coordonnées</span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B]"><?= escape_html(__('common.details')) ?></span>
                         
                         <?php if (!empty($settings['email'])): ?>
                         <div class="flex items-start gap-4">
@@ -135,7 +138,7 @@ $banner_config = [
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </div>
                             <div>
-                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Email</span>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]"><?= escape_html(__('contact.card_email')) ?></span>
                                 <a href="mailto:<?= escape_html($settings['email']) ?>" class="text-[#171717] font-semibold text-sm hover:underline"><?= escape_html($settings['email']) ?></a>
                             </div>
                         </div>
@@ -147,7 +150,7 @@ $banner_config = [
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                             </div>
                             <div>
-                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Téléphone</span>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]"><?= escape_html(__('contact.card_phone')) ?></span>
                                 <a href="tel:<?= escape_html($settings['telephone']) ?>" class="text-[#171717] font-semibold text-sm hover:underline"><?= escape_html($settings['telephone']) ?></a>
                             </div>
                         </div>
@@ -159,7 +162,7 @@ $banner_config = [
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             </div>
                             <div>
-                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Adresse</span>
+                                <span class="block text-xs font-bold uppercase tracking-wider text-[#6B6B6B]"><?= escape_html(__('contact.card_address')) ?></span>
                                 <span class="text-[#171717] font-semibold text-sm leading-relaxed"><?= nl2br(escape_html($settings['adresse'])) ?></span>
                             </div>
                         </div>
@@ -174,7 +177,7 @@ $banner_config = [
                     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 shadow-sm">
                 <?php if ($success): ?>
                     <div class="bg-status-delivered-bg text-status-delivered-text p-4 rounded-lg border border-status-delivered-bg mb-6 text-sm font-medium">
-                        Votre message a bien été envoyé. Nous vous contacterons rapidement.
+                        <?= escape_html(__('contact.success_desc')) ?>
                     </div>
                 <?php else: ?>
                     <?php if ($error): ?>
@@ -192,22 +195,22 @@ $banner_config = [
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nom complet</label>
-                            <input type="text" name="name" class="w-full px-4 h-12 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none transition-colors" required value="<?= escape_html($_POST['name'] ?? '') ?>">
+                            <label class="block text-sm font-semibold text-slate-700 mb-2"><?= escape_html(__('contact.label_name')) ?></label>
+                            <input type="text" name="name" placeholder="<?= __attr('contact.placeholder_name') ?>" class="w-full px-4 h-12 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none transition-colors" required value="<?= escape_html($_POST['name'] ?? '') ?>">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Adresse e-mail</label>
-                            <input type="email" name="email" class="w-full px-4 h-12 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none transition-colors" required value="<?= escape_html($_POST['email'] ?? '') ?>">
+                            <label class="block text-sm font-semibold text-slate-700 mb-2"><?= escape_html(__('contact.label_email')) ?></label>
+                            <input type="email" name="email" placeholder="<?= __attr('contact.placeholder_email') ?>" class="w-full px-4 h-12 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none transition-colors" required value="<?= escape_html($_POST['email'] ?? '') ?>">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Message</label>
-                            <textarea name="message" rows="5" class="w-full px-4 py-3 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none resize-none transition-colors" required><?= escape_html($_POST['message'] ?? '') ?></textarea>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2"><?= escape_html(__('contact.label_message')) ?></label>
+                            <textarea name="message" rows="5" placeholder="<?= __attr('contact.placeholder_message') ?>" class="w-full px-4 py-3 rounded-lg border-[1.5px] border-slate-200 focus:border-primary focus:ring-0 outline-none resize-none transition-colors" required><?= escape_html($_POST['message'] ?? '') ?></textarea>
                         </div>
                         
                         <button type="submit" class="w-full h-12 bg-[#171717] text-white hover:bg-black font-bold text-base rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 focus-brand-dark">
-                            <span>Envoyer le message</span>
+                            <span><?= escape_html(__('contact.btn_submit')) ?></span>
                             <svg class="w-4 h-4 text-[#FFE500]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                             </svg>

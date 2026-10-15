@@ -3,25 +3,25 @@
 // Présentation du service Gestion des expéditions — Supervision coordonnée des volumes et suivi centralisé
 require_once __DIR__ . '/api/bootstrap.php';
 
-$page_title = 'Service Gestion des expéditions — Supervision et contrôle des flux';
-$page_description = "La gestion des expéditions permet une vue synthétique et centralisée sur l'ensemble des colis enregistrés et des statuts.";
+$page_title = __('service_gestion.page_title');
+$page_description = __('service_gestion.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'Supervision globale',
-    'title' => 'Gestion et supervision des expéditions',
-    'description' => 'La gestion des expéditions centralise l\'organisation des flux d\'envois, la coordination avec les transporteurs partenaires et le suivi systématique des statuts réglementaires.',
+    'badge' => __('service_gestion.badge'),
+    'title' => __('service_gestion.title'),
+    'description' => __('service_gestion.desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Services', 'url' => '/services'],
-        ['label' => 'Gestion des expéditions']
+        ['label' => __('nav.home'), 'url' => '/'],
+        ['label' => __('nav.services'), 'url' => '/services'],
+        ['label' => __('services.gestion_title')]
     ],
     'actions' => [
-        ['label' => 'Consulter un envoi', 'url' => '/track', 'primary' => true],
-        ['label' => 'Nous contacter', 'url' => '/contact', 'primary' => false],
+        ['label' => __('service_gestion.btn_track'), 'url' => '/track', 'primary' => true],
+        ['label' => __('service_gestion.btn_contact'), 'url' => '/contact', 'primary' => false],
     ],
     'image' => '/assets/img/site/service-gestion.webp',
-    'image_alt' => 'Vue en hauteur d\'un entrepôt logistique et rayonnages ordonnés'
+    'image_alt' => __('service_gestion.title')
 ];
 ?>
 

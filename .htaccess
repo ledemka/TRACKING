@@ -7,6 +7,7 @@ RewriteRule ^api/lib/ - [F,L,NC]
 RewriteRule ^api/migrate\.php - [F,L,NC]
 RewriteRule ^scripts/ - [F,L,NC]
 RewriteRule ^templates/ - [F,L,NC]
+RewriteRule ^lang/ - [F,L,NC]
 RewriteRule \.sqlite$ - [F,L,NC]
 RewriteRule ^src/ - [F,L,NC]
 RewriteRule ^node_modules/ - [F,L,NC]
@@ -26,12 +27,29 @@ RewriteRule \.(zip|sql|bak|log)$ - [F,L,NC]
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    # ATTENTION : Si MAP_TILE_URL change (ex: Mapbox, Stadia), il FAUT ajouter le nouveau domaine à img-src ci-dessous.
-    Header set Content-Security-Policy "default-src 'self'; connect-src 'self' https://*.hereapi.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://pava-shipping.fr;"
+    Header set Content-Security-Policy "default-src 'self'; connect-src 'self' https://*.hereapi.com https://nominatim.openstreetmap.org; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org https://pava-shipping.fr;"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Routage explicite
+# Routage localisé (/fr/, /en/, /de/, /nl/)
+RewriteRule ^(fr|en|de|nl)/?$ index.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/track/?$ track.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/contact/?$ contact.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/login/?$ login.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/logout/?$ logout.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/dashboard/?$ dashboard.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/shipments/?$ shipments.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/shipments/new/?$ shipment_new.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/shipments/([0-9]+)/?$ shipment.php?id=$2&lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/customers/?$ customers.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/?$ services.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/expedition/?$ service_expedition.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/suivi/?$ service_suivi.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/livraison/?$ service_livraison.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/gestion/?$ service_gestion.php?lang=$1 [QSA,L]
+RewriteRule ^(fr|en|de|nl)/services/gestion-expeditions/?$ service_gestion.php?lang=$1 [QSA,L]
+
+# Routage explicite standard
 RewriteRule ^$ index.php [L]
 RewriteRule ^track$ track.php [L]
 RewriteRule ^contact$ contact.php [L]

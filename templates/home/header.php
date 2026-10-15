@@ -26,19 +26,21 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
             <?php endforeach; ?>
         </nav>
 
-        <!-- Bouton Action Desktop -->
-        <div class="hidden md:flex items-center">
+        <!-- Boutons Action & Sélecteur de Langue Desktop -->
+        <div class="hidden md:flex items-center gap-3">
+            <?= render_language_switcher('dark') ?>
             <a href="/track" class="bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-5 py-2.5 rounded-lg shadow-sm transition-all focus-brand-dark flex items-center gap-2">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <span>Suivre un colis</span>
+                <span><?php _e('nav.track'); ?></span>
             </a>
         </div>
 
-        <!-- Bouton Burger Mobile -->
-        <div class="flex md:hidden items-center">
-            <button id="mobile-menu-btn" type="button" class="p-2.5 rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors focus-brand-dark" aria-label="Ouvrir le menu de navigation" aria-expanded="false" aria-controls="mobile-menu">
+        <!-- Zone Mobile : Sélecteur de Langue + Burger -->
+        <div class="flex md:hidden items-center gap-2">
+            <?= render_language_switcher('dark') ?>
+            <button id="mobile-menu-btn" type="button" class="p-2.5 rounded-lg text-slate-200 hover:text-white hover:bg-white/10 transition-colors focus-brand-dark" aria-label="<?= __attr('nav.menu_open') ?>" aria-expanded="false" aria-controls="mobile-menu">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
@@ -62,7 +64,7 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <span>Suivre un colis</span>
+                <span><?php _e('nav.track'); ?></span>
             </a>
         </div>
     </div>

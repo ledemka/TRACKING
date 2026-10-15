@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    const escapeHtml = (str) => {
+        const d = document.createElement('div');
+        d.textContent = str || '';
+        return d.innerHTML;
+    };
+
     // Lecture et validation des valeurs numériques
     const toCoord = (value, max) => {
         const n = parseFloat(value);
@@ -80,8 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Icône Origine (Départ)
     if (trail.length > 0) {
         // Home icon path
+        const originTitle = (window.I18N && window.I18N['map.origin_title']) 
+            || mapContainer.dataset.originTitle 
+            || "Départ";
         const originIcon = createSvgIcon('var(--color-primary, #0B1F3A)', 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z');
-        L.marker(trail[0], { icon: originIcon, title: "Départ" }).addTo(map);
+        L.marker(trail[0], { icon: originIcon, title: originTitle }).addTo(map);
     }
 
     // Trajet restant (à vol d'oiseau) : pointillés + marqueur de destination
@@ -104,13 +113,32 @@ document.addEventListener('DOMContentLoaded', () => {
         boundsPoints.push([destLat, destLng]);
     }
 
-    // Position actuelle : pastille accent, anneau pulsant sauf si Livré
+    // Position actuelle : pastille accent, icône selon le mode de transport, anneau pulsant sauf si Livré
     const hasCurrent = mapContainer.dataset.hasCurrent !== '0';
     if (hasCurrent) {
-        // Truck icon for current position if not delivered, checkmark if delivered
+        const transportMode = mapContainer.dataset.transportMode || 'land';
+        const transportLabel = mapContainer.dataset.transportLabel || 'Terrestre';
+        const deliveredText = (window.I18N && window.I18N['map.delivered_title']) 
+            || mapContainer.dataset.deliveredTitle 
+            || 'Colis livré';
+        const currentPosTemplate = (window.I18N && window.I18N['map.current_position']) 
+            || mapContainer.dataset.currentPositionTemplate 
+            || 'Position actuelle (:mode)';
+        const currentPosLabel = currentPosTemplate.replace(':mode', transportLabel);
+        const indicativeTrailText = (window.I18N && window.I18N['map.indicative_trail']) 
+            || mapContainer.dataset.indicativeTrail 
+            || "Tracé indicatif à vol d'oiseau";
+
+        // Chemins SVG Material selon le mode de transport
+        const iconPaths = {
+            air: 'M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z', // Avion
+            land: 'M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z', // Camion
+            sea: 'M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.47L20 13l-1.45-4.34c-.18-.54-.69-.91-1.26-.91H15V5c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2v2.75L6.64 8.76c-.57.14-1 .61-1.14 1.18L4.04 13l-1.28.27c-.26.05-.48.23-.6.47s-.14.52-.06.78L3.95 19zM11 5h2v3h-2V5z' // Bateau
+        };
+
         const currentPath = isDelivered 
             ? 'M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z' // Checkmark
-            : 'M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'; // Truck
+            : (iconPaths[transportMode] || iconPaths.land);
         
         const animationStyle = isDelivered ? '' : 'animation: pulse 1.5s ease-in-out infinite;';
         
@@ -123,7 +151,21 @@ document.addEventListener('DOMContentLoaded', () => {
             iconAnchor: [17, 17] // Center anchor for current position
         });
         
-        L.marker([lat, lng], { icon: currentIcon, keyboard: false, zIndexOffset: 1000 }).addTo(map);
+        const currentMarker = L.marker([lat, lng], { 
+            icon: currentIcon, 
+            keyboard: false, 
+            zIndexOffset: 1000,
+            title: isDelivered ? deliveredText : currentPosLabel
+        }).addTo(map);
+
+        // Infobulle informative sans ambiguïté sur le caractère indicatif du tracé
+        const tooltip = document.createElement('div');
+        tooltip.style.fontSize = '12px';
+        tooltip.style.fontWeight = '600';
+        tooltip.innerHTML = isDelivered 
+            ? escapeHtml(deliveredText)
+            : `${escapeHtml(currentPosLabel)}<div style="font-size:10px;font-weight:normal;opacity:0.85;">${escapeHtml(indicativeTrailText)}</div>`;
+        currentMarker.bindTooltip(tooltip, { direction: 'top', offset: [0, -20] });
     } else {
         // Just center map on destination (lat/lng will be set to dest in PHP)
         boundsPoints.push([lat, lng]);

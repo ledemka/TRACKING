@@ -76,7 +76,7 @@ function login($email, $password) {
     
     rate_limit_check($ip, 5, 15);
     
-    $stmt = $pdo->prepare("SELECT id, password_hash, role FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id, password_hash, role, lang FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
     
@@ -86,6 +86,21 @@ function login($email, $password) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['created_at'] = time(); // Origine de la session
+        
+        // Gestion de la préférence de langue utilisateur
+        $supportedLangs = defined('SUPPORTED_LANGUAGES') ? SUPPORTED_LANGUAGES : ['fr', 'en', 'de', 'nl'];
+        if (!empty($user['lang']) && in_array(strtolower($user['lang']), $supportedLangs, true)) {
+            $_SESSION['lang'] = strtolower($user['lang']);
+            $_SESSION['lang_manual'] = true;
+            if (!headers_sent()) {
+                setcookie('app_lang', strtolower($user['lang']), time() + 365 * 86400, '/', '', false, false);
+                setcookie('app_lang_manual', '1', time() + 365 * 86400, '/', '', false, false);
+            }
+        } elseif (!empty($_SESSION['lang']) && in_array(strtolower($_SESSION['lang']), $supportedLangs, true)) {
+            $saveStmt = $pdo->prepare("UPDATE users SET lang = ? WHERE id = ?");
+            $saveStmt->execute([strtolower($_SESSION['lang']), $user['id']]);
+        }
+
         return true;
     }
     

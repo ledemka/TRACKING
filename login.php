@@ -9,7 +9,7 @@ if (is_logged_in()) {
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        $error = "Session expirée ou invalide. Veuillez réessayer.";
+        $error = __('auth.session_expired');
     } else {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -18,11 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: /dashboard");
             exit;
         } else {
-            $error = "Identifiants invalides."; // Message générique
+            $error = __('auth.error_invalid'); // Message générique
         }
     }
 }
 
+$page_title = __('auth.page_title');
 require_once __DIR__ . '/templates/public_header.php';
 ?>
 
@@ -31,7 +32,7 @@ require_once __DIR__ . '/templates/public_header.php';
         <div class="flex justify-center mb-5">
             <img src="/assets/img/logo/logo.svg" alt="Logo" class="w-16 h-16 rounded-2xl shadow-sm" width="64" height="64">
         </div>
-        <h1 class="text-2xl font-bold text-primary mb-6 text-center">Connexion Espace Admin</h1>
+        <h1 class="text-2xl font-bold text-primary mb-6 text-center"><?= escape_html(__('auth.heading')) ?></h1>
         
         <?php if ($error): ?>
             <div class="bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4 border border-red-100">
@@ -43,17 +44,17 @@ require_once __DIR__ . '/templates/public_header.php';
             <input type="hidden" name="csrf_token" value="<?= escape_html(generate_csrf_token()) ?>">
             
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1"><?= escape_html(__('auth.email')) ?></label>
                 <input type="email" name="email" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none" required>
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">Mot de passe</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1"><?= escape_html(__('auth.password')) ?></label>
                 <input type="password" name="password" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none" required>
             </div>
             
             <button type="submit" class="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-slate-800 transition-colors shadow-sm mt-4">
-                Se connecter
+                <?= escape_html(__('auth.submit')) ?>
             </button>
         </form>
     </div>

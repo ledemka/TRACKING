@@ -44,21 +44,32 @@ function insert_shipment_and_event($data, $eventData) {
     global $pdo;
     $pdo->beginTransaction();
     try {
+        $transport_mode = is_valid_transport_mode($data['transport_mode'] ?? null) 
+            ? $data['transport_mode'] 
+            : TRANSPORT_MODE_LAND;
+
+        $recipient_lang = !empty($data['recipient_lang']) && in_array(strtolower($data['recipient_lang']), ['fr', 'en', 'de', 'nl'], true)
+            ? strtolower($data['recipient_lang'])
+            : null;
+
         $stmt = $pdo->prepare("
             INSERT INTO shipments (
                 tracking_number, carrier_id, recipient_name, recipient_phone, recipient_email,
                 address, zip_code, city, country, origin_address, origin_city, 
-                shipped_at, estimated_delivery_at, status, description, is_demo,
-                destination_lat, destination_lng, is_company, company_name, company_siret, company_department
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                shipped_at, estimated_delivery_at, status, transport_mode, description, is_demo,
+                destination_lat, destination_lng, is_company, company_name, company_siret, company_department,
+                recipient_lang
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $data['tracking_number'], $data['carrier_id'] ?: null, $data['recipient_name'], 
             $data['recipient_phone'], $data['recipient_email'], $data['address'], $data['zip_code'], 
             $data['city'], $data['country'], $data['origin_address'], $data['origin_city'], 
             $data['shipped_at'], $data['estimated_delivery_at'] ?: null, $data['status'], 
+            $transport_mode,
             $data['description'], 0, $data['destination_lat'], $data['destination_lng'],
-            $data['is_company'] ?? 0, $data['company_name'] ?? null, $data['company_siret'] ?? null, $data['company_department'] ?? null
+            $data['is_company'] ?? 0, $data['company_name'] ?? null, $data['company_siret'] ?? null, $data['company_department'] ?? null,
+            $recipient_lang
         ]);
         
         $shipmentId = $pdo->lastInsertId();

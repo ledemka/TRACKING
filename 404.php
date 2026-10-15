@@ -1,21 +1,21 @@
 <?php
 require_once __DIR__ . '/api/bootstrap.php';
 http_response_code(404);
-$page_title = 'Page introuvable (404)';
-$page_description = "La page demandée n'existe pas ou a été déplacée. Utilisez notre formulaire pour retrouver votre expédition.";
+$page_title = __('error_404.page_title');
+$page_description = __('error_404.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'Référence introuvable',
-    'title' => 'Page non trouvée (Erreur 404)',
-    'description' => 'L\'adresse demandée n\'existe pas ou a été déplacée. Vous pouvez retourner à l\'accueil ou accéder directement au suivi de votre colis.',
+    'badge' => __('error_404.badge'),
+    'title' => __('error_404.title'),
+    'description' => __('error_404.desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Erreur 404']
+        ['label' => __('nav.home'), 'url' => '/'],
+        ['label' => __('error_404.breadcrumb_error')]
     ],
     'actions' => [
-        ['label' => 'Retourner à l\'accueil', 'url' => '/', 'primary' => true],
-        ['label' => 'Suivre un colis', 'url' => '/track', 'primary' => false],
+        ['label' => __('error_404.action_home'), 'url' => '/', 'primary' => true],
+        ['label' => __('error_404.action_track'), 'url' => '/track', 'primary' => false],
     ]
 ];
 ?>
@@ -31,17 +31,17 @@ $banner_config = [
                 </svg>
             </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-4">
-                Cette page n'est pas disponible
+                <?= escape_html(__('error_404.not_available_title')) ?>
             </h2>
             <p class="text-base text-[#6B6B6B] leading-relaxed mb-8">
-                Vérifiez l'URL saisie ou utilisez nos raccourcis pour reprendre votre navigation dans la plateforme de suivi.
+                <?= escape_html(__('error_404.not_available_desc')) ?>
             </p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="/" class="inline-flex items-center gap-2 bg-[#171717] text-white hover:bg-black font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-dark shadow-sm">
-                    Retour à l'accueil
+                    <?= escape_html(__('error_404.action_home')) ?>
                 </a>
                 <a href="/track" class="inline-flex items-center gap-2 bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] font-bold text-sm px-6 py-3.5 rounded-lg transition-colors focus-brand-light shadow-sm">
-                    Suivre une expédition
+                    <?= escape_html(__('error_404.action_track')) ?>
                 </a>
             </div>
         </div>

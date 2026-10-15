@@ -25,9 +25,9 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
             <!-- Colonne 2 : Liens rapides -->
             <div class="md:col-span-4">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-[#FFE500] mb-4">
-                    Liens rapides
+                    <?php _e('footer.links_title'); ?>
                 </h3>
-                <ul class="space-y-2.5 text-sm" aria-label="Liens rapides">
+                <ul class="space-y-2.5 text-sm" aria-label="<?php _e('footer.links_title'); ?>">
                     <?php foreach ($content['footer']['quick_links'] as $link): ?>
                         <li>
                             <a href="<?= escape_html($link['url']) ?>" class="text-slate-300 hover:text-white transition-colors focus-brand-dark rounded px-1 py-0.5 inline-block">
@@ -41,7 +41,7 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
             <!-- Colonne 3 : Coordonnées de contact -->
             <div class="md:col-span-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-[#FFE500] mb-4">
-                    Contact
+                    <?php _e('footer.contact_title'); ?>
                 </h3>
                 <ul class="space-y-3 text-sm text-slate-300" aria-label="Coordonnées de l'entreprise">
                     <li class="flex items-start gap-2.5">
@@ -76,6 +76,20 @@ $logoPath = $logoUploaded ? $logoUploaded : '/assets/img/logo-mark-fond-sombre.s
                         <?php endif; ?>
                     </li>
                 </ul>
+            </div>
+        </div>
+
+        <!-- Rangée inférieure : Droits réservés & Sélecteur de langue accessible -->
+        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <p>© <?= date('Y') ?> <?= escape_html($nomEntreprise) ?>. <?php _e('footer.rights_reserved'); ?></p>
+            <div class="flex items-center gap-2.5">
+                <span class="text-slate-400 select-none flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#FFE500]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                    </svg>
+                    <span><?= escape_html(__('common.language')) ?> :</span>
+                </span>
+                <?= render_language_switcher('dark') ?>
             </div>
         </div>
     </div>

@@ -12,11 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
 
         // Mettre à jour le texte du bouton ou afficher un statut
+        const loadingText = (window.I18N && window.I18N['track.searching_colis']) 
+            || (submitBtn && submitBtn.dataset.loadingText) 
+            || "Recherche de votre colis…";
+
         if (submitText) {
-            submitText.textContent = "Recherche de votre colis…";
+            submitText.textContent = loadingText;
         }
         if (statusContainer) {
-            statusContainer.textContent = "Recherche de votre colis…";
+            statusContainer.textContent = loadingText;
             statusContainer.setAttribute('role', 'status');
         }
     });
@@ -26,8 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.persisted) {
             submitBtn.disabled = false;
             submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            const defaultText = (window.I18N && window.I18N['track.search_button']) 
+                || (submitBtn && submitBtn.dataset.defaultText) 
+                || "Rechercher";
             if (submitText) {
-                submitText.textContent = "Rechercher";
+                submitText.textContent = defaultText;
             }
             if (statusContainer) {
                 statusContainer.textContent = "";

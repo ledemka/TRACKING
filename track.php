@@ -20,9 +20,9 @@ $events = [];
 
 if ($raw_id !== null) {
     if ($tracking_id === '') {
-        $empty_id_error = "Veuillez renseigner votre numéro de suivi.";
+        $empty_id_error = __('track.empty_error');
     } elseif (!preg_match('/^[A-Z0-9-]{3,40}$/', $tracking_id)) {
-        $error = "Numéro de suivi introuvable. Vérifiez votre numéro et réessayez.";
+        $error = __('track.not_found_error');
         http_response_code(404);
     } else {
         $stmt = $pdo->prepare("SELECT s.*, c.name as carrier_name FROM shipments s LEFT JOIN carriers c ON s.carrier_id = c.id WHERE s.tracking_number = ?");
@@ -30,7 +30,7 @@ if ($raw_id !== null) {
         $shipment = $stmt->fetch();
         
         if (!$shipment) {
-            $error = "Numéro de suivi introuvable. Vérifiez votre numéro et réessayez.";
+            $error = __('track.not_found_error');
             http_response_code(404);
         } else {
             $stmt = $pdo->prepare("SELECT * FROM tracking_events WHERE shipment_id = ? ORDER BY occurred_at DESC");
@@ -115,30 +115,21 @@ if ($raw_id !== null) {
     }
 }
 
-/**
- * Distance à vol d'oiseau (km) entre deux points, formule de haversine.
- */
-function haversine_km(float $lat1, float $lng1, float $lat2, float $lng2): float {
-    $r = 6371.0;
-    $dLat = deg2rad($lat2 - $lat1);
-    $dLng = deg2rad($lng2 - $lng1);
-    $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
-    return 2 * $r * asin(min(1.0, sqrt($a)));
-}
-
-$page_title = 'Suivi d\'expédition en direct';
-$page_description = "Accédez au suivi en direct de votre colis : localisation sur carte, avancement des étapes et historique des événements.";
+$page_title = __('track.page_title');
+$page_description = __('track.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
-function get_step_status_label($progressed_status, $step_status) {
-    $order = [STATUS_SHIPPED => 1, STATUS_OUT_FOR_DELIVERY => 2, STATUS_DELIVERED => 3];
-    $p = $order[$progressed_status] ?? 1;
-    $s = $order[$step_status] ?? 0;
-    $is_delayed = (($GLOBALS['shipment']['status'] ?? '') === STATUS_DELAYED);
-    if ($p === 3 && !$is_delayed) return 'Terminé';
-    if ($s < $p) return 'Terminé';
-    if ($s == $p) return 'En cours';
-    return 'À venir';
+if (!function_exists('get_step_status_label')) {
+    function get_step_status_label($progressed_status, $step_status) {
+        $order = [STATUS_SHIPPED => 1, STATUS_OUT_FOR_DELIVERY => 2, STATUS_DELIVERED => 3];
+        $p = $order[$progressed_status] ?? 1;
+        $s = $order[$step_status] ?? 0;
+        $is_delayed = (($GLOBALS['shipment']['status'] ?? '') === STATUS_DELAYED);
+        if ($p === 3 && !$is_delayed) return __('track.step_completed');
+        if ($s < $p) return __('track.step_completed');
+        if ($s == $p) return __('track.step_in_progress');
+        return __('track.step_upcoming');
+    }
 }
 ?>
 
@@ -146,10 +137,10 @@ function get_step_status_label($progressed_status, $step_status) {
     <div class="max-w-4xl mx-auto w-full">
         
         <!-- Fil d'Ariane épuré -->
-        <nav class="mb-6 flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]" aria-label="Fil d'Ariane">
-            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light rounded">Accueil</a>
+        <nav class="mb-6 flex items-center gap-2 text-xs font-semibold text-[#6B6B6B]" aria-label="<?= __attr('common.details') ?>">
+            <a href="/" class="hover:text-[#171717] transition-colors focus-brand-light rounded"><?= escape_html(__('nav.home')) ?></a>
             <span class="text-slate-400" aria-hidden="true">/</span>
-            <span class="text-[#171717]" aria-current="page">Suivi d'expédition</span>
+            <span class="text-[#171717]" aria-current="page"><?= escape_html(__('track.page_title')) ?></span>
         </nav>
 
         <?php if (!$shipment): ?>
@@ -158,14 +149,14 @@ function get_step_status_label($progressed_status, $step_status) {
                 <!-- Badge repère visuel de marque -->
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#171717] text-white text-xs font-bold tracking-wide mb-5">
                     <span class="w-2 h-2 rounded-full bg-[#FFE500]" aria-hidden="true"></span>
-                    <span>SUIVI EN TEMPS RÉEL</span>
+                    <span><?= escape_html(__('track.realtime_badge')) ?></span>
                 </div>
 
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-[#171717] tracking-tight mb-4">
-                    Suivez votre expédition
+                    <?= escape_html(__('track.search_heading')) ?>
                 </h1>
                 <p class="text-[#6B6B6B] text-base sm:text-lg mb-8 max-w-lg mx-auto">
-                    Entrez votre référence de colis pour accéder en direct à la localisation, aux étapes et à l'historique d'acheminement.
+                    <?= escape_html(__('track.search_subheading')) ?>
                 </p>
                 
                 <?php if ($error): ?>
@@ -179,7 +170,7 @@ function get_step_status_label($progressed_status, $step_status) {
                 <div class="bg-white p-6 sm:p-8 rounded-2xl border border-black/5 shadow-sm">
                     <form id="track-form" action="/track" method="GET" class="flex flex-col sm:flex-row gap-3">
                         <div class="flex-grow relative text-left">
-                            <label for="tracking_id" class="sr-only">Numéro de suivi</label>
+                            <label for="tracking_id" class="sr-only"><?= escape_html(__('common.reference')) ?></label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
@@ -187,7 +178,7 @@ function get_step_status_label($progressed_status, $step_status) {
                                 <input type="text" 
                                        name="id" 
                                        id="tracking_id"
-                                       placeholder="Ex. PS-2610-A3K9F2M" 
+                                       placeholder="<?= __attr('track.input_placeholder') ?>" 
                                        class="w-full pl-12 pr-4 py-4 rounded-xl border <?= $empty_id_error ? 'border-red-500 focus:border-red-500 ring-2 ring-red-100' : 'border-slate-200 focus:border-[#171717] focus:ring-2 focus:ring-[#FFE500]' ?> outline-none code-tracking text-base sm:text-lg font-medium text-[#171717] bg-[#F4F3ED]/40 transition-all placeholder:text-slate-400"
                                        value="<?= escape_html($raw_id ?? '') ?>"
                                        aria-describedby="format-help <?= $empty_id_error ? 'empty-error' : '' ?>"
@@ -200,14 +191,18 @@ function get_step_status_label($progressed_status, $step_status) {
                                 </p>
                             <?php endif; ?>
                         </div>
-                        <button type="submit" id="track-submit-btn" class="bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] px-7 py-4 rounded-xl font-bold transition-all shadow-sm text-base flex items-center justify-center min-w-[170px] focus-brand-light">
+                        <button type="submit" 
+                                id="track-submit-btn" 
+                                data-loading-text="<?= __attr('track.searching_colis') ?>" 
+                                data-default-text="<?= __attr('track.search_button') ?>" 
+                                class="bg-[#FFE500] text-[#171717] hover:bg-[#E6CE00] px-7 py-4 rounded-xl font-bold transition-all shadow-sm text-base flex items-center justify-center min-w-[170px] focus-brand-light">
                             <span id="track-submit-text" class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                <span>Rechercher</span>
+                                <span><?= escape_html(__('track.search_button')) ?></span>
                             </span>
                         </button>
                     </form>
-                    <p id="format-help" class="text-[#6B6B6B] text-xs mt-4">Format : lettres majuscules, chiffres et tirets</p>
+                    <p id="format-help" class="text-[#6B6B6B] text-xs mt-4"><?= escape_html(__('track.format_help')) ?></p>
                     <div id="track-status-container" class="mt-2 text-[#171717] font-semibold text-sm h-6"></div>
                 </div>
             </section>
@@ -220,10 +215,12 @@ function get_step_status_label($progressed_status, $step_status) {
                     <div>
                         <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#6B6B6B] mb-1.5">
                             <span class="w-2 h-2 rounded-full bg-[#FFE500]" aria-hidden="true"></span>
-                            <span>Expédition certifiée</span>
+                            <span><?= escape_html(__('track.certified_badge')) ?></span>
+                            <span class="text-slate-300" aria-hidden="true">&bull;</span>
+                            <span class="text-[#171717]"><?= escape_html(__('track.transport_prefix')) ?> <?= escape_html(get_transport_mode_label($shipment['transport_mode'] ?? 'land')) ?></span>
                         </div>
                         <h1 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight">
-                            Colis <span class="code-tracking text-[#171717] bg-[#F4F3ED] px-3 py-1 rounded-lg border border-black/5 text-xl sm:text-2xl"><?= escape_html($shipment['tracking_number']) ?></span>
+                            <?= escape_html(__('track.colis_label')) ?> <span class="code-tracking text-[#171717] bg-[#F4F3ED] px-3 py-1 rounded-lg border border-black/5 text-xl sm:text-2xl"><?= escape_html($shipment['tracking_number']) ?></span>
                         </h1>
                     </div>
                     <div class="self-start sm:self-center">
@@ -234,7 +231,7 @@ function get_step_status_label($progressed_status, $step_status) {
                 <?php if ($shipment['status'] === STATUS_DELAYED): ?>
                     <div class="mb-8 p-4 sm:p-5 bg-red-50 border border-red-200 text-red-800 rounded-xl font-bold flex items-center gap-3 shadow-sm">
                         <svg class="w-6 h-6 shrink-0 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        <span>Votre colis est retardé. Nos équipes mettent tout en œuvre pour son acheminement.</span>
+                        <span><?= escape_html(__('track.delayed_banner')) ?></span>
                     </div>
                 <?php endif; ?>
                 
@@ -243,59 +240,66 @@ function get_step_status_label($progressed_status, $step_status) {
                     <div class="bg-white p-4 rounded-xl border border-black/5">
                         <p class="text-xs text-[#6B6B6B] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-[#171717]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            <span>Destinataire</span>
+                            <span><?= escape_html(__('track.recipient_label')) ?></span>
                         </p>
                         <p class="font-bold text-[#171717] text-base"><?= escape_html(mask_name($shipment['recipient_name'])) ?></p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-black/5">
                         <p class="text-xs text-[#6B6B6B] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-[#171717]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span>Trajet</span>
+                            <span><?= escape_html(__('track.route_label')) ?></span>
                         </p>
                         <p class="font-bold text-[#171717] text-base flex items-center gap-2 flex-wrap">
                             <span><?= escape_html($shipment['origin_city']) ?></span>
                             <svg class="w-4 h-4 text-[#FFE500] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                             <span><?= escape_html($shipment['city']) ?></span>
                         </p>
+                        <p class="text-xs font-semibold text-slate-500 mt-1 flex items-center gap-1.5">
+                            <span><?= escape_html(__('track.mode_label')) ?></span>
+                            <span class="text-[#171717] font-bold"><?= escape_html(get_transport_mode_label($shipment['transport_mode'] ?? 'land')) ?></span>
+                        </p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-black/5">
                         <p class="text-xs text-[#6B6B6B] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-[#171717]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <span>Expédition</span>
+                            <span><?= escape_html(__('track.shipment_label')) ?></span>
                         </p>
-                        <p class="font-bold text-[#171717] text-base"><?= $shipment['shipped_at'] ? format_date($shipment['shipped_at'], 'd M Y') : 'Non expédié' ?></p>
+                        <p class="font-bold text-[#171717] text-base"><?= $shipment['shipped_at'] ? format_date($shipment['shipped_at'], 'd M Y') : escape_html(__('track.not_shipped')) ?></p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-black/5">
                         <p class="text-xs text-[#6B6B6B] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-[#171717]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <span>Livraison estimée</span>
+                            <span><?= escape_html(__('track.estimated_delivery')) ?></span>
                         </p>
-                        <p class="font-bold text-[#171717] text-base"><?= $shipment['estimated_delivery_at'] ? format_date($shipment['estimated_delivery_at'], 'd M Y') : 'Non estimée' ?></p>
+                        <p class="font-bold text-[#171717] text-base"><?= $shipment['estimated_delivery_at'] ? format_date($shipment['estimated_delivery_at'], 'd M Y') : escape_html(__('track.not_estimated')) ?></p>
                     </div>
                 </div>
 
                 <?php if ($map_center_lat !== null || $map_dest_lat !== null): ?>
-                    <?php require_once __DIR__ . '/templates/track_map.php'; ?>
+                    <?php require __DIR__ . '/templates/track_map.php'; ?>
                 <?php endif; ?>
 
                 <!-- Stepper de Progression Moderne -->
                 <div class="mb-12 pt-2 animate-slide-up-stepper">
                     <div class="text-center mb-6">
-                        <p class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B]">Progression de l'acheminement</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B]"><?= escape_html(__('track.progress_title')) ?></p>
                     </div>
                     <ol class="relative flex justify-between w-full max-w-2xl mx-auto before:absolute before:top-4 before:left-6 before:right-6 before:h-1 before:bg-slate-200 before:z-0">
                         <?php 
                         $steps = [
-                            STATUS_SHIPPED => 'Expédié',
-                            STATUS_OUT_FOR_DELIVERY => 'En cours de livraison',
-                            STATUS_DELIVERED => 'Livré'
+                            STATUS_SHIPPED => __('status.shipped'),
+                            STATUS_OUT_FOR_DELIVERY => __('status.out_for_delivery'),
+                            STATUS_DELIVERED => __('status.delivered')
                         ];
                         foreach ($steps as $key => $label): 
                             $step_state = get_step_status_label($progressed_status, $key);
-                            if ($step_state === 'Terminé') {
+                            $isDone = ($step_state === __('track.step_completed'));
+                            $isInProgress = ($step_state === __('track.step_in_progress'));
+
+                            if ($isDone) {
                                 $circleClass = 'bg-[#171717] border-[#171717] text-white shadow-sm';
                                 $textClass = 'text-[#171717] font-bold';
-                            } elseif ($step_state === 'En cours') {
+                            } elseif ($isInProgress) {
                                 $circleClass = 'bg-[#FFE500] border-[#171717] text-[#171717] ring-4 ring-[#FFE500]/30 animate-pulse-subtle shadow-md';
                                 $textClass = 'text-[#171717] font-extrabold';
                             } else {
@@ -303,11 +307,11 @@ function get_step_status_label($progressed_status, $step_status) {
                                 $textClass = 'text-slate-400 font-medium';
                             }
                         ?>
-                        <li class="relative z-10 flex flex-col items-center gap-2.5 bg-white px-2 sm:px-4" <?= $step_state === 'En cours' ? 'aria-current="step"' : '' ?>>
+                        <li class="relative z-10 flex flex-col items-center gap-2.5 bg-white px-2 sm:px-4" <?= $isInProgress ? 'aria-current="step"' : '' ?>>
                             <div class="w-8 h-8 rounded-full border-2 <?= $circleClass ?> flex items-center justify-center transition-all">
-                                <?php if ($step_state === 'Terminé'): ?>
+                                <?php if ($isDone): ?>
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                <?php elseif ($step_state === 'En cours'): ?>
+                                <?php elseif ($isInProgress): ?>
                                     <span class="w-2.5 h-2.5 bg-[#171717] rounded-full" aria-hidden="true"></span>
                                 <?php else: ?>
                                     <span class="w-2 h-2 bg-slate-200 rounded-full" aria-hidden="true"></span>
@@ -328,15 +332,15 @@ function get_step_status_label($progressed_status, $step_status) {
                     <div class="flex items-center justify-between gap-4 mb-6">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#171717]" aria-hidden="true"></span>
-                            <h2 class="text-xl font-extrabold text-[#171717]">Historique des événements</h2>
+                            <h2 class="text-xl font-extrabold text-[#171717]"><?= escape_html(__('track.history_title')) ?></h2>
                         </div>
                         <span class="text-xs font-semibold text-[#6B6B6B] bg-[#F4F3ED] px-3 py-1 rounded-full border border-black/5">
-                            <?= count($events) ?> <?= count($events) > 1 ? 'mises à jour' : 'mise à jour' ?>
+                            <?= count($events) > 1 ? escape_html(__('track.updates_count_plural', ['count' => count($events)])) : escape_html(__('track.updates_count_single', ['count' => count($events)])) ?>
                         </span>
                     </div>
                     
                     <?php if (empty($events)): ?>
-                        <p class="text-[#6B6B6B] py-5 bg-[#F4F3ED] rounded-xl px-5 text-sm font-medium">Aucun événement enregistré pour le moment.</p>
+                        <p class="text-[#6B6B6B] py-5 bg-[#F4F3ED] rounded-xl px-5 text-sm font-medium"><?= escape_html(__('track.no_events')) ?></p>
                     <?php else: ?>
                         <div class="relative pl-6 space-y-6 before:absolute before:inset-y-2 before:left-[11px] before:w-0.5 before:bg-slate-200 animate-slide-up-timeline">
                             <?php foreach ($events as $index => $event): 
@@ -369,7 +373,7 @@ function get_step_status_label($progressed_status, $step_status) {
                 <div class="mt-12 text-center pt-8 border-t border-slate-100">
                      <a href="/track" class="inline-flex items-center gap-2 px-6 py-3.5 bg-[#171717] text-white hover:bg-black rounded-xl font-bold transition-all shadow-sm focus-brand-light">
                         <svg class="w-4 h-4 text-[#FFE500]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <span>Rechercher un autre colis</span>
+                        <span><?= escape_html(__('track.new_search')) ?></span>
                      </a>
                 </div>
             </section>

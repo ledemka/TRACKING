@@ -3,25 +3,25 @@
 // Présentation du service Suivi — Traçabilité continue, statuts et événements horodatés
 require_once __DIR__ . '/api/bootstrap.php';
 
-$page_title = 'Service Suivi — Traçabilité continue et historique des colis';
-$page_description = "Le suivi documente le parcours géographique du colis à chaque passage en centre de transit au fil des étapes du circuit.";
+$page_title = __('service_suivi.page_title');
+$page_description = __('service_suivi.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'Traçabilité en continu',
-    'title' => 'Suivi des colis et chronologie d\'acheminement',
-    'description' => 'Le suivi documente le parcours géographique du colis à chaque passage en centre de transit. Les événements horodatés informent de l\'état courant au fil des étapes du circuit logistique.',
+    'badge' => __('service_suivi.badge'),
+    'title' => __('service_suivi.title'),
+    'description' => __('service_suivi.desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Services', 'url' => '/services'],
-        ['label' => 'Suivi']
+        ['label' => __('nav.home'), 'url' => '/'],
+        ['label' => __('nav.services'), 'url' => '/services'],
+        ['label' => __('services.suivi_title')]
     ],
     'actions' => [
-        ['label' => 'Accéder au formulaire de suivi', 'url' => '/track', 'primary' => true],
-        ['label' => 'Une question ? Contactez-nous', 'url' => '/contact', 'primary' => false],
+        ['label' => __('service_suivi.btn_track'), 'url' => '/track', 'primary' => true],
+        ['label' => __('service_suivi.btn_contact'), 'url' => '/contact', 'primary' => false],
     ],
     'image' => '/assets/img/site/service-suivi.webp',
-    'image_alt' => 'Lecture optique et scan de code-barres sur colis'
+    'image_alt' => __('service_suivi.title')
 ];
 ?>
 
@@ -66,7 +66,7 @@ $banner_config = [
                     <div class="space-y-4">
                         <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm flex items-start gap-4">
                             <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md shrink-0 border border-blue-200">
-                                Expédié
+                                <?= escape_html(__('status.shipped')) ?>
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold text-[#171717]">Prise en charge initiale</h3>
@@ -76,7 +76,7 @@ $banner_config = [
 
                         <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm flex items-start gap-4">
                             <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md shrink-0 border border-amber-200">
-                                En cours
+                                <?= escape_html(__('status.out_for_delivery')) ?>
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold text-[#171717]">Transit et acheminement</h3>
@@ -86,7 +86,7 @@ $banner_config = [
 
                         <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm flex items-start gap-4">
                             <span class="inline-block bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md shrink-0 border border-green-200">
-                                Livré
+                                <?= escape_html(__('status.delivered')) ?>
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold text-[#171717]">Remise effectuée</h3>
@@ -96,7 +96,7 @@ $banner_config = [
 
                         <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm flex items-start gap-4">
                             <span class="inline-block bg-red-100 text-red-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md shrink-0 border border-red-200">
-                                Retardé
+                                <?= escape_html(__('status.delayed')) ?>
                             </span>
                             <div>
                                 <h3 class="text-sm font-bold text-[#171717]">Incident de parcours</h3>

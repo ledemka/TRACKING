@@ -135,7 +135,12 @@ $migrations = [
     ALTER TABLE shipments ADD COLUMN origin_lng DECIMAL(9,6) NULL;",
     '018_enhance_email_logs' => "ALTER TABLE email_logs ADD COLUMN shipment_id INT NULL;
     ALTER TABLE email_logs ADD COLUMN email_type VARCHAR(50) DEFAULT 'general';
-    ALTER TABLE email_logs ADD COLUMN provider_message_id VARCHAR(255) NULL;"
+    ALTER TABLE email_logs ADD COLUMN provider_message_id VARCHAR(255) NULL;",
+    '019_add_transport_mode' => "ALTER TABLE shipments ADD COLUMN transport_mode VARCHAR(20) NOT NULL DEFAULT 'land';
+    UPDATE shipments SET transport_mode = 'land' WHERE transport_mode IS NULL OR transport_mode = '';",
+    '020_add_user_lang' => "ALTER TABLE users ADD COLUMN lang VARCHAR(10) NULL DEFAULT NULL;",
+    '021_add_shipment_recipient_lang' => "ALTER TABLE shipments ADD COLUMN recipient_lang VARCHAR(10) NULL DEFAULT NULL;",
+    '022_add_email_logs_lang' => "ALTER TABLE email_logs ADD COLUMN email_lang VARCHAR(10) NULL DEFAULT NULL;"
 ];
 
 foreach ($migrations as $version => $query) {

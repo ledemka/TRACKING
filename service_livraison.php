@@ -3,25 +3,25 @@
 // Présentation du service Livraison — Distribution locale, remise au destinataire et clôture
 require_once __DIR__ . '/api/bootstrap.php';
 
-$page_title = 'Service Livraison — Acheminement final et remise des colis';
-$page_description = "La livraison constitue le dernier maillon de l'acheminement, de la prise en charge locale jusqu'à la remise et clôture de l'envoi.";
+$page_title = __('service_livraison.page_title');
+$page_description = __('service_livraison.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'Étape finale de distribution',
-    'title' => 'Livraison et remise au destinataire',
-    'description' => 'La livraison constitue le dernier maillon de l\'acheminement logistique. Elle regroupe la prise en charge par les équipes de distribution locale jusqu\'à la remise physique et la clôture de l\'envoi.',
+    'badge' => __('service_livraison.badge'),
+    'title' => __('service_livraison.title'),
+    'description' => __('service_livraison.desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Services', 'url' => '/services'],
-        ['label' => 'Livraison']
+        ['label' => __('nav.home'), 'url' => '/'],
+        ['label' => __('nav.services'), 'url' => '/services'],
+        ['label' => __('services.livraison_title')]
     ],
     'actions' => [
-        ['label' => 'Vérifier un colis en livraison', 'url' => '/track', 'primary' => true],
-        ['label' => 'Une question sur la remise ?', 'url' => '/contact', 'primary' => false],
+        ['label' => __('service_livraison.btn_track'), 'url' => '/track', 'primary' => true],
+        ['label' => __('service_livraison.btn_contact'), 'url' => '/contact', 'primary' => false],
     ],
     'image' => '/assets/img/site/service-livraison.webp',
-    'image_alt' => 'Remise d\'un colis cartonné au destinataire'
+    'image_alt' => __('service_livraison.title')
 ];
 ?>
 

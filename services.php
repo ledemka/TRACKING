@@ -10,24 +10,24 @@ $services = $content['services'];
 $editorial = $content['editorial'];
 $details = $content['services_detail'];
 
-$page_title = 'Nos Services — Organisation et acheminement logistique';
-$page_description = "Découvrez les quatre services logistiques essentiels : expédition, suivi, livraison et gestion centralisée des colis.";
+$page_title = __('services.page_title');
+$page_description = __('services.page_desc');
 require_once __DIR__ . '/templates/public_header.php';
 
 $banner_config = [
-    'badge' => 'Offre de services',
-    'title' => 'Nos services d\'acheminement et de suivi logistique',
-    'description' => 'Découvrez les quatre maillons essentiels de notre chaîne logistique : de la prise en charge initiale de votre colis jusqu\'à sa remise finale au destinataire.',
+    'badge' => __('services.banner_badge'),
+    'title' => __('services.banner_title'),
+    'description' => __('services.banner_desc'),
     'breadcrumbs' => [
-        ['label' => 'Accueil', 'url' => '/'],
-        ['label' => 'Services']
+        ['label' => __('nav.home'), 'url' => '/'],
+        ['label' => __('nav.services')]
     ],
     'actions' => [
-        ['label' => 'Suivre une expédition', 'url' => '/track', 'primary' => true],
-        ['label' => 'Contacter notre équipe', 'url' => '/contact', 'primary' => false],
+        ['label' => __('services.banner_track_action'), 'url' => '/track', 'primary' => true],
+        ['label' => __('services.banner_contact_action'), 'url' => '/contact', 'primary' => false],
     ],
     'image' => '/assets/img/site/section-qualite.webp',
-    'image_alt' => 'Contrôle qualité logistique et vue entrepôt moderne'
+    'image_alt' => __('services.banner_title')
 ];
 ?>
 
@@ -35,15 +35,15 @@ $banner_config = [
     <?php require __DIR__ . '/templates/page_banner.php'; ?>
 
     <!-- Grille récapitulative des 4 services avec accès direct -->
-    <section class="py-16 sm:py-20 bg-[#F4F3ED] border-b border-stone-200" aria-label="Liste des services">
+    <section class="py-16 sm:py-20 bg-[#F4F3ED] border-b border-stone-200" aria-label="<?= __attr('nav.services') ?>">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-                <span class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B] block mb-2">Structure du circuit</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-[#6B6B6B] block mb-2"><?= escape_html(__('services.structure_badge')) ?></span>
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-4">
-                    Quatre expertises dédiées à chaque jalon
+                    <?= escape_html(__('services.structure_title')) ?>
                 </h2>
                 <p class="text-base text-[#6B6B6B] leading-relaxed">
-                    Chaque phase dispose d'outils de contrôle et d'enregistrement assurant la continuité de l'information.
+                    <?= escape_html(__('services.structure_desc')) ?>
                 </p>
             </div>
 
@@ -51,32 +51,32 @@ $banner_config = [
                 <?php 
                 $serviceCards = [
                     [
-                        'tag' => 'Phase 1',
-                        'title' => 'Expédition',
-                        'desc' => 'Prise en charge initiale, pesée, étiquetage normalisé et saisie des données d\'acheminement.',
+                        'tag' => __('services.phase_1'),
+                        'title' => __('services.expedition_title'),
+                        'desc' => __('services.expedition_card_desc'),
                         'url' => '/services/expedition',
-                        'btn' => 'Découvrir l\'expédition'
+                        'btn' => __('services.expedition_btn')
                     ],
                     [
-                        'tag' => 'Phase 2',
-                        'title' => 'Suivi',
-                        'desc' => 'Traçabilité en temps réel, relevé des jalons de transit et visualisation de l\'itinéraire.',
+                        'tag' => __('services.phase_2'),
+                        'title' => __('services.suivi_title'),
+                        'desc' => __('services.suivi_card_desc'),
                         'url' => '/services/suivi',
-                        'btn' => 'Découvrir le suivi'
+                        'btn' => __('services.suivi_btn')
                     ],
                     [
-                        'tag' => 'Phase 3',
-                        'title' => 'Livraison',
-                        'desc' => 'Tournée locale finale, remise au destinataire et enregistrement de clôture de l\'envoi.',
+                        'tag' => __('services.phase_3'),
+                        'title' => __('services.livraison_title'),
+                        'desc' => __('services.livraison_card_desc'),
                         'url' => '/services/livraison',
-                        'btn' => 'Découvrir la livraison'
+                        'btn' => __('services.livraison_btn')
                     ],
                     [
-                        'tag' => 'Supervision',
-                        'title' => 'Gestion des expéditions',
-                        'desc' => 'Supervision coordonnée des volumes, contrôle des statuts et consolidation des données.',
+                        'tag' => __('services.supervision'),
+                        'title' => __('services.gestion_title'),
+                        'desc' => __('services.gestion_card_desc'),
                         'url' => '/services/gestion',
-                        'btn' => 'Découvrir la gestion'
+                        'btn' => __('services.gestion_btn')
                     ],
                 ];
                 foreach ($serviceCards as $card):

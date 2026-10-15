@@ -6,9 +6,28 @@ if (php_sapi_name() !== 'cli-server') {
 
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-// Fichiers statiques (CSS, images...)
+// Interdiction stricte des fichiers et dossiers sensibles (aligné avec .htaccess)
+if (preg_match('#^/(\.env|\.git|api/migrate\.php|scripts/|templates/|lang/|\.sqlite|docs/|node_modules/)#i', $path) || 
+    preg_match('#\.(sql|log|bak|env|sqlite|md)$#i', $path)) {
+    http_response_code(403);
+    die('403 Forbidden');
+}
+
+// Fichiers statiques autorisés uniquement (CSS, JS, images, polices, favicons)
 if (is_file(__DIR__ . $path)) {
-    return false;
+    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    $allowedStaticExts = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico', 'woff', 'woff2', 'ttf', 'eot', 'txt'];
+    if (in_array($ext, $allowedStaticExts, true)) {
+        return false;
+    }
+}
+
+// Support transparent des URL localisées (/fr/, /en/, /de/, /nl/) sans redirection
+$supportedPrefixes = ['fr', 'en', 'de', 'nl'];
+if (preg_match('#^/(' . implode('|', $supportedPrefixes) . ')(/.*)?$#i', $path, $langMatches)) {
+    $_GET['lang'] = strtolower($langMatches[1]);
+    $subPath = $langMatches[2] ?? '/';
+    $path = ($subPath === '' || $subPath === false) ? '/' : $subPath;
 }
 
 // Règles de routage similaires au .htaccess
