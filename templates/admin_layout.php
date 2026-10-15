@@ -49,7 +49,7 @@ if ($admin_initials === '') {
     </aside>
 
     <!-- Mobile Header & Menu -->
-    <header class="md:hidden bg-primary text-white py-4 px-4 w-full flex justify-between items-center absolute top-0 left-0 z-50">
+    <header class="md:hidden bg-primary text-white py-4 px-4 w-full flex justify-between items-center sticky top-0 left-0 z-[1050]" style="position: sticky; top: 0; z-index: 1050;">
         <a href="/dashboard" class="font-bold text-lg flex items-center gap-2">
             <img src="/assets/img/logo/logo-mark-fond-sombre.svg" alt="Logo" class="h-6 w-6 shrink-0" width="24" height="24">
             <span><?= escape_html($settings['nom']) ?></span>

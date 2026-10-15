@@ -615,9 +615,10 @@ function render_language_switcher(string $theme = 'dark'): string {
                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
             </svg>
         </button>
-        <div class="hidden absolute right-0 mt-1.5 w-48 rounded-xl border py-1.5 z-[2100] transition-all shadow-2xl <?= $menuBg ?>" 
+        <div class="hidden absolute right-0 mt-1.5 w-48 rounded-xl border py-1.5 z-[1060] transition-all shadow-2xl <?= $menuBg ?>" 
              role="menu" 
-             aria-orientation="vertical">
+             aria-orientation="vertical"
+             style="z-index: 1060;">
             <?php foreach ($languages as $code => $meta): 
                 $isActive = ($code === $current);
                 $url = get_language_switch_url($code);

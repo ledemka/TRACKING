@@ -58,8 +58,8 @@ if ($admin_initials === '') {
 $currentRoute = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
 ?>
 <body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen">
-    <!-- Header Admin : Thème Sombre Raffiné #171717 avec liseré jaune #FFE500 -->
-    <header class="fixed top-0 w-full z-[2000] bg-[#171717] text-white border-b-2 border-[#FFE500] shadow-md transition-all">
+    <!-- Header Admin : Thème Sombre Raffiné #171717 avec liseré jaune #FFE500 et fixation sticky -->
+    <header class="sticky top-0 w-full z-[1050] admin-header-sticky bg-[#171717] text-white border-b-2 border-[#FFE500] shadow-md transition-all" style="position: sticky; top: 0; z-index: 1050; background-color: #171717;">
         <div class="h-16 max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
             <!-- Zone Gauche : Burger + Logo + Nav Desktop -->
             <div class="flex items-center gap-3 sm:gap-6">
@@ -88,6 +88,7 @@ $currentRoute = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
                     $navLinks = [
                         ['url' => '/dashboard', 'label' => __('nav.dashboard'), 'icon' => 'dashboard'],
                         ['url' => '/shipments', 'label' => __('nav.shipments'), 'icon' => 'package_2'],
+                        ['url' => '/customers', 'label' => __('nav.customers'), 'icon' => 'group'],
                     ];
                     foreach ($navLinks as $nl):
                         $isActive = ($currentRoute === $nl['url'] || ($nl['url'] === '/shipments' && str_starts_with($currentRoute, '/shipments')));
@@ -167,7 +168,7 @@ $currentRoute = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
             </div>
         </nav>
     </header>
-    <main class="flex-grow pt-20 px-4 pb-8 max-w-7xl mx-auto w-full relative z-0">
+    <main class="flex-grow py-6 px-4 pb-12 max-w-7xl mx-auto w-full relative z-0">
         <?php if (isset($_SESSION['flash_message'])): ?>
             <div class="bg-status-delivered-bg border border-green-500 text-status-delivered-text p-4 rounded mb-6" role="status">
                 <?= escape_html($_SESSION['flash_message']) ?>

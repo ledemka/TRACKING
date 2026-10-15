@@ -34,7 +34,7 @@ $stmt->execute($params);
 $customers = $stmt->fetchAll();
 
 $page_title = __('customers.page_title');
-require_once __DIR__ . '/templates/admin_layout.php';
+require __DIR__ . '/templates/admin_header.php';
 ?>
 
 <div class="flex justify-between items-center mb-8">

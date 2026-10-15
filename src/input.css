@@ -72,6 +72,20 @@
   outline-offset: 2px;
 }
 
+/* Header administration : fixation sticky et plan d'empilement garanti */
+.admin-header-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1050;
+  background-color: #171717;
+  border-bottom: 2px solid #FFE500;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
 /* Hero Carousel States */
 .hero-slide {
   opacity: 0;
