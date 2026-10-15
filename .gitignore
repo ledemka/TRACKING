@@ -11,6 +11,7 @@ database.sqlite
 *.zip
 *.sql
 !docs/schema.sql
+!docs/migrations/*.sql
 *.bak
 cookies.txt
 public/
